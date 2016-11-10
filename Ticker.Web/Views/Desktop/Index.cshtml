@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Ticker Desktop";
+}
+@(Html.Kendo().Window()
+    .Name("window")
+    .Title("Playlists")
+    .Content(@<text>
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Width(800)
+    .Actions(actions => actions.Clear().Minimize().Maximize().Close())
+    .Events(ev => ev.Close("onClose"))
+)
+<span id="cmdPlaylist" class="k-button">Open Playlist</span>
+<span id="undo" style="display:none" class="k-button">Click here to open the window.</span>
+
+<script>
+    $("#cmdPlaylist").click(function () {
+        var dialog = $("#window").clone().kendoWindow({
+            width: "1300px",
+            height: "280px",
+            modal: false,
+            resizable: true,
+            actions: ["Minimize", "Maximize", "Close"],
+            title: "Playlist"
+        }).data("kendoWindow").open();
+
+        dialog.refresh({
+            url: "/Playlists"
+        });
+    });
+    function onClose() {
+        $("#undo").show();
+    }
+
+    $(document).ready(function () {
+        //$("#window").data("kendoWindow").refresh({
+        //    url: "/Playlists"
+        //});
+        $("#undo").bind("click", function () {
+            $("#window").data("kendoWindow").open();
+            $("#undo").hide();
+        });
+    });
+</script>
+
+<style scoped>
+    
+    #example
+    {
+        min-height:500px;
+    }
+
+    #undo {
+        text-align: center;
+        position: absolute;
+        white-space: nowrap;
+        padding: 1em;
+        cursor: pointer;
+    }
+    .armchair {
+        float: left;
+        margin: 30px 30px 120px 30px;
+        text-align: center;
+    }
+    .armchair img {
+        display: block;
+        margin-bottom: 10px;
+    }
+</style>

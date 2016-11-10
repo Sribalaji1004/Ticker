@@ -1,0 +1,203 @@
+﻿@{
+    ViewBag.Title = "Group";
+}
+<script>
+    $(function () {
+        $("#Group table").on("click", ".k-hierarchy-cell a", function (e) {
+            var grid = $("#Group").data("kendoGrid");
+            var dataItem = grid.dataItem($(e.srcElement).closest("tr"));
+            //check if the record is new - prevent expanding of the detail template
+            if (dataItem && dataItem.isNew()) {
+                grid.one("dataBound", function (e) {
+                    e.sender.expandRow(e.sender.tbody.find("tr:first"));
+                })
+                grid.saveRow();
+            }
+        })
+    })
+</script>
+<h2>Group</h2>
+
+@(Html.Kendo().Grid<Ticker.Data.Group>()
+    .Name("Group")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.ID);
+        columns.Bound(p => p.Name);
+        columns.Bound(p => p.OnAirName);
+        columns.Bound(p => p.ClientID).Hidden();
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Group");
+            })
+    .Sortable()
+    .ClientDetailTemplateId("NotesTemplate")
+    .Events(events => events.DataBound("dataBound"))
+    .Pageable()
+    .Filterable()
+     .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.Name).DefaultValue(String.Empty);
+                model.Field(g => g.OnAirName).DefaultValue(String.Empty);
+                model.Field(g => g.CreatedName).DefaultValue(String.Empty);
+                model.Field(g => g.ClientID).DefaultValue(1);
+
+            })
+        .Read(read => read.Url("/api/Group").Type(HttpVerbs.Get))
+        .Create(create => create.Url("/api/Group").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Group").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Group/").Type(HttpVerbs.Delete))
+     )
+)
+<script>
+
+    $(function () {
+        var grid = $("#Group").data("kendoGrid");
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. PUT //api/Product/80
+        grid.dataSource.transport.options.update.url = function (data) {
+            return "/api/Group/" + data.ID;
+        };
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE //api/Product/80
+        grid.dataSource.transport.options.destroy.url = function (data) {
+            return "/api/Group/" + data.ID;
+        };
+    });
+</script>
+
+<script id="NotesTemplate" type="text/kendo-tmpl">
+    @(
+    Html.Kendo().Grid<Ticker.Data.Note>()
+    .Name("Notes_#=id#")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        columns.ForeignKey(o => o.GroupID, (System.Collections.IEnumerable)ViewData["Groups"], "ID", "Name").Title("Group").Hidden();
+        columns.ForeignKey(o => o.TeamID, (System.Collections.IEnumerable)ViewData["Teams"], "ID", "NickName").Title("Team");
+        columns.Bound(o => o.NoteColor).Title("Note").EditorTemplateName("Note").Encoded(false);//.ClientTemplate("Editor"); ;
+        columns.Bound(o => o.Imported).Visible(false);
+        columns.Bound(o => o.LastUpdated).Visible(false);
+        columns.Bound(o => o.SortOrder).Visible(false);
+        columns.Bound(o => o.UserID).Visible(false);
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Note");
+            })
+            //.Sortable()
+    .Events(e => e.Edit("onEdit"))
+    .Events(e => e.Save("onSave"))
+    //.Events(events => events.DataBound("onDataBound"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.GroupID);//.Editable(false);//.DefaultValue(;
+                model.Field(g => g.Header);//.DefaultValue(String.Empty);
+                model.Field(g => g.Note1).DefaultValue(String.Empty);
+                model.Field(g => g.NoteColor).DefaultValue(String.Empty);
+                model.Field(g => g.Imported);
+                model.Field(g => g.LastUpdated);
+                model.Field(g => g.SortOrder);
+                model.Field(g => g.TeamID).DefaultValue(null);
+                model.Field(g => g.UserID);
+
+            })
+        .Read(read => read.Url("/api/GroupNote" + "/#=id#").Type(HttpVerbs.Get))
+        .Create(create => create.Url("/api/Note").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Note").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Note").Type(HttpVerbs.Delete))
+     )
+        .ToClientTemplate()
+)
+        <script>
+        
+        var grid = $("\\#Notes_#=id#").data("kendoGrid");
+        
+        // WebAPI needs the ID of the entity to be part of the URL e.g. PUT /api/Product/80
+         grid.dataSource.transport.options.update.url = function(data) {
+            return "/api/Note/" + data.ID;
+        }
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE /api/Product/80
+        grid.dataSource.transport.options.destroy.url = function (data) {
+            return "/api/Note/" + data.ID;
+        }
+
+    <\/script>
+</script>
+<script>
+    function dataBound() {
+        var firstRow = this.tbody.find("tr.k-master-row").first();
+        var currentDataItem = this.dataItem(firstRow);
+
+        if (!currentDataItem.isNew()) {
+            this.expandRow(firstRow);
+        }
+    }
+    function onEdit(e) {
+        //check if model is new
+        if (e.model.isNew()) {
+            //Find parent grid current row
+            parentRow = $(e.container).closest(".k-detail-row").prev();
+            //find parent grid
+            grid = parentRow.closest("[data-role=grid]").data("kendoGrid");
+            //get the parent grid row DataItem
+            parentDataItem = grid.dataItem(parentRow);
+
+            if (parentDataItem.id == 0) {
+                grid.saveRow();
+                grid.one("dataBound", function (e) {
+                    e.sender.expandRow(e.sender.tbody.find("tr:first"));
+                })
+                //grid.expandRow(grid.tbody.find(">tr.k-master-row:nth-child(1)"));
+                //alert("Please click Update on parent row to save changes first.");
+            }
+            else {
+                //set the parent grid dataItem field value to current ForeignKeyColumn field
+                e.model.set("GroupID", parentDataItem.id);
+            }
+        }
+    }
+
+    function onSave(e) {
+
+        //get the currently selected value from the DDL
+        var currentlySelectedValue = $(e.container.find('[data-role=dropdownlist]')[0]).data().kendoDropDownList.value();
+
+        //If current value is null
+        if (!e.model.TeamID) {
+            //change the model value
+            e.model.TeamID = 0;
+            //set the value to the model
+            e.model.set('TeamID', currentlySelectedValue);
+        }
+        if (currentlySelectedValue = 0)
+            //    alert(currentlySelectedValue);
+            e.model.set('TeamID', currentlySelectedValue);
+
+        e.model.set('Note1', e.model.get('NoteColor'));
+    }
+    function onDataBound() {
+
+    }
+</script>

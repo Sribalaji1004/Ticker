@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "Logs";
+}
+
+<div>
+    <div style="float: right">
+        <h2>Action: &nbsp;
+            @(Html.Kendo().DropDownList()
+                .Name("flags")
+                .DataTextField("Text")
+                .DataValueField("Value")
+                .Events(e => e.Change("change"))
+                .BindTo(new List<SelectListItem>() {
+                    new SelectListItem() {
+                        Text = "ALL",
+                        Value = "0",
+                    },
+                    new SelectListItem() {
+                        Text = @Ticker.Controllers.Utilities.Action_Flag.ADDITION.ToString(),
+                        Value = ((int)Ticker.Controllers.Utilities.Action_Flag.ADDITION).ToString()
+                    },
+                    new SelectListItem() {
+                        Text = @Ticker.Controllers.Utilities.Action_Flag.CHANGE.ToString(),
+                        Value = ((int)Ticker.Controllers.Utilities.Action_Flag.CHANGE).ToString()
+                    },
+                    new SelectListItem() {
+                        Text = @Ticker.Controllers.Utilities.Action_Flag.DELETION.ToString(),
+                        Value = ((int)Ticker.Controllers.Utilities.Action_Flag.DELETION).ToString()
+                    }
+                })
+                .Value("0")
+            )
+        </h2>
+    </div>
+    <div style="float: left">
+        <h2>Logs</h2>
+    </div>
+    <div style="clear: both" />
+</div>
+<script type="text/javascript">
+    function change(e) {
+        var p = $("#Logs").data("kendoGrid");
+        p.dataSource.read();
+        p.dataSource.sync();
+    }
+</script>
+
+@(Html.Kendo().Grid<Ticker.Data.auth_admin_log>()
+    .Name("Logs")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.id).Hidden();
+        columns.Bound(o => o.action_time).Title("Time").Format("{0:G}")
+            .Width(200);
+        columns.Bound(o => o.User.Username).Title("Username").Width(100);
+        columns.Bound(o => o.change_message).Title("Details").Encoded(false);
+        columns.Bound(o => o.object_id).Title("Object_Id");
+    })
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.id);
+                model.Field(g => g.id);
+                model.Field(g => g.object_id);
+                model.Field(g => g.User);
+                model.Field(g => g.change_message);
+            })
+        .Read(read => read.Url("/api/log/").Type(HttpVerbs.Get).Data("logsData"))
+        .PageSize(20)
+     )
+     .Sortable()
+     .Filterable()
+     .Pageable(pager => pager
+            .ButtonCount(5)
+            .Input(true)
+     )
+)
+<script type="text/javascript">
+    function logsData(e) {
+        return { id: 0, flag: $("#flags").data("kendoDropDownList").value() };
+    }
+</script>

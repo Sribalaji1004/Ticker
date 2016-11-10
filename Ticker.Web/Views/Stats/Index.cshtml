@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Stats Leader Builder";
+}
+<style type="text/css">
+    .k-input {
+        background-color: white;
+        border-color: white;
+    }
+    .k-state-default > .k-select {
+        border-color: white;
+        color:black;
+    }
+
+</style>
+
+<p>
+    <img style="float: left; margin: 0px 15px 0px 0px;" src="~/Content/images/menu.png" />
+    <h2>Stats Leader Builder</h2>
+    <div style="clear: both;" />
+</p>
+<div style="width:50%;height:600px; border:1px solid #878383;">
+
+    <p>
+        <div style="float: left; margin: 5px 15px 0px 10px;">
+            <b>Find Games</b>
+         </div>
+        <br style="clear: both;" />
+    </p>
+
+    <p>
+        <div style="float: left; margin: 0px 15px 0px 30px;">
+            Start Game Date: <input type="text" id="txt_StartGameDate" style="width:150px;height:25px;" />
+        </div>
+              <div style="clear: both;" />
+    </p>
+   <div style="height:2px;"></div>
+    <p>
+        <div style="float: left; margin: 0px 15px 0px 37px;">
+            End Game Date: <input type="text" id="txt_EndGameDate" style="width:150px;height:25px;" />
+        </div>
+        <div style="clear: both;" />
+    </p>
+    <div style="height:2px;"></div>
+    <p>
+        <div style="float: left; margin: 0px 15px 0px 51px;">
+            Visiting Team: <input type="text" style="width:150px;height:25px;" />
+        </div>
+        <div style="clear: both;" />
+    </p>
+    <div style="height:2px;"></div>
+    <p>
+        <div style="float: left; margin: 0px 15px 0px 60px;">
+            Home Team: <input type="text" style="width:150px;height:25px;" />
+        </div>
+        <div style="clear: both;" />
+    </p>
+    <div style="height:2px;"></div>
+    <p>
+        <div style="float: left; margin: 0px 15px 0px 300px;">
+            <input type="button" value="Search" />
+            
+        </div>
+        <div style="clear: both;" />
+    </p>
+    <div style="height:2px;"></div>
+    <p>
+        <div style="float: left; margin: 0px 15px 0px 100px; ">
+           <hr style="width:400px;" />
+        </div>
+        <div style="clear: both;" />
+    </p>
+
+    <div style="height:2px;"></div>
+    <p>
+        <div style="float: left; margin: 5px 15px 0px 10px;">
+            <b>Select Games</b>
+        </div>
+        <div style="clear: both;" />
+    </p>
+    <div style="height:5px;"></div>
+    <p>
+        <div style="float: left; margin: 5px 15px 0px 70px;">
+            <div id="stocks_tbl" style="width:70%;"></div>
+        </div>
+        <div style="clear: both;" />
+    </p>
+        <div style="height:5px;"></div>
+<p>
+        <div style="float: left; margin: 5px 15px 0px 150px;">
+            <input type="button" value="Launch Stats for Selected Games" id="btn_launch" />
+        </div>
+        <div style="clear: both;" />
+    </p>
+    </div>
+<script>
+    $(document).ready(function () {
+        // create DatePicker from input HTML element
+        $("#txt_StartGameDate").kendoDatePicker();
+        $("#txt_EndGameDate").kendoDatePicker();
+
+    });
+
+    $('#btn_launch').click(function () {
+        document.location = '@Url.Action("Index","LaunchStats")';
+    });
+
+
+    var entries = [
+    { Game:"CHI vs TEN",Date:"01/01/2015",selected: true },
+    { Game: "NY vs PHI", Date: "05/01/2015", selected: false},
+    { Game: "DAL vs SF", Date: "06/01/2015", selected: false },
+    { Game:"NY vs TEN",Date:"01/01/2015",selected: true },
+    { Game: "CHI vs PHI", Date: "05/01/2015", selected: false},
+    { Game: "SF vs THI", Date: "06/01/2015", selected: false},
+    { Game:"CI vs EN",Date:"01/01/2015",selected: true },
+    { Game: "NMN vs PH", Date: "05/01/2015", selected: false},
+    { Game: "NAL vs SFC", Date: "06/01/2015", selected: false}
+    ];
+
+    $("#stocks_tbl").kendoGrid({
+        dataSource: {
+            data: entries,
+            pageSize: 5
+        },
+        pageable: true,
+        columns: [
+           
+            { field: "Game", title: "Game" },
+             { field: "Date", title: "Date" },
+            { field: "", title: "", template: '<input type="checkbox"   />',width:80 }
+        ],
+        
+    }).data("kendoGrid");
+    </script>

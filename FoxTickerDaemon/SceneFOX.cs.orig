@@ -1,0 +1,375 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using FOXTickerDataEngine;
+using Ventuz.Kernel.Remoting;
+using VentuzRemoting;
+
+namespace FoxTickerLite
+{
+    class SceneFOX : SceneBase
+    {
+        private bool isatbatvisible;
+        private string currenttab;
+        private spTICK_Notes_GetByGroup_Result currentnote;
+
+        public bool IsAtBatVisible
+        {
+            get { return isatbatvisible; }
+            set { isatbatvisible = value; }
+        }
+
+        public string CurrentTab //onairname of gbroup
+        {
+            get { return currenttab; }
+            set { currenttab = value; }
+        }
+
+<<<<<<< local
+        public object CurrentNote //game or note
+=======
+        public spTICK_Notes_GetByGroup_Result CurrentNote
+>>>>>>> other
+        {
+            get { return currentnote; }
+            set { currentnote = value; }
+        }
+
+        protected override void VENTUZ_Callback(object sender, VentuzArgs eventName) //(int connid, int eventid)
+        {
+            switch (eventName.message.ToUpper())
+            {
+                case "/INTRO_COMPLETE": // Ticker Intro is done.
+                    Ticker_Tabs_Insert(CurrentTab);
+                    System.Threading.Thread.Sleep(1000);
+                    Ticker_Note_Insert(CurrentNote);
+                    // Bubble up event here - INTROCOMPLETE
+                    break;
+
+                case "/NOTE_COMPLETE": // Note Done.
+                case "/GAMEIN_COMPLETE": // Backplate done.
+                    // Bubble up event here - INTROCOMPLETE
+                    break;
+
+                default:
+                    // We get a lot of events back - some can just be ignored.
+                    break;
+            }
+
+        }
+
+        public override void Ticker_Clear()
+        {
+            Ventuz_Property("NOTE_HEADERTEXT", "");
+            Ventuz_Property("NOTE_TEXT", "");
+            Ventuz_Property("GAME_TYPE", "7");
+            Ventuz_Method("GAME_NEXT");
+        }
+
+        public override void Ticker_Insert(string intro_file_path, string sponsor_file_path, object noteobject, string tab)
+        {
+            try
+            {
+                Ventuz_Property("INTRO_FILENAME", intro_file_path);
+                Ventuz_Property("SPONSOR_FILENAME", "file:///" + sponsor_file_path);
+                Ventuz_Property("BACKDROP_ANIMFILENAME", "C:\\Fox Ticker\\Clients\\FSN\\Ventuz\\Movies\\IntroForeground\\BASE_DigiTXR.avi");
+<<<<<<< local
+                Ventuz_Property("GAME_TYPE", "7");
+=======
+                Ventuz_Property("GAME_TYPE", "7"); // Clear anything.
+>>>>>>> other
+
+                System.Threading.Thread.Sleep(200);
+                Ventuz_Method("TICKER_IN");
+
+                CurrentTab = tab;
+<<<<<<< local
+                CurrentNote = noteobject;
+
+=======
+                CurrentNote = ((spTICK_Notes_GetByGroup_Result)(noteobject));
+      
+>>>>>>> other
+
+                IsPlaying = true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        protected override void Ticker_Tabs_Insert(string tab)
+        {
+            Ventuz_Property("NOTE_HEADERTEXT", "");
+            Ventuz_Property("NOTE_TEXT", "");
+            Ventuz_Property("1QUALIFIER_TEXT", tab);
+
+            Ventuz_Method("1QUALIFIER_IN");
+            Ventuz_Method("GAMEBRONZE_IN");
+            Ventuz_Method("SPONSOR_IN");
+
+            Tab = tab;
+        }
+
+        public override void Ticker_Tab_Update(string tab_name)
+        {
+            if (tab_name != Tab)
+            {
+                Ticker_Clear();
+                System.Threading.Thread.Sleep(300);
+
+                Ventuz_Method("1QUALIFIER_OUT");
+                System.Threading.Thread.Sleep(300);
+
+                Ventuz_Property("1QUALIFIER_TEXT", tab_name);
+                System.Threading.Thread.Sleep(300);
+
+                Ventuz_Method("1QUALIFIER_IN");
+                System.Threading.Thread.Sleep(500);
+
+                Tab = tab_name;
+            }
+        }
+
+        public void Ticker_Note_Insert(object note)
+        {
+            Ventuz_Property("NOTE_TICKERSPEED", "0.8");
+            Ventuz_Property("NOTE_TIMEBEFORESCROLL", "1.5");
+
+            switch (note.GetType().Name)
+            {
+                case "spTICK_Notes_GetByGroup_Result":
+                    spTICK_Notes_GetByGroup_Result groupNote = (spTICK_Notes_GetByGroup_Result)note;
+                    Ventuz_Property("GAME_TYPE", "7");
+                    if (groupNote.Header != "")
+                    {
+                        Ventuz_Property("NOTE_HEADERTEXT", groupNote.Header);
+                        if (groupNote.TeamID == -1)
+                            Ventuz_Property("NOTE_HEADERTEXTCOLOR", "255,255,255");
+                        else
+                            Ventuz_Property("NOTE_HEADERTEXTCOLOR", groupNote.TeamSecondaryColor);
+                        Ventuz_Property("NOTE_HEADERBACKDROPCOLOR", groupNote.TeamPrimaryColor);
+                    }
+                    else if (groupNote.TeamAbbreviation != "")
+                    {
+                        Ventuz_Property("NOTE_HEADERTEXT", groupNote.TeamAbbreviation);
+                        Ventuz_Property("NOTE_HEADERTEXTCOLOR", groupNote.TeamSecondaryColor);
+                        Ventuz_Property("NOTE_HEADERBACKDROPCOLOR", groupNote.TeamPrimaryColor);
+                    }
+
+                    if (groupNote.NoteColor != "")
+                        Ventuz_Property("NOTE_TEXT", groupNote.Note);
+                    else
+                        Ventuz_Property("NOTE_TEXT", groupNote.Note);
+
+                    Ventuz_Property("NOTE_WIDTHCALCTEXT", groupNote.Note);
+ 
+                    break;
+
+                case "spTICK_GameNotes_GetByGameID_Result":
+                    spTICK_GameNotes_GetByGameID_Result gameNote = (spTICK_GameNotes_GetByGameID_Result)note;
+                    Ventuz_Property("GAME_TYPE", "7");
+                    if (gameNote.Header != "")
+                    {
+                        Ventuz_Property("NOTE_HEADERTEXT", gameNote.Header);
+                        if (gameNote.TeamID == -1)
+                            Ventuz_Property("NOTE_HEADERTEXTCOLOR", "255,255,255");
+                        else
+                            Ventuz_Property("NOTE_HEADERTEXTCOLOR", gameNote.TeamSecondaryColor);
+                        Ventuz_Property("NOTE_HEADERBACKDROPCOLOR", gameNote.TeamPrimaryColor);
+                    }
+                    else if (gameNote.TeamAbbreviation != "")
+                    {
+                        Ventuz_Property("NOTE_HEADERTEXT", gameNote.TeamAbbreviation);
+                        Ventuz_Property("NOTE_HEADERTEXTCOLOR", gameNote.TeamSecondaryColor);
+                        Ventuz_Property("NOTE_HEADERBACKDROPCOLOR", gameNote.TeamPrimaryColor);
+                    }
+
+                    if (gameNote.NoteColor != "")
+                        Ventuz_Property("NOTE_TEXT", gameNote.Note);
+                    else
+                        Ventuz_Property("NOTE_TEXT", gameNote.Note);
+
+                    Ventuz_Property("NOTE_WIDTHCALCTEXT", gameNote.Note);
+
+                    break;
+            }
+
+            System.Threading.Thread.Sleep(400);
+
+            Ventuz_Method("GAME_NEXT");
+        }
+
+
+
+        //public override void Ticker_Note_Insert(string header, string text)
+        //{
+        //    Ticker_Note_Insert(header, "10,30,97", "255,255,255", text);
+        //}
+
+
+
+        //public override void Ticker_Note_Insert(string header, string headerRGB, string textRGB, string text)
+        //{
+        //    Ventuz_Property("GAME_TYPE", "7");
+        //    Ventuz_Property("NOTE_HEADERTEXT", header);
+        //    Ventuz_Property("NOTE_HEADERTEXTCOLOR", textRGB);
+        //    Ventuz_Property("NOTE_HEADERBACKDROPCOLOR", headerRGB);
+        //    Ventuz_Property("NOTE_TEXT", text);
+        //    Ventuz_Property("NOTE_WIDTHCALCTEXT", DateTime.Now.ToString());
+
+        //    System.Threading.Thread.Sleep(400);
+
+        //    Ventuz_Method("GAME_NEXT");
+        //}
+
+
+
+        public override void Ticker_Schedule_Insert(object gameobject)
+        {
+            // Note:  use game object instead of hard-coded values:
+
+            Ventuz_Property("GAME_SEPARATORALPHA", "0");
+            Ventuz_Property("GAME_TYPE", "15");
+            Ventuz_Property("GAMETEAM1", "UCLA");
+            Ventuz_Property("GAME_TEAM1RANKING", "1");
+            Ventuz_Property("GAMETEAM2", "USC");
+            Ventuz_Property("GAME_TEAM2RANKING", "24");
+            Ventuz_Property("GAMEDETAILS_STATUS", "4:00pm");
+
+            System.Threading.Thread.Sleep(400);
+
+            Ventuz_Method("GAME_NEXT");
+        }
+
+
+
+        public override void Ticker_InProgress_Insert(object gameobject)
+        {
+            // Note:  use game object instead of hard-coded values:
+
+            Ventuz_Property("GAME_TYPE", "11"); // 2 = MLB with AB, 11 = AB
+            Ventuz_Property("GAMETEAM1", "UCLA 44");
+            Ventuz_Property("GAME_TEAM1RANKING", "1");
+            Ventuz_Property("GAMETEAM2", "USC 0");
+            Ventuz_Property("GAME_TEAM2RANKING", "24");
+            Ventuz_Property("GAMEDETAILS_STATUS", "2ND <WHITE>15:00</WHITE>");
+            Ventuz_Property("GAMEDETAILS_HIDEATBAT", "False");
+            Ventuz_Property("GAMEDETAILS_BACKDROPALPHA", "0"); // 100 will show bg color
+            Ventuz_Property("GAMEDETAILS_ATBAT", "AT BAT: " + DateTime.Now.ToString());
+
+            System.Threading.Thread.Sleep(400);
+
+            if (!IsAtBatVisible)
+            {
+                Ventuz_Method("ATBATTEXT_IN");
+            }
+            else
+            {
+                Ventuz_Method("ATBAT_NEXT");
+            }
+            Ventuz_Method("GAME_NEXT");
+
+            IsAtBatVisible = true;
+        }
+
+
+
+        public override void Ticker_Platinum_Insert(string tickerflow_platinum_path, string tickerflow_static_path)
+        {
+            Ventuz_Property("GAMEFLOW_FILENAME", "file:///" + tickerflow_platinum_path);  // "file:///C:\\Fox Ticker\\Clients\\FSN\\Elements\\Sponsors\\TF-Academy_Platinum.avi");
+            Ventuz_Property("SPONSOR_FILENAME", "file:///" + tickerflow_static_path);  // "file:///C:\\Fox Ticker\\Clients\\FSN\\Elements\\Sponsors\\TF-Academy.tga"
+            Ventuz_Method("GAMEFLOWPLATINUM_IN");
+        }
+
+
+
+        public override void Ticker_ScoreAlert_Insert(object gameobject)
+        {
+            Ventuz_Property("INTRO_FILENAME", "file:///C:\\Fox Ticker\\Clients\\FSN\\Elements\\GroupIntros\\Score Alert.avi");
+            Ventuz_Method("INTRO_PLAY");
+
+            // Note:  use gameobject instead of hardcoded values:
+
+            // Delay behind scenes and then update data with game with score alert....
+            System.Threading.Thread.Sleep(1000);
+            Ventuz_Property("GAME_TYPE", "11"); // 2 = MLB with AB, 11 = AB
+            Ventuz_Property("GAMETEAM1", "UCLA 44");
+            Ventuz_Property("GAME_TEAM1RANKING", "1");
+            Ventuz_Property("GAMETEAM2", "USC 0");
+            Ventuz_Property("GAME_TEAM2RANKING", "24");
+            Ventuz_Property("GAMEDETAILS_STATUS", "2ND <WHITE>15:00</WHITE>");
+            Ventuz_Property("GAMEDETAILS_HIDEATBAT", "False");
+            Ventuz_Property("GAMEDETAILS_BACKDROPALPHA", "0"); // 100 will show bg color
+            Ventuz_Property("GAMEDETAILS_ATBAT", "");
+            if (!IsAtBatVisible)
+            {
+                Ventuz_Method("ATBATTEXT_IN");
+            }
+            else
+            {
+                Ventuz_Method("ATBAT_NEXT");
+            }
+            Ventuz_Method("GAME_NEXT");
+            IsAtBatVisible = true;
+            Ventuz_Method("GAME_NEXT");
+
+            // Flash score of team that changes:
+            System.Threading.Thread.Sleep(2000);
+            Flash_Score_Home(3);
+
+            // Now show how team scored:
+            Ventuz_Property("GAMEDETAILS_BACKDROPALPHA", "100");
+            Ventuz_Property("GAME_SEPARATORALPHA", "100");
+            Ventuz_Property("GAMEDETAILS_HIDEATBAT", "false");
+            Ventuz_Property("GAMEDETAILS_ATBAT", "RODGERS 25 YD TD");
+            Ventuz_Property("ATBAT_TEXT", "RODGERS 25 YD TD");
+            Ventuz_Method("ATBAT_INSTANTUPDATE");
+
+        }
+
+        private void Flash_Score_Home(int number_of_times)
+        {
+            for (int j = 1; j <= number_of_times - 1; j++)
+            {
+                // fade off:
+                for (int i = 0; i < 8; i++)
+                {
+                    Ventuz_Property("GAMETEAM1", "UCLA <SCOREFADE" + i + ">" + "44" + "</SCOREFADE" + i + ">");
+                    Ventuz_Method("GAME_UPDATETEAMS");
+
+                    System.Threading.Thread.Sleep(50);
+                }
+
+                // fade on:
+                for (int i = 7; i >= 0; i--)
+                {
+                    Ventuz_Property("GAMETEAM1", "UCLA <SCOREFADE" + i + ">" + "44" + "</SCOREFADE" + i + ">");
+                    Ventuz_Method("GAME_UPDATETEAMS");
+
+                    System.Threading.Thread.Sleep(50);
+                }
+            }
+
+            // finally, fade off
+            for (int i = 0; i < 8; i++)
+            {
+                Ventuz_Property("GAMETEAM1", "UCLA <SCOREFADE" + i + ">" + "44" + "</SCOREFADE" + i + ">");
+                Ventuz_Method("GAME_UPDATETEAMS");
+
+                System.Threading.Thread.Sleep(50);
+            }
+
+            // fade on with new sore:
+            for (int i = 7; i >= 0; i--)
+            {
+                Ventuz_Property("GAMETEAM1", "UCLA <SCOREFADE" + i + ">" + "51" + "</SCOREFADE" + i + ">");
+                Ventuz_Method("GAME_UPDATETEAMS");
+
+                System.Threading.Thread.Sleep(50);
+            }
+        }
+    }
+}

@@ -1,0 +1,329 @@
+﻿@{
+    ViewBag.Title = "Playlist";
+}
+
+<h2>Playlist</h2>
+    @(
+    Html.Kendo().Grid<Ticker.Data.PlaylistDetail>()
+    .Name("PlaylistDetails")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        //columns.Bound(o => o.PlaylistID).Hidden();
+        //columns.ForeignKey(o => o.PlaylistID, (System.Collections.IEnumerable)ViewData["Playlists"], "ID", "Name").Title("Playlist").Hidden();
+        columns.Bound(o => o.SortOrder).Visible(false);
+        columns.Bound(o => o.OnAirName);
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Detail");
+            })
+    .ClientDetailTemplateId("PLDTemplate")
+            //.Sortable()
+    //.Events(e => e.Edit("onEdit"))
+    //.Events(e => e.Save("onSave"))
+    //.Events(events => events.DataBound("onDataBound"))
+    //.Events(events => events.DetailInit("onDetailInit"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.EntryID);
+                model.Field(g => g.EntryTypeID);
+                //model.Field(g => g.PlaylistID);//.Editable(false);//.DefaultValue(;
+                model.Field(g => g.OnAirName).DefaultValue(String.Empty);
+                model.Field(g => g.SortOrder);
+            })
+        .Read(read => read.Url("/api/spTICK_Playlist_Details_Get_ResultGrid/" + ViewData["PlaylistID"]).Type(HttpVerbs.Get)) //3907 //1154 - twitter // //3414
+        .Create(create => create.Url("/api/PlaylistDetail").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/PlaylistDetail").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/PlaylistDetail").Type(HttpVerbs.Delete))
+     )
+     //.Editable(ed=>ed.Mode(GridEditMode.PopUp).TemplateName("z"))  
+       
+)
+<script>
+        $(function () {
+            var grid = $("#PlaylistDetails").data("kendoGrid");
+
+            // WebAPI needs the ID of the entity to be part of the URL e.g. PUT api/Product/80
+            grid.dataSource.transport.options.update.url = function (data) {
+                return "/api/PlaylistDetail/" + data.ID;
+            }
+
+            // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE api/Product/80
+            grid.dataSource.transport.options.destroy.url = function (data) {
+                return "/api/PlaylistDetail/" + data.ID;
+            }
+        });
+</script>
+
+<script id="PLDTemplate" type="text/kendo-tmpl">
+    #if(EntryTypeID==1) {#
+@(Html.Kendo().Grid<Ticker.Data.Group>()
+    .Name("Group_#=EntryID#")
+    .Columns(columns =>
+    {
+        columns.ForeignKey(o => o.ID, (System.Collections.IEnumerable)ViewData["Groups"], "ID", "Name").Title("Group").Hidden();
+        columns.Bound(p => p.Name);
+        columns.Bound(p => p.OnAirName);
+        columns.Bound(p => p.ClientID).Hidden();
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Group");
+            })
+    .Sortable()
+    .ClientDetailTemplateId("GroupNotesTemplate")
+    .Events(e => e.Edit("onGroupEdit"))
+    //.Events(events => events.DataBound("dataBound"))
+    .Pageable()
+    .Filterable()
+     .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.Name).DefaultValue(String.Empty);
+                model.Field(g => g.OnAirName).DefaultValue(String.Empty);
+                model.Field(g => g.CreatedName).DefaultValue(String.Empty);
+                model.Field(g => g.ClientID).DefaultValue(1);
+
+            })
+        .Read(read => read.Url("/api/Group" + "/#=EntryID#").Type(HttpVerbs.Get))
+        .Create(create => create.Url("/api/Group").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Group").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Group/").Type(HttpVerbs.Delete))
+     )
+     .ToClientTemplate()
+)
+    #} else {#
+ @(Html.Kendo().Grid<Ticker.Data.Game>()
+    .Name("Games_#=EntryID#")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        //columns.Bound(o => o.PlaylistID).Hidden();
+        //columns.ForeignKey(o => o.ID, (System.Collections.IEnumerable)ViewData["PlaylistDetails"], "ID", "OnAirName").Title("Detail").Hidden();
+        columns.Bound(o => o.Header);
+        //columns.Bound(o => o.Clock);
+        //columns.Bound(o => o.DetailsPreScore);
+        //columns.Bound(o => o.DetailsPostScore);
+        //columns.Bound(o => o.GameDateTime);
+        //columns.Bound(o => o.ScoreDescription);
+        //columns.Bound(o => o.ScoreDescriptionAlt);
+        //columns.Bound(o => o.ScoreAlertID);
+        //columns.Bound(o => o.HomeID);
+        //columns.Bound(o => o.HomeScore);
+        //columns.Bound(o => o.VisitorsID);
+        //columns.Bound(o => o.VisitorsScore);
+        //columns.Bound(o => o.Details);
+        //columns.Bound(o => o.SortOrder).Visible(false);
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Detail");
+            })
+            //.Sortable()
+    .Events(e => e.Edit("onEdit"))
+    .Events(e => e.Save("onSave"))
+    //.Events(events => events.DataBound("onDataBound"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                //model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.Header);
+                //model.Field(g => g.Clock);
+                //model.Field(g => g.DetailsPreScore);
+                //model.Field(g => g.DetailsPostScore);
+                //model.Field(g => g.GameDateTime);
+                //model.Field(g => g.ScoreDescription);
+                //model.Field(g => g.ScoreDescriptionAlt);
+                //model.Field(g => g.ScoreAlertID);
+                //model.Field(g => g.HomeID);
+                //model.Field(g => g.HomeScore);
+                //model.Field(g => g.VisitorsID);
+                //model.Field(g => g.VisitorsScore);
+                //model.Field(g => g.Details);//.Editable(false);//.DefaultValue(;
+                //model.Field(g => g.SortOrder);
+            })
+        .Read(read => read.Url("/api/Game" + "/#=EntryID#").Type(HttpVerbs.Get))
+        .Create(create => create.Url("/api/Game").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Game").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Game").Type(HttpVerbs.Delete))
+     )
+     //.Editable(ed=>ed.Mode(GridEditMode.PopUp).TemplateName("Games_#=id#"))           
+        .ToClientTemplate()
+)
+    #}#
+</script>
+<script id="GroupNotesTemplate" type="text/kendo-tmpl">
+    @(
+    Html.Kendo().Grid<Ticker.Data.Note>()
+    .Name("Notes_#=id#")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        columns.ForeignKey(o => o.GroupID, (System.Collections.IEnumerable)ViewData["Groups"], "ID", "Name").Title("Group").Hidden();
+        columns.ForeignKey(o => o.TeamID, (System.Collections.IEnumerable)ViewData["Teams"], "ID", "NickName").Title("Team");
+        columns.Bound(o => o.Note1).Title("Note").Visible(true);//.Hidden();//.EditorTemplateName("Note");//.ClientTemplate("Editor"); ;
+        columns.Bound(o => o.NoteColor).Title("Note - Color").EditorTemplateName("Note").Encoded(false);//.HtmlAttributes("<span style='background-color:black;;//.ClientTemplate("Editor"); ;
+        columns.Bound(o => o.Imported).Visible(false);
+        columns.Bound(o => o.LastUpdated);//.Visible(false);
+        columns.Bound(o => o.SortOrder);//.Visible(false);
+        columns.Bound(o => o.UserID).Visible(false);
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Note");
+            })
+            //.Sortable()
+    .Events(e => e.Edit("onGroupNoteEdit"))
+    //.Events(e => e.Save("onSave"))
+    //.Events(events => events.DataBound("onDataBound"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.GroupID);//.Editable(false);//.DefaultValue(;
+                model.Field(g => g.Header);//.DefaultValue(String.Empty);
+                model.Field(g => g.Note1).DefaultValue(String.Empty);
+                model.Field(g => g.NoteColor).DefaultValue(String.Empty);
+                model.Field(g => g.Imported);
+                model.Field(g => g.LastUpdated).Editable(false);
+                model.Field(g => g.SortOrder);
+                model.Field(g => g.TeamID).DefaultValue(null);
+                model.Field(g => g.UserID);
+
+            })
+        .Read(read => read.Url("/api/GroupNote" + "/#=id#").Type(HttpVerbs.Get))
+        .Create(create => create.Url("/api/Note").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Note").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Note").Type(HttpVerbs.Delete))
+     )
+        .ToClientTemplate()
+)
+    <script>
+        
+        var grid = $("\\#Notes_#=id#").data("kendoGrid");
+        
+        // WebAPI needs the ID of the entity to be part of the URL e.g. PUT api/Product/80
+         grid.dataSource.transport.options.update.url = function(data) {
+            return "/api/Note/" + data.ID;
+        }
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE api/Product/80
+        grid.dataSource.transport.options.destroy.url = function (data) {
+            return "/api/Note/" + data.ID;
+        }
+
+    <\/script>
+</script>
+<script>
+    function dataBound() {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+    function onGroupEdit(e) {
+        //check if model is new
+        if (e.model.isNew()) {
+            //Find parent grid current row
+            parentRow = $(e.container).closest(".k-detail-row").prev();
+            //find parent grid
+            grid = parentRow.closest("[data-role=grid]").data("kendoGrid");
+            //get the parent grid row DataItem
+            parentDataItem = grid.dataItem(parentRow);
+
+            if (parentDataItem.id == 0) {
+                grid.saveRow();
+                setTimeout(function () {
+                    var grid = $("#Playlist").data("kendoGrid");
+                    grid.expandRow(grid.tbody.closest("tr"));
+                    //grid.expandRow(grid.tbody.find("tr.k-master-row").first());//find(">tr.k-master-row:nth-child(1)"));
+                    alert('y');
+                }, 1000);
+                //grid.expandRow(grid.tbody.find(">tr.k-master-row:nth-child(1)"));
+                //alert("Please click Update on parent row to save changes first.");
+            }
+            else {
+                //set the parent grid dataItem field value to current ForeignKeyColumn field
+                e.model.set("PlaylistID", parentDataItem.id);
+            }
+        }
+    }
+    function onGroupNoteEdit(e) {
+        //check if model is new
+        if (e.model.isNew()) {
+            //Find parent grid current row
+            parentRow = $(e.container).closest(".k-detail-row").prev();
+            //find parent grid
+            grid = parentRow.closest("[data-role=grid]").data("kendoGrid");
+            //get the parent grid row DataItem
+            parentDataItem = grid.dataItem(parentRow);
+
+            if (parentDataItem.id == 0) {
+                grid.saveRow();
+                setTimeout(function () {
+                    var grid = $("#Playlist").data("kendoGrid");
+                    grid.expandRow(grid.tbody.closest("tr"));
+                    //grid.expandRow(grid.tbody.find("tr.k-master-row").first());//find(">tr.k-master-row:nth-child(1)"));
+                    alert('y');
+                }, 1000);
+                //grid.expandRow(grid.tbody.find(">tr.k-master-row:nth-child(1)"));
+                //alert("Please click Update on parent row to save changes first.");
+            }
+            else {
+                //set the parent grid dataItem field value to current ForeignKeyColumn field
+                e.model.set("GroupID", parentDataItem.id);
+            }
+        }
+    }
+
+    function onSave(e) {
+
+        //get the currently selected value from the DDL
+        var currentlySelectedValue = $(e.container.find('[data-role=dropdownlist]')[0]).data().kendoDropDownList.value();
+
+        //If current value is null
+        if (!e.model.TeamID) {
+            //change the model value
+            e.model.TeamID = 0;
+            //set the value to the model
+            e.model.set('TeamID', currentlySelectedValue);
+        }
+        if (currentlySelectedValue = 0)
+            //    alert(currentlySelectedValue);
+            e.model.set('TeamID', currentlySelectedValue);
+    }
+    function onDataBound() {
+
+    }
+
+</script>

@@ -1,0 +1,871 @@
+﻿@model Ticker.Data.Group
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+    <div class="page">
+        @*    <link href="/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/kendo/2013.1.514/kendo.common.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/kendo/2013.1.514/kendo.dataviz.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/kendo/2013.1.514/kendo.metroblack.min.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/kendo/2013.1.514/kendo.dataviz.metroblack.min.css" rel="stylesheet" type="text/css" />
+    <script src="/Scripts/kendo/2013.1.514/jquery.min.js"></script>
+    <script src="/Scripts/kendo/2013.1.514/kendo.all.min.js"></script>
+    <script src="/Scripts/kendo/2013.1.514/kendo.aspnetmvc.min.js"></script>
+    <script src="/Scripts/kendo.modernizr.custom.js"></script>*@
+        @if (Model == null)
+        {
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    //$("#winEditor").data("kendoWindow").close();
+                    ClosePopupandRefresh('#winEditor');
+                });
+            </script>
+        }
+        <script type="text/javascript">
+
+            $(document).ready(function ()
+            {
+                var ddlRipGameStatusType = $("#ddlRipGameStatusType").data("kendoDropDownList");
+                //if (RipGameStatusType!=null)
+                //    ddlRipGameStatusType.value(RipGameStatusType);
+
+                var ddlRipCount = $("#ddlRipCount").data("kendoDropDownList");
+                //if (RipCount!=null)
+                //    ddlRipCount.value(RipCount);
+            });
+
+            if (PLDLaunch==undefined || !PLDLaunch)
+            {
+                $("tr#Rips").hide();
+            }
+          
+            function onRipGameStatusTypeDataBound(e) {
+                if (PLDLaunch!=undefined && PLDLaunch)
+                {
+                    var ddlRipGameStatusType = $("#ddlRipGameStatusType").data("kendoDropDownList");
+                    ddlRipGameStatusType.value(RipGameStatusType);
+
+                }
+            }
+            function onRipCountTypeDataBound(e) {
+                if (PLDLaunch!=undefined && PLDLaunch)
+                {
+                    var ddlRipCount = $("#ddlRipCount").data("kendoDropDownList");
+                    ddlRipCount.value(RipCount);
+                }
+            }
+
+            var SportID;
+            var HomeID = null;
+            function GroupGameLeagues(e) {
+                //alert(SportID);
+                if (SportID == null)
+                    return { id: 0, sportID: 1, sort: 'Abbreviation' };
+                    //return {id: 0, sportID: 1, sort: TeamSort};
+                else
+                    return { id: 0, sportID: SportID, sort: 'Abbreviation' };
+
+            }
+            var Parent=null;
+            function onGGData(e) {
+                if (Parent==null)
+                {
+                    Parent=false;
+                    return {Group: true, cid: @Html.Raw(Model.ID)};
+            }
+            else
+            {
+                return {Group: false, cid: @Html.Raw(Model.ID)};
+            }
+        }
+        function onGroupSports(e) {
+            var ddl = $("#ddlGroupSports").data("kendoDropDownList");
+            //var dataItem =  ddl.dataItem(e.item.index());
+            SportID = ddl.value();//dataItem.value;
+            // alert('1');
+            var ddlTeam = $("#ddlGroupTeam").data("kendoDropDownList");
+            ddlTeam.dataSource.read();
+            ddlTeam.dataSource.sync();
+            //alert('2');
+        }
+        var RanOnce=false;
+        function onGroupTeamDataBound(e) {
+            if (!RanOnce)
+            {
+                var ddlGroupTeam = $("#ddlGroupTeam").data("kendoDropDownList");
+                ddlGroupTeam.value("@Html.Raw(Model.TeamID)");
+                RanOnce = true;
+            }
+        }
+        function GGRefresh()
+        {
+            Parent=null;
+            $("#tvGG").data().kendoTreeView.dataSource.read();
+            expandAll($("#tvGG").data("kendoTreeView"));
+        }
+        
+        function onGGRequestEnd(e) {
+            alert("yes");
+            if (e.response!=undefined)
+                for (var r=0; r < e.response.length; r++)
+                    $.ajax
+                      ({
+                          //"cache": "false",
+                          "type": "GET",
+                          async: false,
+                          'url': DataHiveUrl + "results/" + e.response[r].HivePrefix + "/" + e.response[r].HiveID,
+                          "contentType": "application/json;charset=utf-8",
+                          'success': function (data, status, jxhr) {
+                              try {
+                                  e.response[r].Name = data.VisitorTeamAlias + " @@ " + data.HomeTeamAlias
+                              } catch (err) { }
+                          }, 'error': function (jxhr, status, thrown) {
+                              try {
+                                  if (e.response[r].HiveID!=undefined)
+                                      e.response[r].Name = "Error obtaining data.";
+                                  // if (!isIE || isDebugMode) {
+                                  //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                  //                            console.log(jxhr);
+                                  //                            console.log(status);
+                                  //                            console.log(thrown);
+                                  //  }
+                              } catch (err) { }
+                          }, 'complete': function (data, status) {
+                              
+                              // if (!isIE || isDebugMode) {
+                              //                        console.log(data);
+                              //                        console.log(status);
+                              //  }
+                          }, 'statusCode': {
+                              404: function () {
+                                  
+                                  //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                              }
+                          }
+                      });
+        }
+        function onGGDHGamesRequestEnd(e) {
+            alert("end");
+            if (!GGDHLeagueChange) return;
+            for (var r=0; r < e.response.length; r++)
+            {
+                
+                if (e.response[r].VisitorTeamAlias==null || e.response[r].HomeTeamAlias==null)
+                    e.response[r].Name= e.response[r].VisitorTeamName.toUpperCase() + " @@ " + e.response[r].HomeTeamName.toUpperCase();
+                else
+                    e.response[r].Name= e.response[r].VisitorTeamAlias.toUpperCase() + " @@ " + e.response[r].HomeTeamAlias.toUpperCase();
+
+                //line below shows carret if gamehivenote exists
+         /*       $.ajax
+                    ({
+                        //"cache": "false",
+                        "type": "GET",
+                        async: false,
+                        'url': "/api/GameHiveNote/?useGrid=True&CorrelationId=" + e.response[r].CorrelationId,
+                        "contentType": "application/json;charset=utf-8",
+                        'success': function (data, status, jxhr) {
+                            try {
+                                e.response[r].hasChildren = data.Total>0;
+                            } catch (err) { }
+                        }, 'error': function (jxhr, status, thrown) {
+                            try {
+                            } catch (err) { }
+                        }, 'complete': function (data, status) {
+                        }, 'statusCode': {
+                            404: function () {
+                            }
+                        }
+                    });*/
+            }
+
+            //e.response.unshift({key: "1", fauxGame: true, Name: "Previous"});
+            //e.response.unshift({key: "0", fauxGame: true, Name: "Today"}); 
+            
+            GGDHLeagueChange=false;
+        }
+        function onGGDrop(e){
+            e.preventDefault();
+            if (e.dropPosition=="over") //! before or after
+            {
+                e.setValid(false);
+                return;
+            }
+            var treeview = $("#tvGG").data("kendoTreeView");
+
+
+            e.preventDefault();
+            if (e.dropPosition=="over") //! before or after
+            {
+                e.setValid(false);
+                return;
+            }
+            var treeview = $("#tvGG").data("kendoTreeView");
+       
+            var nodes = treeview.dataSource.view()[0].children.view();
+           
+            //if (arrIDs.length==0)
+            //{
+            //    for (var i = 0; i < nodes.length; i++)
+            //        arrIDs.push(nodes[i].ID);
+            //}
+           
+            var SortOrder = 0;
+            var newRank = this.dataItem(e.destinationNode).SortOrder;
+            var oldRank = this.dataItem(e.sourceNode).SortOrder;
+            if (newRank > oldRank) newRank++;
+
+            //var arrIds = [];
+            
+            //for (var i = 0; i < nodes.length-1; i++)
+            //    if (nodes[i].SortOrder < newRank && nodes[i].ID != this.dataItem(e.sourceNode).ID)
+            //        arrIds.push(i);
+       
+            GGRefresh();
+
+            //$("#tvPlaylistDetails").data("kendoTreeView").collapse(".k-item");
+            //setTimeout(function () {$("#tvPlaylistDetails").data("kendoTreeView").expand(".k-item");},500);
+            //setInterval(Reorder(e.sourceNode, this.dataItem(e.destinationNode).SortOrder),500);
+
+            //alert( treeview.dataItem(e.sourceNode).ID );
+            $.ajax
+               ({
+                   "type": "PUT",
+                   //async: true,
+                   'url': "/api/GroupGame" + "?id=" + treeview.dataItem(e.sourceNode).ID + "&SortOrder="+ this.dataItem(e.destinationNode).SortOrder,
+                   'accepts': "application/json",
+                   'contentType': "application/json",
+                   'dataType': 'json',
+                   'global': false,
+                   'data': '',
+                   'success': function (data, status, jxhr) {
+                       try {
+                       } catch (err) { }
+                   }, 'error': function (jxhr, status, thrown) {
+                       try {
+                           e.preventDefault();
+                       } catch (err) { }
+                   }, 'complete': function (data, status) {
+                       e.preventDefault();
+                   }, 'statusCode': {
+                       404: function () {
+                           e.preventDefault();
+                       }
+                   }
+               });
+
+            
+        }
+        
+        function onGGDropAppend(e){
+            e.preventDefault();
+            var treeview = $("#tvGG").data("kendoTreeView");
+
+            //var ddl = $("#ddlGGDHLeagues").data("kendoDropDownList");
+            
+            Sport = $("#ddlGGDHLeagues").data("kendoDropDownList").value();
+            var item = this.dataItem(e.sourceNode);
+
+            var SortOrder = $("#tvGG").data("kendoTreeView").dataItem(e.destinationNode).SortOrder;
+            if (SortOrder == undefined)
+                SortOrder=0;
+
+            
+            jsonData = '{ "GroupID": "@Html.Raw(Model.ID)", "HiveID": "' + item.CorrelationId + '", "SportID": "' + GetSportID(Sport) + '", "SortOrder": "' +  SortOrder + '","SDMLeagueCode": "' + Sport + '"  }';
+            $.ajax
+               ({
+                   "type": "POST",
+                   //async: true,
+                   'url': "/api/GroupGame",
+                   'accepts': "application/json",
+                   'contentType': "application/json",
+                   'dataType': 'json',
+                   'global': false,
+                   'data': jsonData,
+                   'success': function (data, status, jxhr) {
+                       try {
+                           var newItem = { id: data.Data[0].ID, HiveID: item.CorrelationId, Name: "", SortOrder: treeview.dataSource.view()[0].children.view().length };
+                               
+                           var node = treeview.append(newItem, $(e.destinationNode));
+                           var model = treeview.dataItem(foundNode);
+                       } catch (err) { }
+                   }, 'error': function (jxhr, status, thrown) {
+                       try {
+                           // if (!isIE || isDebugMode) {
+                           //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                           //                            console.log(jxhr);
+                           //                            console.log(status);
+                           //                            console.log(thrown);
+                           //  }
+                       } catch (err) { }
+                   }, 'complete': function (data, status) {
+                       // if (!isIE || isDebugMode) {
+                       //                        console.log(data);
+                       //                        console.log(status);
+                       //  }
+                   }, 'statusCode': {
+                       404: function () {
+                           //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                       }
+                   }
+               });
+
+
+            GGRefresh();
+
+        }
+     
+        $("#tvGG").on("keyup", function (e) {
+            if (e.keyCode == 46) { //delete node from tree
+                var treeview = $("#tvGG").data("kendoTreeView");
+                var dataItem = treeview.dataItem(treeview.select());
+                $.ajax
+                   ({
+                       //"cache": "false",
+                       "type": "DELETE",
+                       //async: true,
+                       'url': "/api/GroupGame/" + dataItem.ID,
+                       "contentType": "application/json;charset=utf-8",
+                       //'accepts': "application/json",
+                       //'contentType': "application/json",
+                       //'dataType': 'json',
+                       //'global': false,
+                       //'data': jsonData,
+                       'success': function (data, status, jxhr) {
+                           try {
+                               // if (!isIE || isDebugMode) {
+                               //                            console.log("OnProgressHandler.FileTransferStatus Update succeeded...");
+                               //                            console.log(data);
+                               // }
+                           } catch (err) { }
+                       }, 'error': function (jxhr, status, thrown) {
+                           try {
+                               // if (!isIE || isDebugMode) {
+                               //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                               //                            console.log(jxhr);
+                               //                            console.log(status);
+                               //                            console.log(thrown);
+                               //  }
+                           } catch (err) { }
+                       }, 'complete': function (data, status) {
+                           // if (!isIE || isDebugMode) {
+                           //                        console.log(data);
+                           //                        console.log(status);
+                           //  }
+                       }, 'statusCode': {
+                           404: function () {
+                               //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                           }
+                       }
+                   });
+
+                var treeview = $("#tvGG").data("kendoTreeView");
+                treeview.remove(treeview.select());
+                //gatherStates(treeview.dataSource.view());
+                        
+                //treeview.dataSource.read();
+                //treeview.dataSource.sync();
+
+            }
+        });
+        </script>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+    
+            <fieldset>
+                @*            <legend>Group</legend>*@
+
+                @Html.HiddenFor(model => model.ID)
+                @Html.HiddenFor(model => model.ClientID)
+                @Html.HiddenFor(model => model.CreatedName)
+                @Html.HiddenFor(model => model.Type)
+                @Html.HiddenFor(model => model.Editable)
+                @Html.HiddenFor(model => model.TeamID)
+                @Html.HiddenFor(model => model.GroupAnimationTypeID)
+
+                <table border="0" width="100%">
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.Name)
+                            </div>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.Name)
+                                @Html.ValidationMessageFor(model => model.Name)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.OnAirName)
+                            </div>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.OnAirName)
+                                @Html.ValidationMessageFor(model => model.OnAirName)
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr id="Rips">
+                        <td>
+                            <div class="editor-label">
+                                Rip Type
+                            </div>
+                            <div class="editor-field">
+                                @(Html.Kendo().DropDownList()
+        .Name("ddlRipGameStatusType")
+        .Events(e => e.DataBound("onRipGameStatusTypeDataBound"))
+        .DataValueField("ID")
+        .DataTextField("Description")
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url("/api/GameStatus/").Type(HttpVerbs.Get))
+        )
+            .Value(Model.Type)
+)
+                            </div>
+                        </td>
+@*                        <td>
+                            <div class="editor-label">
+                                Rip Count
+                            </div>
+                            <div class="editor-field">
+                                @(Html.Kendo().DropDownList()
+          .Name("ddlRipCount")
+          .Events(e => e.DataBound("onRipCountTypeDataBound"))
+          .BindTo(new List<string>() {
+              "0",
+              "1",
+              "2",
+          })
+    )
+                            </div>
+                        </td>*@
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <br />
+                            <br />
+                            <input type="submit" class="k-button" value="Save" style="background-color: #00aba9" />
+                        </td>
+                    </tr>
+                    @*  <tr>
+
+                    <td>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.LastUpdated)
+                        </div>
+                        <div class="editor-field">
+                            @Html.TextBoxFor(model => model.LastUpdated, new { disabled = "disabled", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.LastUpdated)
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>*@
+                </table>
+            </fieldset>
+        }
+        <script type="text/javascript">
+            $('form').submit(function (e) {
+                e.preventDefault();
+
+                //post PLD info first
+                if (PLDLaunch!=undefined && PLDLaunch)
+                {
+                    var ddlRipGameStatusType = $("#ddlRipGameStatusType").data("kendoDropDownList");
+                    ripGameStatusType = ddlRipGameStatusType.value();
+                    //var ripGameStatusType = 0;
+
+                    //var ddlRipCount = $("#ddlRipCount").data("kendoDropDownList");
+                    var ripCount = 0;//ddlRipCount.value();
+
+                    if (ripGameStatusType!=1)
+                        ripCount=1;
+
+                    $.ajax
+             ({
+                 "type": "PUT",
+                 async: false,
+                 'url': "/api/PlaylistDetail" + "?id=" + PlaylistDetailID + "&RipCount="+ ripCount + "&NotesTypeID=" + ripGameStatusType,
+                 'accepts': "application/json",
+                 'contentType': "application/json",
+                 'dataType': 'json',
+                 'global': false,
+                 'data': '',
+                 'success': function (data, status, jxhr) {
+                     try {
+                     } catch (err) { }
+                 }, 'error': function (jxhr, status, thrown) {
+                     try {
+                         e.preventDefault();
+                     } catch (err) { }
+                 }, 'complete': function (data, status) {
+                     e.preventDefault();
+                 }, 'statusCode': {
+                     404: function () {
+                         e.preventDefault();
+                     }
+                 }
+             });
+                }
+
+                //post via ajax so action can continue and close form via js.
+                $.post(this.action, $(this).serialize(), function (response) {
+                    if (response.error) {
+                        alert(response.error);
+                    }
+                    else {
+                        ClosePopupandRefresh('#winEditor');
+                        //setTimeout(function () { ClosePopupandRefresh('#winEditor'); }, 500);
+
+                        //wnd.close();
+                    }
+                }, 'json');
+            });
+
+            //function onDataBound(e) {
+            //    //alert('y');
+            //    $(".k-grid-Up span").addClass("k-icon k-i-arrow-n");
+            //    //$(".k-grid-Up span").width(15);
+            //    $(".k-grid-Down span").addClass("k-icon k-i-arrow-s");
+            //    //$(".k-grid-Down span").width(15);
+            //}
+            var TeamID;
+            function onEdit(e) {
+                //check if model is new
+                if (e.model.isNew()) {
+                    //Find parent grid current row
+                    //parentRow = $(e.container).closest(".k-detail-row").prev();
+                    ////find parent grid
+                    //grid = parentRow.closest("[data-role=grid]").data("kendoGrid");
+                    ////get the parent grid row DataItem
+                    //parentDataItem = grid.dataItem(parentRow);
+
+                    //if (parentDataItem.id == 0) {
+                    //    grid.saveRow();
+                    //    grid.one("dataBound", function (e) {
+                    //        e.sender.expandRow(e.sender.tbody.find("tr:first"));
+                    //    })
+                    //    //grid.expandRow(grid.tbody.find(">tr.k-master-row:nth-child(1)"));
+                    //    //alert("Please click Update on parent row to save changes first.");
+                    //}
+                    //else {
+                    //set the parent grid dataItem field value to current ForeignKeyColumn field
+                    e.model.set("GroupID", '@Html.Raw(Model.ID)');
+                //}
+            }
+            else {
+                TeamID = e.model.get('TeamID');
+            }
+        }
+
+        function onSave(e) {
+
+            //get the currently selected value from the DDL
+            //var currentlySelectedValue = $(e.container.find('[data-role=dropdownlist]')[0]).data().kendoDropDownList.value();
+
+            var ddlTeam = $("#ddlEditorTeam").data("kendoDropDownList");
+            var currentlySelectedValue = ddlTeam.value();
+
+            if (currentlySelectedValue == 0)
+                currentlySelectedValue = null;
+
+            //If current value is null
+            if (e.model.SortOrder==null) {
+                //set the value to the model
+                e.model.set("SortOrder", $("#Notes").data("kendoGrid").dataSource.data().length);
+            }
+
+            e.model.TeamID = 0;
+            //e.model.set("GroupID", '@Html.Raw(Model.ID)');
+            e.model.set('TeamID', currentlySelectedValue);
+            
+            e.model.set('Note1', e.model.get('NoteColor'));
+
+            e.model.set('UserID', @HttpContext.Current.Session["UserID"].ToString() );
+
+            //$("#Notes").data("kendoGrid").dataSource.read();
+            //$("#Notes").data("kendoGrid").dataSource.sync();
+        }
+        function onRequestEnd(e) {
+            if (e.type=="create")
+                $("#Notes").data("kendoGrid").dataSource.read();
+        }
+        function noteMoveUp(e) {
+            MoveNote(this.dataItem($(e.currentTarget).closest("tr")), -1);
+        }
+        function noteMoveDown(e) {
+            MoveNote(this.dataItem($(e.currentTarget).closest("tr")), 1);
+        }
+        function MoveNote(dataItem, newSortOrder)
+        {
+            $.ajax
+           ({
+               "type": "PUT",
+               //async: true,
+               'url': "/api/Note" + "?id=" + dataItem.ID + "&ParentID=" + dataItem.GroupID + "&ObjectType=GroupNote&SortOrder="+ parseInt(dataItem.SortOrder + newSortOrder),
+               'accepts': "application/json",
+               'contentType': "application/json",
+               'dataType': 'json',
+               'global': false,
+               'data': '',
+               'success': function (data, status, jxhr) {
+                   try {
+                   } catch (err) { }
+               }, 'error': function (jxhr, status, thrown) {
+                   try {
+                       
+                   } catch (err) { }
+               }, 'complete': function (data, status) {
+                   $("#Notes").data("kendoGrid").dataSource.read();
+               }, 'statusCode': {
+                   404: function () {
+                       
+                   }
+               }
+           });
+        }
+        var userCollection;
+
+        function onNotesDataBound(e) {
+            $(".k-grid-Up span").addClass("k-icon k-si-arrow-n");
+            $(".k-grid-Up").width(15);
+            $(".k-grid-Down span").addClass("k-icon k-si-arrow-s");
+            $(".k-grid-Down").width(15);
+        }
+
+        function getUserNameByID(data) {
+            if (!userCollection)
+                userCollection = { };
+            
+            if (data == 0)
+                userCollection[data]= 'unknown';
+
+            if (userCollection[data]==undefined)
+                if (data!="0") //don't check on 'blank' users
+                    $.ajax
+                       ({
+                           "type": "GET",
+                           async: false,//true,
+                           'url': "/api/Users/" + data,
+                           "contentType": "application/json;charset=utf-8",
+                           'success': function (adata, status, jxhr) {
+                               try {
+                                   userCollection[data]= adata.FirstName + ' ' + adata.LastName;
+                               } catch (err) { }
+                           }, 'error': function (jxhr, status, thrown) {
+                               try {
+                                   // if (!isIE || isDebugMode) {
+                                   //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                   //                            console.log(jxhr);
+                                   //                            console.log(status);
+                                   //                            console.log(thrown);
+                                   //  }
+                               } catch (err) { }
+                           }, 'complete': function (adata, status) {
+                               // if (!isIE || isDebugMode) {
+                               //                        console.log(data);
+                               //                        console.log(status);
+                               //  }
+                           }, 'statusCode': {
+                               404: function () {
+                                   //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                               }
+                           }
+                       });
+            return userCollection[data];
+        }
+
+        function onGGDataBound(e){
+            expandAll($("#tvGG").data("kendoTreeView"));
+        }
+
+        var GGDHLeague;
+        var GGDHLeagueChange;
+        var GGGamesPrevious = false;
+
+        function onGGGamesPrevious() {
+            GGGamesPrevious=!GGGamesPrevious; 
+            GGDHLeagueRefresh();
+        }
+        function onGGDHLeagues(e) {
+            GGDHLeagueRefresh();
+        }
+
+        function GGDHLeagueRefresh() {
+            var ddl = $("#ddlGGDHLeagues").data("kendoDropDownList");
+            GGDHLeague = ddl.value();
+            GGDHLeagueChange = true;
+
+            var serviceRoot = DataHiveUrl + "results/";
+            notes = new kendo.data.HierarchicalDataSource({
+                transport: {
+                    read: {
+                        url:  "/api/GameHiveNote/",
+                        dataType: "json"
+                    }
+                },
+                schema: {
+                    data: "notes",
+                    model: {
+                        hasChildren: false
+                    }
+                }
+            }); 
+            var Today="/today";
+            var SportType; 
+
+            if (GGDHLeague!=undefined)
+            {
+                SportType = GetSportType(GGDHLeague);
+                if (GGDHLeague=="NFL" || SportType.indexOf("Racing")!=-1 || GGDHLeague=="CFB")
+                    Today="/CurrentWeek";
+            }
+
+            //if (GGDHLeague!=undefined)
+            //    if (GGDHLeague=="NFL" || GGDHLeague.indexOf("NASCAR")!=-1)
+            //    Today="/CurrentWeek";
+
+            if (GGGamesPrevious)
+                Today="/yesterday";
+
+            var url='';
+            if (GGDHLeague=='CBK' || GGDHLeague=='WCBK')
+                url = serviceRoot + GGDHLeague + Today + '/summary';//?$select=CorrelationId,VisitorTeamName,HomeTeamName,VisitorTeamAlias,HomeTeamAlias,League,HomeSeed,VisitorSeed';
+            else
+                url = serviceRoot + GGDHLeague + Today;
+
+            homogeneous = new kendo.data.HierarchicalDataSource({
+                transport: {
+                    read: {
+                        url: url
+                    }
+                },
+                requestEnd: onGGDHGamesRequestEnd,
+                schema: {
+                    model: {
+                        id: "CorrelationId",
+                        expanded: true,
+                        children: {
+                            transport: {
+                                read: {
+                                    url:  "/api/GameHiveNote/",
+                                    dataType: "json"
+                                }
+                            },
+                            schema: {
+                                model: {
+                                    hasChildren: false
+                                }
+                            }
+                        }                
+                    }
+                }
+            });
+        
+
+            if ($("#tvGGDHGames").data("kendoTreeView")!=undefined)
+            {
+                var treeview = $("#tvGGDHGames").data("kendoTreeView");
+                treeview.setDataSource(homogeneous);
+
+                @*var treeview = $("#tvGGDHGames").data("kendoTreeView");
+                treeview.setDataSource(new kendo.data.HierarchicalDataSource({
+                    transport: {
+                        read: {
+                            url: url, //serviceRoot + DHLeague + Today,
+                        }
+                    },
+                    requestEnd: onGGDHGamesRequestEnd,
+                    schema: {
+                        model: {
+                            id: "CorrelationId",
+                            //hasChildren: true,
+                            expanded: true,
+                            children: {
+                                transport: {
+                                    read: {
+                                        url:  "/api/GameHiveNote/",
+                                        dataType: "json",
+                                        data: {ClientID: '@ViewData["ClientID"]' }
+                                    }
+                                },
+                                schema: {
+                                    //data: "notes",
+                                    model: {
+                                        hasChildren: false
+                                    }
+                                }
+                            }                
+                        }
+                    }  
+                }));*@
+            }
+            else
+            {
+                var ktv = $("#tvGGDHGames").kendoTreeView({
+                    dataSource: homogeneous,
+                    dragAndDrop: true,
+                    drop: onGGDropAppend,
+                    dataTextField: ["Name", "NoteColor"]
+                });    
+            }
+        }
+
+
+        </script>
+
+        <div id="wrapper" style="width: 100%;">
+            <div id="leftGroup" style="background-color: #0e0e0e; float: left; width: 53%; margin: 20px; padding: 20px; -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07); -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07); box-shadow: 0 1px 2px rgba(0,0,0,0.45), inner 0 0 30px rgba(0,0,0,0.07); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; display: block;">
+                <div class="editor-label">
+                    Game Group
+                </div>
+                <br />
+                @(Html.Kendo().TreeView()
+    .Name("tvGG")
+    .DragAndDrop(true)
+    .Events(e => e.Drop("onGGDrop"))
+    .Events(e => e.DataBound("onGGDataBound"))
+    .DataSource(dataSource =>
+    {
+        dataSource.Read(read => read.Url("/api/GroupGame/").Data("onGGData")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414);
+        dataSource.Events(e => e.RequestEnd("onGGRequestEnd"));
+    })
+    .Template("<span title='#:item.Note#'>#:item.Name#</span>")//<script type='text/javascript'>if ('#:item.Type#'=='DataHive') alert '#:item.OnAirName#';</script>#:item.OnAirName#
+    .HtmlAttributes(new { style = "height: 575px;" })
+    .DataTextField("Name")
+    .ExpandAll(true)
+    )
+            </div>
+            <div id="rightGroup" style="background-color: #0e0e0e; float: left; width: 33%; margin: 20px; padding: 20px; -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07); -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07); box-shadow: 0 1px 2px rgba(0,0,0,0.45), inner 0 0 30px rgba(0,0,0,0.07); -webkit-border-radius: 8px; -moz-border-radius: 8px; border-radius: 8px; display: block;">
+                <div class="editor-label">
+                    Games
+                </div>
+                <p>Previous
+                <input type="checkbox" class="k-checkbox" name="chkGGGamesPrevious" id="chkGGGamesPrevious" onclick="onGGGamesPrevious();">
+                </p>
+                @(Html.Kendo().DropDownList()
+        .Name("ddlGGDHLeagues")
+                        //.DataTextField("string")
+        .Events(e => e.Change("onGGDHLeagues"))
+                        //.DataValueField("string")
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["DataHiveUrl"] + "base/leagues").Type(HttpVerbs.Get))
+        )
+)
+                <div id="tvGGDHGames" style="color: #82CAFF; height: 521px;"></div>
+            </div>
+        </div>
+</body>
+</html>

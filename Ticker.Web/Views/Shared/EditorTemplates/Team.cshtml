@@ -1,0 +1,164 @@
+﻿@model string
+
+<script type="text/javascript">
+
+    var SportID;
+    var SportChanged;
+    var TeamChanged;
+    function onTeamEditorSportsSelected(e) {
+        SportChanged = false;
+    }
+    function onTeamEditorTeamSelected(e) {
+        TeamChanged = false;
+    }
+    function TeamEditorGameLeagues(e) {
+        if (HomeID != null)
+            if (TeamID != undefined)
+                return { id: TeamID, sort: 'FromTeam', HomeID: HomeID, VisitorID: VisitorID };
+            else
+                return { id: 0, sort: 'FromTeam', HomeID: HomeID, VisitorID: VisitorID };
+        else if (SportID == null)
+            return { id: TeamID, sportID: 0, sort: 'FromTeam' };
+            //return {id: 0, sportID: 1, sort: TeamSort};
+        else
+            return { id: 0, sportID: SportID, sort: 'CityName' };
+
+    }
+    function onTeamEditorSports(e) {
+        if (SportChanged || TeamChanged)
+            return;
+        
+        SportChanged = true;
+        SportID = 0;
+        var ddl = $("#ddlEditorSports").data("kendoDropDownList");
+        SportID = ddl.value();//dataItem.value;
+        var ddlTeam = $("#ddlEditorTeam").data("kendoDropDownList");
+        ddlTeam.dataSource.read();
+        ddlTeam.dataSource.sync();
+
+        ddlTeam.list.width(200);
+    }
+    function onEditorTeamDataBound(e) {
+        if (SportID !=null && (SportChanged || TeamChanged))
+            return;
+
+        var ddlTeam = $("#ddlEditorTeam").data("kendoDropDownList");
+        ddlTeam.value(TeamID);
+       // alert(TeamID);
+        $.ajax
+               ({
+                   //"cache": "false",
+                   "type": "GET",
+                   //async: true,
+                   'url': "/api/Sport/0?teamID=" + TeamID,
+                   "contentType": "application/json;charset=utf-8",
+                   'success': function (data, status, jxhr) {
+                       try {
+                           //SportID = data.ID;
+                           //if (SportChanged)
+                           //    return;
+                           
+                           var ddl = $("#ddlEditorSports").data("kendoDropDownList");
+                           SportID = data.ID;
+                           ddl.value(SportID);//dataItem.value;
+                           
+                           ddlTeam.dataSource.read();
+                           ddlTeam.dataSource.sync();
+                           ddlTeam.list.width(200);
+
+                           SportChanged = true;
+
+                           //                            console.log("OnProgressHandler.FileTransferStatus Update succeeded...");
+                           //                            console.log(data);
+                           // }
+                       } catch (err) { }
+                   }, 'error': function (jxhr, status, thrown) {
+                       try {
+                           // if (!isIE || isDebugMode) {
+                           //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                           //                            console.log(jxhr);
+                           //                            console.log(status);
+                           //                            console.log(thrown);
+                           //  }
+                       } catch (err) { }
+                   }, 'complete': function (data, status) {
+                       // if (!isIE || isDebugMode) {
+                       //                        console.log(data);
+                       //                        console.log(status);
+                       //  }
+                   }, 'statusCode': {
+                       404: function () {
+                           //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                       }
+                   }
+               });
+    }
+    $(document).ready(function () {
+        SportChanged = false;
+        TeamChanged = false;
+        SportID = null;
+
+        if (HomeID != null)
+            $("#divEditorSports").hide();
+    });
+
+</script>
+<div id="divEditorSports">
+@(Html.Kendo().DropDownList()
+        .Name("ddlEditorSports")
+        .DataTextField("ShortDisplay")
+        .Events(e => e.Change("onTeamEditorSports"))
+        .Events(e => e.Select("onTeamEditorSportsSelected"))
+        .DataValueField("ID")
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url("/api/Sport").Type(HttpVerbs.Get))
+        )
+        //        .Value("1")
+)
+</div>
+<div>
+    <input id="ddlEditorTeam" value="1" style="width: 100%;" />
+<script>
+   //debugger;
+    if ( bolGroupEditor == false) {
+        var teamsparam = VisitorTeamAlias + '^' + HomeTeamAlias;
+        $("#ddlEditorTeam").kendoDropDownList({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            dataSource: {
+                transport: {
+                    read: {
+                        dataType: "json",
+                        url: "/api/Team/" + teamsparam + "/" + DHLeague,
+                    }
+                }
+            },
+            select: onTeamEditorTeamSelected,
+            // change: onChange,
+            // close: onClose,
+            //  open: onOpen,
+            //  filtering: onFiltering,
+            dataBound: onEditorTeamDataBound
+        });
+    }
+    else {
+       // $("#ddlEditorSports").hide();
+        $("#ddlEditorTeam").kendoDropDownList({
+            dataTextField: "Name",
+            dataValueField: "ID",
+            dataSource: {
+               
+            },
+            select: onTeamEditorTeamSelected,
+            // change: onChange,
+            // close: onClose,
+            //  open: onOpen,
+            //  filtering: onFiltering,
+            dataBound: onEditorTeamDataBound
+        });
+
+    }
+
+</script>
+
+</div>

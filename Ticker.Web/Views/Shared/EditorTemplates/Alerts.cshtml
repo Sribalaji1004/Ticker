@@ -1,0 +1,12 @@
+﻿@using Kendo.Mvc.UI
+@using System.Collections
+
+@(Html.Kendo().DropDownListFor(m => m)
+                              .BindTo((System.Collections.IEnumerable)System.Web.HttpContext.Current.Application["BreakingNewsTypes"])
+                              //.OptionLabel("Select a value...")
+                              .DataTextField("Description")
+                              .DataValueField("ID")
+                              .Events(e => e.Change("onBreakingTypeChange"))
+               
+)
+

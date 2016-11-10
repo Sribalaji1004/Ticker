@@ -1,0 +1,50 @@
+﻿@model string
+<script>
+    function onPaste(e) {
+        var editor = $(document.getElementById("noteEditor")).data("kendoEditor");
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = e.html;
+        e.html = tmp.textContent || tmp.innerText || "";
+    }
+    function onKeyDown(e) {
+        //var editor = $(document.getElementById("noteEditor")).data("kendoEditor");
+        //editor.paste(editor.value());
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    }
+</script>
+@(
+ Html.Kendo().EditorFor(m => m)
+    .Tools(tools => tools
+       .Clear()
+       .CustomTemplate(ct => ct.Template("<select id='templateTool'><option value='WHITE'>White</option><option value='BLACK'>Black</option><option value='YELLOW'>Yellow</option><option value='RED'>Red</option><option value='BLUE'>Blue</option><option value='GREEN'>Green</option></select>"))
+      )
+    .StyleSheets(s => s.Add(Url.Content("~/Content/NoteEditorStyles.css")))
+    .HtmlAttributes(new { id = "noteEditor" })
+    .Events(e => e.Paste("onPaste"))
+    .Events(e => e.KeyDown("onKeyDown"))
+)
+<script>
+    //kendo.ui.Editor.defaultTools.insertLineBreak.options.key = 500;
+    //kendo.ui.Editor.defaultTools.insertParagraph.options.key = 500;
+
+    //var editor = $(document.getElementById("noteEditor")).data("kendoEditor");
+    
+    
+    //editor.tools.insertLineBreak.options.shift = false;
+    //editor.tools.insertParagraph.options.shift = true;
+    //editor.insertLineBreak.options.key = 500;
+    //editor.insertParagraph.options.key = 500;
+
+    $(document).ready(function () {
+        $(document.getElementById("templateTool")).kendoDropDownList({
+            change: function (e) {
+                //alert("<span style='color:" + e.sender.value() + ";'>" + editor.getSelection() + "</span>");
+                var editor = $(document.getElementById("noteEditor")).data("kendoEditor");
+                editor.paste("<span style='color:" + e.sender.value() + ";'>" + editor.getSelection() + "</span>");
+                editor.trigger("change");
+            }
+        });
+    });
+</script>

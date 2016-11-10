@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "Breaking News";
+}
+<div style="clear: both" />
+<script type="text/javascript">
+    function TypeRefresh() {
+        var p = $("#BreakingNews").data("kendoGrid");
+        p.dataSource.read();
+        p.dataSource.sync();
+    }
+</script>
+@(
+ Html.Kendo().Grid<Ticker.Data.BreakingNew>()
+    .Name("BreakingNews")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        columns.Bound(o => o.Note);
+        columns.Bound(o => o.OnAirName);
+        columns.Bound(o => o.Subject);
+        columns.Command(c =>
+        {
+            c.Edit();
+            //c.Destroy();
+        });
+        columns.Bound(o => o.Enabled).Title("").ClientTemplate(
+            "# if (Enabled) { # <button class='k-button' id='Enabled#=ID#' onclick='EnableType(#=ID#, false);'>Disable</button> # } else { # <button class='k-button' id='Enabled#=ID#' onclick='EnableType(#=ID#, true);'>Enable</button> # } #"
+     );
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Breaking News");
+            })
+        //.Sortable()
+    .Events(e => e.Edit("onEdit"))
+        //.Events(events => events.DataBound("onDataBound"))
+        //.Events(events => events.DetailInit("onDetailInit"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.Note).DefaultValue(string.Empty);
+                model.Field(g => g.OnAirName).DefaultValue(string.Empty);
+                model.Field(g => g.Subject).DefaultValue(string.Empty);
+                model.Field(g => g.Enabled).DefaultValue(true).Editable(false);
+            })
+        .Read(read => read.Url("/api/BreakingNew/").Type(HttpVerbs.Get)) //3907 //1154 - twitter // //3414
+        .Create(create => create.Url("/api/BreakingNew").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/BreakingNew").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/BreakingNew").Type(HttpVerbs.Delete))
+     )
+        //.Editable(ed=>ed.Mode(GridEditMode.PopUp).TemplateName("z"))  
+
+)
+<script type="text/javascript">
+    $(function () {
+
+        var grid = $("#BreakingNews").data("kendoGrid");
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. PUT /api/Product/80
+        grid.dataSource.transport.options.update.url = function (data) {
+            return "/api/BreakingNews/" + data.ID;
+        }
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE /api/Product/80
+        grid.dataSource.transport.options.destroy.url = function (data) {
+            return "/api/BreakingNews/" + data.ID;
+        }
+
+    });
+        function onEdit(e) {
+            e.container.find("input[name=Description]").attr("maxlength", 50);
+        }
+       
+        function EnableType(e, enabled) {
+            $.ajax
+               ({
+                   //"cache": "false",
+                   "type": "PUT",
+                   async: false,
+                   'url': "/api/BreakingNew/?id=" + e + "&Enabled=" + enabled,
+                   "contentType": "application/json;charset=utf-8",
+                   //'accepts': "application/json",
+                   //'contentType': "application/json",
+                   //'dataType': 'json',
+                   //'global': false,
+                   //'data': jsonData,
+                   'success': function (data, status, jxhr) {
+                       try {
+                           // if (!isIE || isDebugMode) {
+                           //                            console.log("OnProgressHandler.FileTransferStatus Update succeeded...");
+                           //                            console.log(data);
+                           // }
+                       } catch (err) { }
+                   }, 'error': function (jxhr, status, thrown) {
+                       try {
+                           // if (!isIE || isDebugMode) {
+                           //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                           //                            console.log(jxhr);
+                           //                            console.log(status);
+                           //                            console.log(thrown);
+                           //  }
+                       } catch (err) { }
+                   }, 'complete': function (data, status) {
+                       // if (!isIE || isDebugMode) {
+                       //                        console.log(data);
+                       //                        console.log(status);
+                       //  }
+                   }, 'statusCode': {
+                       404: function () {
+                           //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                       }
+                   }
+               });
+            TypeRefresh();
+        }
+</script>
+

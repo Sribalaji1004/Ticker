@@ -1,0 +1,98 @@
+﻿@model Ticker.Data.Group
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <fieldset>
+        <legend>Group</legend>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.ClientID)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.ClientID)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Name)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Name)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.OnAirName)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.OnAirName)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.CreatedName)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.CreatedName)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Type)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Type)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.TeamID)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.TeamID)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Header)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Header)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.GroupAnimationTypeID)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.GroupAnimationTypeID)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.Editable)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Editable)
+        </div>
+    
+        <div class="display-label">
+             @Html.DisplayNameFor(model => model.LastUpdated)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.LastUpdated)
+        </div>
+    </fieldset>
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        <p>
+            <input type="submit" value="Delete" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+    }
+
+</body>
+</html>

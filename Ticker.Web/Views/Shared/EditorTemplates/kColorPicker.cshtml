@@ -1,0 +1,7 @@
+﻿@model string
+
+@(Html.Kendo().ColorPickerFor(m => m)
+        .Name("Kcolors")
+            .Events(ke => ke.Close("on_Cancel_function"))
+        
+)

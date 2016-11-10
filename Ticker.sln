@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ticker.Data", "TickerDataEngine\Ticker.Data.csproj", "{4EF8362B-5C7A-4220-A162-EA3A5B3DD287}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ticker.Web", "Ticker.Web\Ticker.Web.csproj", "{8B303FFB-C830-459B-A112-6D09BACAFE29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0CE150D5-5054-42C2-A2DA-3C9290024060}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "StatsListBuilder", "http://localhost:51631", "{52684852-0850-4C6E-BFBE-11105ED2C91D}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_51631"
+		Debug.AspNetCompiler.PhysicalPath = "..\..\..\Users\knoor.FOXNEO\Documents\Visual Studio 2012\WebSites\StatsListBuilder\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51631\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_51631"
+		Release.AspNetCompiler.PhysicalPath = "..\..\..\Users\knoor.FOXNEO\Documents\Visual Studio 2012\WebSites\StatsListBuilder\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_51631\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "..\..\..\Users\knoor.FOXNEO\Documents\Visual Studio 2012\WebSites\StatsListBuilder\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EF8362B-5C7A-4220-A162-EA3A5B3DD287}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EF8362B-5C7A-4220-A162-EA3A5B3DD287}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EF8362B-5C7A-4220-A162-EA3A5B3DD287}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EF8362B-5C7A-4220-A162-EA3A5B3DD287}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B303FFB-C830-459B-A112-6D09BACAFE29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B303FFB-C830-459B-A112-6D09BACAFE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B303FFB-C830-459B-A112-6D09BACAFE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B303FFB-C830-459B-A112-6D09BACAFE29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52684852-0850-4C6E-BFBE-11105ED2C91D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52684852-0850-4C6E-BFBE-11105ED2C91D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52684852-0850-4C6E-BFBE-11105ED2C91D}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{52684852-0850-4C6E-BFBE-11105ED2C91D}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

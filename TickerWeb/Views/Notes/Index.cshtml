@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "Note";
+}
+
+<h2>Group</h2>
+@*@model IEnumerable<Ticker.Note>*@
+
+@(Html.Kendo().Grid<Ticker.Data.Note>()
+    .Name("Group")
+    //.Editable(e => e.Mode(GridEditMode.InCell).CreateAt(GridInsertRowPosition.Bottom))
+    .Columns(columns =>
+    {
+        //columns.Bound(p => p.id).Visible(false);
+                columns.Bound(o => o.ID).Hidden();//.Visible(false);
+                //columns.Bound(o => o.GroupID);
+                //columns.ForeignKey<
+                //columns.ForeignKey(o => o.GroupID, (System.Collections.IEnumerable)ViewData["Groups"], "ID", "Name");
+                columns.Bound(o => o.Header);//.Visible(false);
+                columns.Bound(o => o.Note1);
+                columns.Bound(o => o.Imported);
+                columns.Bound(o => o.LastUpdated).Visible(false);
+                columns.Bound(o => o.SortOrder).Visible(false);
+                columns.Bound(o => o.TeamID).Visible(false);
+                columns.Bound(o => o.UserID).Visible(false); 
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create();
+            })
+    .Sortable()
+        //.Groupable()
+    //.ClientDetailTemplateId("NotesTemplate")
+    .Events(events => events.DataBound("dataBound"))
+    .Pageable()
+    .Filterable()
+    .Scrollable()
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                //model.Field(g => g.GroupID);//.DefaultValue(;
+                //model.Field(g => g.GroupID).DefaultValue((int)"#=id#");//int.Parse("#=id#"));
+                model.Field(g => g.Header);//.DefaultValue(String.Empty);
+                model.Field(g => g.Note1).DefaultValue(String.Empty);
+                model.Field(g => g.Imported);
+                model.Field(g => g.LastUpdated);
+                model.Field(g => g.SortOrder);
+                model.Field(g => g.TeamID);
+                model.Field(g => g.UserID);
+
+            })
+         //.Read(read => read.Action("GetGroups", "Group").Type(HttpVerbs.Get))
+        .Read(read => read.Url("/api/Note").Type(HttpVerbs.Get))
+        .Create(create => create.Url("/api/Note").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Note").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Note").Type(HttpVerbs.Delete))
+     )
+
+    //.DataSource(dataSource => dataSource
+        //    .Ajax()
+        //    .Read(read => read.Url("/api/Group/") && read.Type()
+        //)
+
+)
+<script id="NotesTemplate" type="text/kendo-tmpl">
+    @(Html.Kendo().Grid<Ticker.Data.Note>()
+            .Name("GroupNotes_#=ID#")
+            //.Editable(e => e.Mode(GridEditMode.InCell).CreateAt(GridInsertRowPosition.Bottom))
+            .Columns(columns =>
+            {
+                //columns.Bound(p => p.id).Visible(false);
+                columns.Bound(o => o.ID).Hidden();//.Visible(false);
+                //columns.Bound(o => o.GroupID);
+                //columns.ForeignKey<
+                //columns.ForeignKey(o => o.GroupID, (System.Collections.IEnumerable)ViewData["Groups"], "ID", "Name");
+                //columns.Bound(o => o.Header);//.Visible(false);
+                columns.Bound(o => o.Note1);
+                //columns.Bound(o => o.SortOrder);
+                //columns.Command(c =>
+                //{
+                //    c.Edit();
+                //    c.Destroy();
+                //    //c.Custom("Delete").SendDataKeys(true).Click("onDelete");
+                //}
+                //);
+            })
+            //.ToolBar(tools =>
+            //{
+            //    tools.Create();
+            //})
+                 //   .DataSource(ug => ug.Ajax()
+                 //.Model(model =>
+                 //   {
+                 //       model.Id(g => g.auth_group.name);
+                 //       model.Field(g => g.auth_group.name).Editable(false);
+                 //   }))
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                 .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                //model.Field(g => g.GroupID);//.DefaultValue(;
+                //model.Field(g => g.GroupID).DefaultValue((int)"#=id#");//int.Parse("#=id#"));
+                //model.Field(g => g.Header);//.DefaultValue(String.Empty);
+                model.Field(g => g.Note1);
+                //model.Field(g => g.SortOrder);
+            })
+                //.Read(read => read.Action("HierarchyBinding_Groups", "Grid", new { GroupID = "#=GroupID#" }))
+                //.Read(read => read.Action("HierarchyBinding_Groups", "Grid", new { GroupID = "#=GroupID#" }))
+                .Read(read => read.Url("/api/GroupNote/3135").Type(HttpVerbs.Get))
+                //.Create(c => c.Url("/api/Note/").Type(HttpVerbs.Post))
+                //.Update(update => update.Url("/api/Note/").Type(HttpVerbs.Put))
+                //.Destroy(destroy => destroy.Url("/api/Note/").Type(HttpVerbs.Delete))
+            )
+            //.Pageable()
+            //.Filterable()
+            //.Sortable()
+            //.Events(e => e.Edit("onEdit"))
+            //.Events(d => d.Remove("onRemove"))
+            .ToClientTemplate()
+    )
+
+</script>
+<script>
+    //function onDelete(e) { var dataItem = this.dataItem($(e.currentTarget).closest("tr")); var id = dataItem.Id; alert(id); }
+    function dataBound() {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+</script>

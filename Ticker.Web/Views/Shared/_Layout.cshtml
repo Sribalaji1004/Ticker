@@ -1,0 +1,1553 @@
+﻿<!DOCTYPE html>
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    	<link href="@Url.Content("~/Content/kendo/2013.3.1324/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2013.3.1324/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2013.3.1324/kendo.metroblack.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2013.3.1324/kendo.dataviz.metroblack.min.css")" rel="stylesheet" type="text/css" />
+	<script src="@Url.Content("~/Scripts/kendo/2013.3.1324/jquery.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/kendo/2013.3.1324/kendo.all.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/kendo/2013.3.1324/kendo.aspnetmvc.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+    <style type="text/css">
+       
+        #Alerts > table /* header + data table */ {
+            table-layout: fixed;
+            width:2350px;
+        }
+        .k-tooltip-validation .k-callout-n {
+            display: none;
+        }
+        #sgrid .k-grid-content {
+            width: 800px;
+        }
+    </style>
+</head>
+
+<body>
+   <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>-->
+    <script type="text/javascript">
+        var DataHiveUrl = "@System.Configuration.ConfigurationManager.AppSettings["DataHiveUrl"]";
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function ()
+        {
+   
+
+        });
+  
+        function picker_apply() {
+          
+        }
+    </script>
+    <div class="page">
+        <header>
+            <div>
+                <div id="title" style="float: left">
+                    <h1 style="color: #00aba9">@System.Configuration.ConfigurationManager.AppSettings["applicationName"]</h1>
+                </div>
+                <div style="float: right; color: white; line-height: 1.34em; padding: 1em 5px .6em;">
+                    <span id="tickingclock" style="font-size: 2em; color: #00aba9; font-weight: bold; display: block;">&nbsp;</span>
+                    <br />
+                    <span style="float: right;">VERSION @Context.ApplicationInstance.GetType().BaseType.Assembly.GetName().Version.ToString()
+                    </span>
+                </div>
+
+                <div id="window">
+                   
+                
+                       
+                        <div id="divLeaguesSettingsClient" style="display: none;float: right" >
+                            <div style="align-content:flex-end;">
+                                <b>Client:</b> &nbsp;
+                                @(Html.Kendo().DropDownList()
+        .Name("ddlLeaguesSettingsClients")
+        .DataTextField("Description")
+        .DataValueField("ID")
+                .Events(e => e.Change("onLeaguesSettingsClientChange"))
+                .Events(e => e.DataBound("onLeaguesSettingsClientChange"))
+        .HtmlAttributes(new { style = "width: 200px !important;" })
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read =>
+              {
+                  //read.Action("GetClients", "Playlists");
+                  read.Url("/api/Client/0").Type(HttpVerbs.Get).Data("onClientsGet");
+              });
+        })
+                                )
+                            </div>
+                        </div>
+                  <div style="height:30px;"></div>
+                    <div id="sgrid" style="width:800px;"></div>
+                </div>
+
+                <script>
+    var CID;
+
+    function onLeaguesSettingsClientChange(e) {
+       
+        preventAction = false;
+        if ($("#ddlLeaguesSettingsClients").data("kendoDropDownList").dataSource.data().length == 1)
+            $("#divLeaguesSettingsClient").hide();
+
+        CID = $("#ddlLeaguesSettingsClients").data("kendoDropDownList").value();
+
+        //if (getParameterByName("ClientID") == ClientID)
+        //    return;
+
+
+        var grid = $("#sgrid").data("kendoGrid");
+        // grid.dataSource.data([]);
+        grid.dataSource.query({
+            page: 1,
+            pageSize: 4
+        })
+        grid.dataSource.read({ "Id": CID });
+        //grid.dataSource.refresh();
+       // grid.dataSource.page(1);
+        grid.dataSource.sync();
+       
+    }
+    $(document).ready(function () {
+
+
+        CID = $("#ddlLeaguesSettingsClients").data("kendoDropDownList").value();
+
+        var lda = [
+            "BUNDSuper",
+            "CarlingCup",
+            "CART",
+            "CBB",
+            "CBK",
+            "CFB",
+            "CONCACAF",
+            "CONCACAFU20",
+            "CONCACAFW",
+            "CONCU17",
+            "CONCWCQ",
+            "CONF",
+            "COPA",
+            "F1",
+            "FACommunityShield",
+            "FACup",
+            "FAShield",
+            "FIFACFC",
+            "FIFAF",
+            "FIFAU17",
+            "FIFAWorldCup",
+            "FIFAWorldCupF",
+            "FIFAWorldCupQ",
+            "FIFAWorldCupU20",
+            "FMF",
+            "FRAN",
+            "GoldCup",
+            "GolfChamp",
+            "GolfEuro",
+            "GrandAm",
+            "HOLL",
+            "IndyLights",
+            "IntlChmpCup",
+            "IRL",
+            "ITF",
+            "LIB",
+            "LIGA",
+            "LMX",
+            "LPGA",
+            "MINBB",
+            "MiscBaseball",
+            "MiscBasketball",
+            "MiscFootball",
+            "MiscHockey",
+            "MiscSoccer",
+            "MLB",
+            "MLS",
+            "NASCARNationWide",
+            "NASCARSprintCup",
+            "NASCARTruckSeries",
+            "NBA",
+            "NFL",
+            "NHL",
+            "NWSL",
+            "OLYMHK",
+            "OLYWHK",
+            "PGA",
+            "PGA2",
+            "SERIEA",
+            "SERIEB",
+            "SOLY",
+            "SUD",
+            "Tennis",
+            "UCL",
+            "UEFASuper",
+            "UEL",
+            "UEQ",
+            "WBC",
+            "WCBK",
+            "WNBA",
+            "WOLY",
+            "WTA",
+            "WWC",
+            "WWCFRND"
+        ];
+        var cldat = lda.toString().split(",").map(function (a) { return '{LeagueCode: "' + a + '"}'; }).join(",");
+
+        //********** Start ******************//
+        var preventAction = false;
+        $("#sgrid").kendoGrid({
+            dataSource: {
+
+                transport: {
+                    read: {
+
+                        url: '@Url.Action("LeaguesSettings", "api")/' + $("#ddlLeaguesSettingsClients").data("kendoDropDownList").value(),
+                        type: "GET",
+                        dataType: "json",
+                        //contentType: "application/json; charset=utf-8",
+                    },
+                    update: {
+                        url: function (LeaguesSetting) {
+
+                            return '@Url.Action("LeaguesSettings", "api")/' + LeaguesSetting.Id;
+                        },
+                        dataType: "json",
+                        type: "PUT",
+                        //contentType: "application/json",
+                        complete: function (e) {
+                            $("#sgrid").data("kendoGrid").dataSource.read({ "Id": $("#ddlLeaguesSettingsClients").data("kendoDropDownList").value() });
+
+                        }
+                    },
+                    create: {
+
+                        url: '@Url.Action("LeaguesSettings", "api")',
+                        dataType: "json",
+                        type: "POST",
+
+                        complete: function (e) {
+                           
+                            $("#sgrid").data("kendoGrid").dataSource.read({ "Id": $("#ddlLeaguesSettingsClients").data("kendoDropDownList").value() });
+                            $("#sgrid").find('TH a').unbind("click").css('text-decoration', 'block').css('cursor', 'pointer');
+
+                        },
+                        beforeSend: function (req) {
+                            req.setRequestHeader('ClientID', $("#ddlLeaguesSettingsClients").data("kendoDropDownList").value());
+                        }
+                    },
+                    destroy: {
+                        url: function (LeaguesSetting) {
+
+                            return '@Url.Action("LeaguesSettings", "api")/' + LeaguesSetting.Id;
+                        },
+
+                        type: "DELETE",
+                        contentType: "application/json",
+                    },
+                    parameterMap: function (data, operation) {
+                        return data;
+                    }
+
+
+                },
+
+
+                schema: {
+                    model: {
+                        id: "Id",
+                        //ClientID: "ClientID",
+                        //Description: "Description",
+                        //LeagueCode: "LeagueCode",
+                        //Settings: "Settings",
+                        //Value: "Value",
+
+
+                        fields: {
+                            //Id: { editable: false, nullable: true },
+                            //ClientID: { type: "number" },
+                            Description: { type: "string" },
+                            //LeagueCode: { type: "string" },
+                            SettingsID: {
+                                validation: {
+                                    SettingsIDdropdownlistValidation: function (input) {
+                                        debugger;
+                                        if (input.is("[name='SettingsID']")) {
+
+                                            var isValid = true;
+                                            //input.attr("data-LeagueCodedropdownlistValidation-msg", "Required");
+
+                                            if (input[0].value == "" || input[0].value == 0) {
+                                                isValid = false;
+                                               // $("#" + input[0].id).prev().css("border", "1px solid red");
+                                                return isValid;
+                                            }
+                                            else {
+                                                 // $("#" + input[0].id).prev().css("border", "1px solid #333");
+                                                return isValid;
+                                            }
+                                        }
+                                        return true;
+                                    }
+                                },
+
+                                type: "number"
+                            },
+
+                            SettingsDesc: { type: "string" },
+                            OptionsID: {
+                                validation: {
+                                    OptionsIDdropdownlistValidation: function (input) {
+                                        
+                                        if (input.is("[name='OptionsID']")) {
+
+                                            var isValid = true;
+                                            //input.attr("data-LeagueCodedropdownlistValidation-msg", "Required");
+
+                                            if (input[0].value == "" || input[0].value == 0) {
+                                                isValid = false;
+                                                //$("#" + input[0].id).prev().css("border", "1px solid red");
+                                                return isValid;
+                                            }
+                                            else {
+                                                //$("#" + input[0].id).prev().css("border", "1px solid #333");
+                                                return isValid;
+                                            }
+                                        }
+                                        return true;
+                                    }
+                                },
+                                type: "number"
+                            },
+                            OptionsValue: { type: "string" },
+                            LeagueCode: {
+                                validation: {
+                                    LeagueCodedropdownlistValidation: function (input) {
+                                       
+                                        if (input.is("[name='LeagueCode']")) {
+
+                                            var isValid = true;
+                                            //input.attr("data-LeagueCodedropdownlistValidation-msg", "Required");
+
+                                            if (input[0].value == "" || input[0].value == "Select a League Code") {
+                                                isValid = false;
+                                               // $("#" + input[0].id).prev().css("border", "1px solid red");
+                                               
+                                                return isValid;
+                                            }
+                                            else {
+                                                //  $("#" + input[0].id).prev().css("border", "1px solid #333");
+                                                return isValid;
+                                            }
+                                        }
+                                        return true;
+                                    }
+                                }, type: "string"
+                            },
+
+
+
+
+                        },
+
+                    },
+
+                },
+                filter: {
+
+                    filters: [],
+                },
+
+
+                pageSize: 4,
+                requestEnd:function(e)
+                {
+                    if ((e.type == "create" || e.type == "update") && e.response == "Exists") {
+                        var grid = $('#sgrid').data('kendoGrid');
+                        grid.hideColumn("OptionsValue");
+                        grid.showColumn("OptionsID");
+
+                        grid.hideColumn("SettingsDesc");
+                        grid.showColumn("SettingsID");
+                        var dropDown = $("#ddlLeaguesSettingsClients").data("kendoDropDownList");
+                        dropDown.enable(false);
+                        alert("Record already exists");
+                       
+                    }
+                    
+                },
+                requestStart: function (e) { //prevent grid navigation
+                    
+                    if (preventAction) {
+                        e.preventDefault();
+                    }
+                }
+            },
+            filterable: false,
+            pageable: true,
+            toolbar: [
+
+
+                {
+                    text: "Add New Settings",
+                    className: "k-grid-add",//"AddNewSettings",
+                    imageClass: "k-icon k-add",
+
+                }
+            ],
+
+            reorderable: true,
+
+            resizable: true,
+            sortable: {
+                mode: "single",
+                allowUnsort: false
+            },
+            //columnMenu: {
+            //    columns: true
+            //},
+            columns: [
+
+
+                //{
+                //    field: "ClientID",
+                //    title: "ClientID",
+                //    editor: ClientDropDownEditor,
+                //    template: "#=Description#",
+                //    width: 120
+                //},
+                {
+                    field: "LeagueCode",
+                    title: "League Code",
+                    editor: LeagueCodeDropDownEditor,
+                    template: "#=LeagueCode#",
+                    width: 200,
+                    hidden:false
+                },
+
+                {
+                    field: "SettingsID",
+                    title: "SettingsID",
+                    hidden: true,
+                    editor: SettingsDropDownEditor,
+                    template: "#=SettingsDesc#",
+                    width: 200
+                },
+                {
+                    field: "SettingsDesc",
+                    title: "SettingsText",
+                   // editor: SettingsDropDownEditor,
+                    template: "#=SettingsDesc#",
+                    width: 200
+                },
+                {
+                    field: "OptionsID",
+                    title: "ValueID",
+                    hidden: true,
+                    editor: OptionsDropDownEditor,
+                    template: "#=OptionsValue#",
+                    width: 180
+                },
+
+                {
+                    field: "OptionsValue",
+                    title: "ValueText",
+                    
+                    template: "#=OptionsValue#",
+                    width: 180
+                },
+                //{
+                //    command: [{ name: "edit", text: { edit: "", update: "", cancel: "" } },
+                //      { name: "destroy", text: "" }
+                //    ], title: "&nbsp;", width: "140px"
+                //}
+                 { command: ["edit", "destroy"], title: "&nbsp;", width: "200px" }
+
+            ],
+            editable: "inline",
+            //resizable: true,
+            edit: function () {
+                preventAction = true;
+                var grid = $('#sgrid').data('kendoGrid');
+                grid.hideColumn("OptionsValue");
+                grid.showColumn("OptionsID");
+
+                grid.hideColumn("SettingsDesc");
+                grid.showColumn("SettingsID");
+                var dropDown = $("#ddlLeaguesSettingsClients").data("kendoDropDownList");
+                dropDown.enable(false);
+                //$('#ddlLeaguesSettingsClients').prop('disabled');
+            },
+            cancel: function (e) {
+                $("#sgrid").find('TH a').unbind("click").css('text-decoration', 'block').css('cursor', 'pointer');
+                preventAction = false;
+                var grid = $('#sgrid').data('kendoGrid');
+                grid.hideColumn("OptionsID");
+                grid.showColumn("OptionsValue");
+
+                grid.hideColumn("SettingsID");
+                grid.showColumn("SettingsDesc");
+                var dropDown = $("#ddlLeaguesSettingsClients").data("kendoDropDownList");
+                dropDown.enable(true);
+
+            },
+            save: function (e) {
+                var grid = $('#sgrid').data('kendoGrid');
+                grid.hideColumn("OptionsID");
+                grid.showColumn("OptionsValue");
+
+                grid.hideColumn("SettingsID");
+                grid.showColumn("SettingsDesc");
+                var dropDown = $("#ddlLeaguesSettingsClients").data("kendoDropDownList");
+                dropDown.enable(true);
+
+            },
+            remove: function (e) {
+                var grid = $('#sgrid').data('kendoGrid');
+                grid.hideColumn("OptionsID");
+                grid.showColumn("OptionsValue");
+
+                grid.hideColumn("SettingsID");
+                grid.showColumn("SettingsDesc");
+                var dropDown = $("#ddlLeaguesSettingsClients").data("kendoDropDownList");
+                dropDown.enable(true);
+            },
+            dataBound: function () {
+                preventAction = false;
+            }
+           
+
+        });
+
+
+        $(".AddNewSettings").on("click", function (e) {
+            debugger;
+            var GroupTable = $("#sgrid" + ' .k-grid-header').find('div');
+            debugger;
+            if (GroupTable.length > 0) {
+                $("#sgrid").find('TH a').bind('click', function () { return false; }).css('text-decoration', 'none').css('cursor', 'default');
+                
+                
+
+            }
+            //$("#sgrid").find('k - link').bind('click', function () { return false; }).css('text-decoration', 'none').css('cursor', 'default');
+
+            $("#sgrid").data("kendoGrid").addRow();
+            preventAction = true;
+
+            
+        });
+        //*********** End *******************//
+
+
+        var ClientIds = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: '@Url.Action("Client", "api")',
+                    dataType: "json",
+                    type: "GET",
+                },
+                parameterMap: function (data, operation) {
+                    return data;
+                }
+            },
+
+            schema: {
+                model: {
+                    ClientID: "ClientID",
+                    Description: "Description"
+                }
+            }
+        });
+        ClientIds.fetch();
+
+        function ClientDropDownEditor(container, options) {
+            var value = options.model[options.field];
+            debugger;
+            $('<input data-bind="value:' + options.field + '"  specifier="' + options.field + '" />')
+              .appendTo(container)
+              .kendoDropDownList({
+                  optionLabel: "Select a Client",
+                  value: value,
+                  name: "Client",
+                  dataTextField: "Description",
+                  dataValueField: "ClientID",
+                  dataSource: ClientIds,
+
+
+              });
+        }
+
+
+
+       
+
+        var ldata = [];
+        $.ajax({
+            url: "@System.Configuration.ConfigurationManager.AppSettings["DataHiveUrl"]"+ "base/Leagues",
+            dataType: "json",
+            async: true,//false
+            type: "GET",
+            success: function (result) {
+                ldata = result;
+                
+            }
+        });
+
+
+
+
+
+        var leaguesData = new kendo.data.DataSource({
+
+            data: ldata,
+
+
+
+      //      transport: {
+      //          read: function(options) {
+      //                  $.ajax({
+      //                      url: "http://qadatahive.foxneo.com/datahive/api/base/leagues",
+      //  dataType: "json",
+      //  type: "GET",
+      //  success: function (result) {
+            
+      //      var cldat = result.toString().split(",").map(function (a) { return '{LeagueCode: "' + a + '"}'; }).join(",");
+      //      alert(cldat);
+      //      options.success("["+ cldat +"]");
+      //  }
+      //});
+                   
+      //          },
+      //          parameterMap: function (options, operation) {
+      //              return { models: kendo.stringify(options.models) };
+      //          }
+               
+      //      },
+            //schema: {
+            //    model: {
+            //            id:"id",
+            //            LeagueCode: "LeagueCode",
+                    
+            //    }
+            //}
+        });
+        leaguesData.fetch();
+
+
+        function LeagueCodeDropDownEditor(container, options) {
+            var value = options.model[options.field];
+           
+            $('<input data-bind="value:' + options.field + '"  specifier="' + options.field + '" id="LeagueCode" name="' + options.field + '"  />')
+              .appendTo(container)
+              .kendoDropDownList({
+                  optionLabel: "Select a League Code",
+                  value: value,
+                  name: "LeagueCode",
+                  //dataTextField: "LeagueCode",
+                  //dataValueField: "id",
+                  dataSource: leaguesData,
+
+              });
+        }
+
+        var SettingsData = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: '@Url.Action("Settings", "api")',
+                    dataType: "json",
+                    type: "GET",
+                },
+                parameterMap: function (data, operation) {
+                    return data;
+                }
+            },
+            schema: {
+                model: {
+                    id: "id",
+                    SettingsDesc: "SettingsDesc",
+                }
+            }
+        });
+        SettingsData.fetch();
+
+
+
+        function SettingsDropDownEditor(container, options) {
+            var value = options.model[options.field];
+           
+            $('<input data-bind="value:' + options.field + '"  specifier="' + options.field + '" onchange="reloadOptions(this,' + (options.model.Id > 0 ? options.model.Id : 0) + ');" name="' + options.field + '" />')
+              .appendTo(container)
+              .kendoDropDownList({
+                  optionLabel: "Select Settings",
+                  value: value,
+                  id:"SettingsDrop",
+                  dataTextField: "SettingsDesc",
+                  dataValueField: "id",
+                  dataSource: SettingsData,
+
+
+              });
+        }
+
+        var OptionsData = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: '@Url.Action("SettingsOptions", "api")',
+                    dataType: "json",
+                    type: "GET",
+                },
+                parameterMap: function (data, operation) {
+                    return data;
+                }
+            },
+            schema: {
+                model: {
+                    id: "id",
+                    OptionsValue: "SettingsDesc",
+                }
+            }
+        });
+        OptionsData.fetch();
+
+        function OptionsDropDownEditor(container, options) {
+            debugger;
+            var sett = options.model.SettingsID;
+            var Id = options.model.Id;
+            if (Id == "" || Id == null)
+                Id = 0;
+
+            if (typeof sett != undefined && sett !=null) {
+
+
+                var value = options.model[options.field];
+                debugger;
+                $('<input data-bind="value:' + options.field + '"  specifier="' + options.field + '" id="Options_' + Id + '" name="' + options.field + '"  />')
+                  .appendTo(container)
+                  .kendoDropDownList({
+                      optionLabel: "Select Options",
+                      value: value,
+                      name: "Options_" + sett,
+                      dataTextField: "OptionsValue",
+                      dataValueField: "id",
+                      dataSource: {
+                          transport: {
+                              read: {
+                                  url: '@Url.Action("SettingsOptions", "api")/'+sett,
+                                  dataType: "json",
+                                  type: "GET",
+                              },
+                              parameterMap: function (data, operation) {
+                                  return data;
+                              }
+                          },
+                          schema: {
+                              model: {
+                                  id: "id",
+                                  OptionsValue: "OptionsValue",
+                              }
+                          }
+
+                      },
+                      dataBound:function(e)
+                      {
+                          if (this.dataSource.data().length == 0) {
+                              this.text(this.options.optionLabel);
+                          }
+                      }
+
+
+                  });
+            }
+        }
+
+    });
+    function reloadOptions(sender, Id) {
+        debugger;
+        var SelectedID = sender.value;
+        if (SelectedID == "")
+            SelectedID = 0;
+        var optionsForSettingsID = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: '@Url.Action("SettingsOptions", "api")/' + SelectedID,
+                    dataType: "json",
+                    type: "GET",
+                },
+                parameterMap: function (data, operation) {
+                    return data;
+                }
+            },
+            schema: {
+                model: {
+                    id: "id",
+                    OptionsValue: "OptionsValue",
+                }
+            }
+        });
+        optionsForSettingsID.fetch();
+
+
+        $('#Options_' + Id).kendoDropDownList({
+            optionLabel: "Select Options",
+            //value:SelectedID,
+            name: "Options_" + Id,
+            dataTextField: "OptionsValue",
+            dataValueField: "id",
+            dataSource: optionsForSettingsID,
+            dataBound: function (e) {
+                if (this.dataSource.data().length == 0) {
+                    this.text(this.options.optionLabel);
+                }
+            }
+
+        });
+    }
+    function onClientsGet(e) {
+        return { username: '@Session["username"]' };
+    }
+                </script>
+
+
+
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        $("#window").kendoWindow({
+                            width: "auto",
+                            height: "auto",
+                            title: "Leagues Settings",
+                            visible: false
+                        }).data("kendoWindow");
+                    });
+                    function GetClient(id) {
+                        var Client;
+                        $.ajax
+                                      ({
+                                          "type": "GET",
+                                          "async": false,//true,
+                                          'url': "/api/Client/?id=" + id,
+                                          "contentType": "application/json;charset=utf-8",
+                                          'success': function (data, status, jxhr) {
+                                              Client = data;
+                                          }
+                                      });
+                        return Client;
+                    }
+                    function GetUser(username, clientID) {
+                        var User;
+                        $.ajax
+                                      ({
+                                          "type": "GET",
+                                          "async": false,//true,
+                                          'url': "/api/Users/?username=" + username + "&clientID=" + clientID,
+                                          "contentType": "application/json;charset=utf-8",
+                                          'success': function (data, status, jxhr) {
+                                              User = data;
+                                          }
+                                      });
+                        return User;
+                    }
+                    function GetSecurityLevel() {
+                        if (typeof ClientID != 'undefined')
+                            return GetUser(ClientID).SecurityLevelID;
+                        else
+                            return GetUser('@(User.Identity.IsAuthenticated ? @Ticker.Controllers.Utilities.SessionBag.Current.username : "")', '@Ticker.Controllers.Utilities.SessionBag.Current.ClientID').SecurityLevelID;
+                    }
+                    function MenuSecurityTrim() {
+                        if (ClientID != '' && '@HttpContext.Current.Session.Count' != '0') {
+                            var menu = $("#menu").data("kendoMenu");
+
+                            if (!GetUser('@(User.Identity.IsAuthenticated ? @Ticker.Controllers.Utilities.SessionBag.Current.username : "")', ClientID).Admin) {
+                                var item = $("#menu").find("li:contains(Admin)");
+                                item.hide();
+                            }
+                            else {
+                                var item = $("#menu").find("li:contains(Admin)");
+                                item.show();
+                            }
+                        }
+
+
+                    }
+
+
+                    function init() {
+                        timeDisplay = document.createTextNode("");
+                        document.getElementById("tickingclock").appendChild(timeDisplay);
+                    }
+                    function updateTickingClock() {
+                        var currentTime = new Date();
+
+                        var currentHours = currentTime.getHours();
+                        var currentMinutes = currentTime.getMinutes();
+                        var currentSeconds = currentTime.getSeconds();
+
+                        // Pad the minutes and seconds with leading zeros, if required
+                        currentMinutes = (currentMinutes < 10 ? "0" : "") + currentMinutes;
+                        currentSeconds = (currentSeconds < 10 ? "0" : "") + currentSeconds;
+
+                        // Choose either "AM" or "PM" as appropriate
+                        var timeOfDay = (currentHours < 12) ? "AM" : "PM";
+
+                        // Convert the hours component to 12-hour format if needed
+                        currentHours = (currentHours > 12) ? currentHours - 12 : currentHours;
+
+                        // Convert an hours component of "0" to "12"
+                        currentHours = (currentHours == 0) ? 12 : currentHours;
+
+                        // Compose the string for display
+                        var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+
+                        function makeArray() {
+                            for (i = 0; i < makeArray.arguments.length; i++)
+                                this[i + 1] = makeArray.arguments[i];
+                        }
+
+                        var date = new Date();
+
+                        var day = date.getDate();
+
+                        var yy = date.getYear();
+                        var year = (yy < 1000) ? yy + 1900 : yy;
+
+                        // Update the time display
+                        document.getElementById("tickingclock").innerHTML = currentTimeString; //month + "/" + day + "/" + year + " "
+                    }
+                    updateTickingClock();
+                    setInterval('updateTickingClock()', 1000);
+
+
+
+                    function onOpenLeagueSetting()
+                    {
+                       
+                        //var win = $("#window").data("kendoWindow");
+                        //win.center().open();
+                        $("#window").kendoWindow({
+                            close: onClose,
+                        }).data("kendoWindow").center().open();
+                        $("#divLeaguesSettingsClient").css("display", "block");
+                    }
+
+
+
+                    function onClose(e) {
+                        var grid = $('#sgrid').data('kendoGrid');
+                        grid.dataSource.data([]);
+                        grid.dataSource.read({ "Id": $("#ddlLeaguesSettingsClients").data("kendoDropDownList").value() });
+                        grid.refresh();
+                        grid.hideColumn("OptionsID");
+                        grid.showColumn("OptionsValue");
+
+                        grid.hideColumn("SettingsID");
+                        grid.showColumn("SettingsDesc");
+                        preventAction = false;
+                        var dropDown = $("#ddlLeaguesSettingsClients").data("kendoDropDownList");
+                        dropDown.enable(true);
+
+                    }
+                </script>
+            </div>
+            <div style="clear: both" />
+
+
+            @*<div id='div_colorpicker' class="colordivTeamclass" style="display: none; z-index: 10000;">
+          <input id="inpcolorpicker" type="color"  />
+
+    </div>*@
+
+
+          
+          
+            @(Html.Kendo().Menu()
+                    .Name("menu")
+                    .Items(menu =>
+                    {
+                        menu.Add().Text("Home").Action("Index", "Home");
+                        //if (User.Identity.IsAuthenticated)
+                        //{
+                        menu.Add().Text("Playlists").Action("Index", "Playlists");
+                        menu.Add().Text("Admin")
+                            .Items(
+                            i =>
+                            {
+                                i.Add().Text("Users").Action("Index", "UserAdmin");
+                                i.Add().Text("Logs").Action("Index", "Logs");
+                                i.Add().Text("Sports Data Management").Action("Index", "SportsData");
+                                i.Add().Text("Player Stats Builder").Action("Index", "PlayerStatsBuilder");
+                                i.Add().Text("Leaders View").Action("Index", "Leaders");
+                                i.Add().Text("Leagues Settings").LinkHtmlAttributes(new { onclick = "onOpenLeagueSetting();" });
+                                //i.Add().Text("Player Stats Builder").Url("javascript:window.open(" + "'" + @System.Configuration.ConfigurationManager.AppSettings["StatsBuilderAPIUrl"] + "'" + ")");
+                            }
+                            );
+                        if (Request.RawUrl.Contains("Playlist"))
+                            menu.Add().Text("Alerts");
+                        //}
+                        if (User.Identity.IsAuthenticated)
+                        {
+                            menu.Add().Text("Help").Action("Help", "Home");
+
+                            menu.Add().Text("Logout").Action("logout", "User");
+                        }
+                        else
+                        {
+                            menu.Add().Text("Help").Action("Help", "Home");
+                            menu.Add().Text("Login").Action("login", "User");
+                        }
+                    })
+                    .Events(e => e.Select("onMenuOpen"))
+            )
+        </header>
+        <div id="divAlerts" style="display: none">
+            <script type="text/javascript">
+                function AlertsRefresh() {
+                    var p = $("#Alerts").data("kendoGrid");
+                    p.dataSource.read();
+                    p.dataSource.sync();
+                }
+            </script>
+            <script type="text/javascript">
+                function errorHandler(e) {
+                    if (e.errors) {
+                        var message = "Errors:\n";
+                        $.each(e.errors, function (key, value) {
+                            if ('errors' in value) {
+                                $.each(value.errors, function () {
+                                    message += this + "\n";
+                                });
+                            }
+                        });
+                        alert(message);
+                    }
+                }
+
+                function onBreakingTypeChange(e)
+                {
+                    debugger;
+                  
+                    var dItem = e.sender.dataItem();
+                    var selected_AlertTypeDesc = dItem.Description;
+                    var grid = $('#Alerts').data('kendoGrid');
+                    var tweetrow = grid.table.find(".k-grid-edit-row");
+                    var tweettitle = $(tweetrow).find(".noteclass");
+                    if (selected_AlertTypeDesc.toLowerCase() == "breaking news" || selected_AlertTypeDesc.toLowerCase() == "program alert")
+                    {
+                        grid.hideColumn("ColorHex");
+                        grid.hideColumn("IntroMovie");
+                        grid.hideColumn("IntroText");
+                        grid.hideColumn("TopicMovie");
+                        grid.hideColumn("TopicText");
+                        grid.hideColumn("HeaderMovie");
+                        grid.showColumn("HeaderText");
+                        $("#Alerts thead [data-field=Note] .k-link").html("Note");
+                       
+
+                    }
+                    else
+                    {
+                        grid.showColumn("ColorHex");
+                        grid.showColumn("IntroMovie");
+                        grid.showColumn("IntroText");
+                        grid.showColumn("TopicMovie");
+                        grid.showColumn("TopicText");
+                        grid.showColumn("HeaderMovie");
+                        grid.showColumn("HeaderText");
+                        $("#Alerts thead [data-field=Note] .k-link").html("Note");
+
+                    }
+                    if (selected_AlertTypeDesc.toLowerCase() == "twitter") {
+                        grid.hideColumn("HeaderText");
+                        $("#Alerts thead [data-field=Note] .k-link").html("URL");
+                       
+                      
+                        tweettitle[0].title= "URL";
+                    }
+                    else
+
+                    {
+                        tweettitle[0].title = "Note";
+
+                    }
+                    
+                }
+
+                function on_Cancel_function(e)
+                {
+                    debugger;
+                   // alert(e);
+                }
+                //function ShowColorPicker(e)
+                //{
+                //    //alert(e.pageX);
+                //    var div = $("#div_colorpicker");
+                //    div.css({
+                //        position: "absolute",
+                //        top: e.pageY,
+                //        left: e.pageX
+
+                //    });
+
+                //    $("#div_colorpicker").css("display", "block");
+                //    $("#div_colorpicker").css({ position: "absolute", top: e.pageY - 16, left: e.pageX - 26, width: "200px", height: "200px" });
+                //    //var colorpicker = $("#inpcolorpicker").data("kendoColorPicker");
+                //    //colorpicker.bind("cancel", picker_apply);
+
+                //    $("#inpcolorpicker").kendoColorPicker({
+                       
+                //        buttons: true,
+                //        close: function () {
+                //            alert("yes");
+
+                //        }
+                //    });
+                   
+
+                //}
+                
+</script>
+            @(
+ Html.Kendo().Grid<Ticker.Data.BreakingNew>()
+    .Name("Alerts")
+    .HtmlAttributes("background: red;")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden().Width(10);
+        columns.ForeignKey(o => o.BreakingNewsTypeID, (System.Collections.IEnumerable)System.Web.HttpContext.Current.Application["BreakingNewsTypes"], "ID", "Description").Title("Type <!--<a href='javascript:onBreakingNewsTypes()'><span class='k-icon k-i-custom'></span></a>-->").EditorTemplateName("Alerts").HtmlAttributes(new { title = "Types" }).Width(100);
+        columns.Bound(o => o.Note).HtmlAttributes(new { @class = "noteclass" }).Width(200); ;//.ClientTemplate("#if(BreakingNewsDescription !=null){# #: Note # #}else{# #: Note # #}#");
+        columns.Bound(o => o.ColorHex).Title("Alert Color").ClientTemplate("# if (ColorHex != null && ColorHex !=\"\") { #" +
+        "<div style='background-color: #: ColorHex #; width:25px; height:25px;margin-left: 30%;' title='#: ColorHex #' > &nbsp; </div>" + //onclick='ShowColorPicker(event);'
+    "# } #").HtmlAttributes(new { title = "Alert Color" }).EditorTemplateName("kColorPicker").Width(90);//"<div style='background-color: #: ColorHex #; width:25px; height:25px;margin-left: 30%;' title='#: ColorHex #'> &nbsp; </div>");
+        columns.Bound(o => o.IntroMovie).Title("Intro Movie").HtmlAttributes(new { title = "Intro Movie (always required)" }).Width(150); // Newly added- not used for Breaking news and Program alert, need to hide
+        columns.Bound(o => o.IntroText).Title("Intro Text").HtmlAttributes(new { title = "Intro Text (optional, used instead of Intro Movie)" }).Width(150); //Newly added- not used for Breaking news and Program alert, need to hide
+        columns.Bound(o => o.TopicMovie).Title("Topic Movie").HtmlAttributes(new { title = "Topic Movie (leave blank to use Alert Color)" }).Width(150); // Title Changed to 'Topic Movie'
+        columns.Bound(o => o.TopicText).Title("Topic Text").HtmlAttributes(new { title = "Topic Text (shown on top of Topic Movie)" }).Width(150); //Newly added- not used for Breaking news and Program alert, need to hide
+        columns.Bound(o => o.HeaderMovie).Title("Header Movie").HtmlAttributes(new { title = "Header Movie (leave blank to use Alert Color)" }).Width(150); //Newly added
+        columns.Bound(o => o.HeaderImage).Title("Header Image").HtmlAttributes(new { title = "Header Image (leave blank to hide)" }).Width(150);
+        columns.Bound(o => o.HeaderText).Title("Header Text").HtmlAttributes(new { title = "Header Text (shown on top of Header Movie)" }).Width(150);
+        
+        // columns.Bound(o => o.IntroText).Width(10).Title("Intro Text");
+        columns.Bound(o => o.Repeat).EditorTemplateName("Int").Width(70).HtmlAttributes(new { title = "Repeat" });
+        columns.Bound(o => o.NumberOfGraphicsBetween).EditorTemplateName("TinyInt").Width(100).Title("# of Graphics<br/>Between").HtmlAttributes(new { title = "No. of Graphics Between" });
+
+        //columns.Template(@<text></text>).ClientTemplate(@"<input name='name#=ID#' type='radio' value='0' #= ExpiresIn==null ? checked='checked':'' # />Off<br/>
+        //                    <input name='name#=ID#' type='radio' value='1' #= ExpiresIn==1 ? checked='checked':'' # />On<br/>
+        //                    <input name='name#=ID#' type='radio' value='2' #= ExpiresIn==2 ? checked='checked':'' # />In<br/>")
+        //.HeaderTemplate("Expiration").Width(200);
+        columns.ForeignKey(p => p.ExpirationMode, (System.Collections.IEnumerable)System.Web.HttpContext.Current.Application["ExpirationModes"], "ID", "Name")
+                .Title("Expiration").HtmlAttributes(new { title = "Expiration" }).Width(80);
+        columns.Bound(o => o.ExpiresOn).HeaderTemplate("On").Width(170).HtmlAttributes(new { title = "Expires On" });
+        columns.Bound(o => o.ExpiresIn).EditorTemplateName("TinyInt").Width(90).HeaderTemplate("In Minutes").HtmlAttributes(new { title = "Expires In" });
+        columns.Bound(o => o.SortOrder).EditorTemplateName("TinyInt").Width(90).HtmlAttributes(new { title = "Sort Order" });
+        columns.Bound(o => o.LastUpdated).HtmlAttributes(new { title = "Last Updated Date" }).Width(170);
+        columns.Command(c =>
+        {
+            //c.Custom("Edit").Click("onAlert_NewsEdit").HtmlAttributes(new { actionName = "Edit" });
+            c.Edit();
+            c.Destroy();
+        }).Width(100);
+        columns.Command(c => c.Custom("Enable").Click("EnableType")).Width(80);
+        //   columns.Bound(o => o.Enabled).Title("").ClientTemplate(
+        //       "# if (Enabled) { # <button class='k-button' id='Enabled#=ID#' onclick='EnableType(#=ID#, false);'>Disable</button> # } else if (ID) { # <button class='k-button' id='Enabled#=ID#' onclick='EnableType(#=ID#, true);'>Enable</button> # } #"
+        //);
+    })
+                .ToolBar(tools =>
+                {
+                    tools.Create().Text("Alert");
+                })
+                .Sortable(s => s.Enabled(true))
+            .Events(e => e.Save("onAlertsSave"))
+        // .Events(e => e.Edit("onAlertsEdit"))
+                .Events(e => e.SaveChanges("onAlertTypesClose"))
+        //.Sortable()
+            .Events(e => e.Edit("onAlert_NewsEdit"))
+        .Events(e => e.Cancel("onAlertsSync"))
+                       .Events(events => events.DataBound("onAlertsDataBound"))
+        //.Events(events => events.DetailInit("onDetailInit"))
+         .DataSource(dataSource => dataSource
+             .Ajax()
+             .Model(model =>
+             {
+                 model.Id(g => g.ID);
+                 model.Field(g => g.ID).Editable(false);
+                 model.Field(g => g.BreakingNewsTypeID).DefaultValue(1);
+                 model.Field(g => g.Note).DefaultValue(string.Empty);
+
+                 model.Field(g => g.ColorHex).DefaultValue(string.Empty);   // Newly added
+                 model.Field(g => g.IntroMovie).DefaultValue(string.Empty); // Newly added
+                 model.Field(g => g.IntroText).DefaultValue(string.Empty);  // Newly added
+                 model.Field(g => g.TopicMovie).DefaultValue(string.Empty);
+                 model.Field(g => g.TopicText).DefaultValue(string.Empty);  // Newly added
+                 model.Field(g => g.HeaderMovie).DefaultValue(string.Empty); // Newly added
+
+                 model.Field(g => g.HeaderText).DefaultValue(string.Empty);
+                 // model.Field(g => g.HeaderImage).DefaultValue(string.Empty).ToString().Trim();;
+                 model.Field(g => g.IntroText).DefaultValue(string.Empty);
+                 model.Field(g => g.Repeat).DefaultValue(0);
+                 model.Field(g => g.NumberOfGraphicsBetween).DefaultValue(6);
+                 model.Field(g => g.ExpirationMode).DefaultValue(1);
+                 model.Field(g => g.ExpiresOn).DefaultValue(DateTime.Now.AddMinutes(30));
+                 model.Field(g => g.ExpiresIn).DefaultValue(null);
+                 model.Field(g => g.SortOrder);
+                 model.Field(g => g.Enabled).DefaultValue(false).Editable(false);
+                 model.Field(g => g.LastUpdated).DefaultValue(DateTime.Now).Editable(false);
+             })
+            .Events(e => e.RequestEnd("onAlertsRequestEnd"))
+            .Events(e => e.Sync("onAlertsSync"))
+            .Read(read => read.Url("/api/BreakingNew/").Data("onAlertsRead").Type(HttpVerbs.Get)) //3907 //1154 - twitter // //3414
+            .Create(create => create.Url("/api/BreakingNew").Type(HttpVerbs.Post))
+            .Update(update => update.Url("/api/BreakingNew").Type(HttpVerbs.Put))
+            .Destroy(destroy => destroy.Url("/api/BreakingNew").Type(HttpVerbs.Delete))
+
+
+         )
+        //.Editable(ed=>ed.Mode(GridEditMode.PopUp).TemplateName("z"))
+
+)
+            @*<script type="text/javascript">
+                $(document).ready(function () {
+                    var grid = $("#Alerts").data("kendoGrid");
+                    
+                    var tooltip = grid.tbody.kendoTooltip({
+                        filter: "td",
+                        content: function (e) {
+                           
+                            var dataItem = $("#Alerts").data("kendoGrid").dataItem(e.target.closest("tr"));
+                            debugger;
+            var target = e.target; // element for which the tooltip is shown
+            return $(target).text();
+            }
+            });
+                });
+    </script>*@
+            @(Html.Kendo().Window()
+    .Name("winAlertTypes")
+    .Title("Alert Types")
+    .Content(@<text>
+            </text>)
+    .Draggable()
+    .Resizable()
+    .Width(900)
+    .Modal(true)
+    .Actions(actions => actions.Clear().Maximize().Close())
+    .Events(ev => ev.Close("onAlertTypesClose"))
+    .Visible(false)
+    )
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    AlertsRefresh();
+
+                    $(".k-grid-add").on("click", function () {
+                        var grid = $('#Alerts').data('kendoGrid');
+                        grid.hideColumn("ColorHex");
+                        grid.hideColumn("IntroMovie");
+                        grid.hideColumn("IntroText");
+                        grid.hideColumn("TopicMovie");
+                        grid.hideColumn("TopicText");
+                        grid.hideColumn("HeaderMovie");
+
+                    });
+                });
+                $(function () {
+
+                    var grid = $("#Alerts").data("kendoGrid");
+
+                    // WebAPI needs the ID of the entity to be part of the URL e.g. PUT /api/Product/80
+                    grid.dataSource.transport.options.update.url = function (data) {
+                        return "/api/BreakingNew/" + data.ID;
+                    }
+
+                    // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE /api/Product/80
+                    grid.dataSource.transport.options.destroy.url = function (data) {
+                        return "/api/BreakingNew/" + data.ID;
+                    }
+
+                    var defaultTools = kendo.ui.Editor.defaultTools;
+                    defaultTools["insertLineBreak"].options.shift = false;
+                    defaultTools["insertParagraph"].options.shift = false;
+
+
+
+                });
+
+
+                function onAlert_NewsEdit(e)
+                {
+                    if (!e.model.isNew()) {
+                       
+                        $(".k-selected-color").css("width", "100%");
+                        var grid = $('#Alerts').data('kendoGrid');
+
+                        if (e.model.BreakingNewsDescription.toLowerCase() == "breaking news" || e.model.BreakingNewsDescription.toLowerCase() == "program alert") {
+                            grid.hideColumn("ColorHex");
+                            grid.hideColumn("IntroMovie");
+                            grid.hideColumn("IntroText");
+                            grid.hideColumn("TopicMovie");
+                            grid.hideColumn("TopicText");
+                            grid.hideColumn("HeaderMovie");
+                            grid.showColumn("HeaderText");
+                        }
+                        else {
+                            grid.showColumn("ColorHex");
+                            grid.showColumn("IntroMovie");
+                            grid.showColumn("IntroText");
+                            grid.showColumn("TopicMovie");
+                            grid.showColumn("TopicText");
+                            grid.showColumn("HeaderMovie");
+                            grid.showColumn("HeaderText");
+                        }
+                        if (e.model.BreakingNewsDescription.toLowerCase() == "twitter") {
+                            grid.hideColumn("HeaderText");
+                            $("#Alerts thead [data-field=Note] .k-link").html("URL")
+                        }
+                        debugger;
+                        //var tweetrow = grid.table.find(".k-grid-edit-row");
+                        //var tweettitle = $(tweetrow).find(".noteclass");
+                        //tweettitle.focus();
+                      
+                    }
+                    else
+                    {
+                        e.model.set("BreakingNewsDescription", 'Breaking News');
+                    }
+                   //var ddl = e.container.find("[data-role='dropdownlist']");
+                   // if (ddl) {
+                   //     debugger;
+                   //     ddl.getKendoDropDownList().bind("change", function (evt) {
+                   //         e.model.set("ProductData.ProductValue.MasterDataText", this.text());
+                   //     });
+                    // }
+                    
+                    var colorpicker = $("#Kcolors").data("kendoColorPicker");
+                    var cval = e.model.ColorHex;
+                    if (cval == "" || cval == null || typeof cval == undefined)
+                        cval = "#000000";                    
+                    colorpicker.value(cval);
+                   
+                }
+
+
+                function onAlertsRequestEnd(e) {
+                   
+                    if (e.response != undefined)
+                        if (e.response.ID != undefined) {
+                            var p = $("#Alerts").data("kendoGrid");
+
+                            p.dataSource.read();
+
+                            //attempt to us UTC per telerik - http://www.telerik.com/support/code-library/using-utc-time-on-both-client-and-server-sides
+                            //if (e.type == "read") {
+                            //    var alerts = e.response.Data;
+                            //    for (var i = 0; i < alerts.length; i++) {
+                            //        alerts[i].ExpiresOn = alerts[i].ExpiresOn.replace(/\d+/,
+                            //            function (n) {
+                            //                var time = parseInt(n);
+                            //                return parseInt(time) + new Date(time).getTimezoneOffset() * 60000
+                            //            }
+                            //        );
+                            //    }
+                            //}
+
+                        }
+                }
+
+                function onAlertsSync(e) {
+                    //KN added this line to resort grid
+                    var grid = $("#Alerts").data("kendoGrid");
+                  
+                    grid.dataSource.read();
+                    grid.showColumn("ColorHex");
+                    grid.showColumn("IntroMovie");
+                    grid.showColumn("IntroText");
+                    grid.showColumn("TopicMovie");
+                    grid.showColumn("TopicText");
+                    grid.showColumn("HeaderMovie");
+                    grid.showColumn("HeaderText");
+                    $("#Alerts thead [data-field=Note] .k-link").html("Note")
+                }
+                function onAlertsEdit(e) {
+                   // alert("h1");
+
+                    if (e.model.isNew()) {
+                                                //var grid = $("#Alerts").data("kendoGrid");
+                        //grid.hideColumn("Enabled");
+                    }
+                }
+                function onAlertsSave(e) {
+                    //alert("h2");
+
+                    if (typeof ClientID != 'undefined')
+                        e.model.set("ClientID", ClientID);
+                    else
+                        e.model.set("ClientID", '@Ticker.Controllers.Utilities.SessionBag.Current.ClientID');
+                    //var colorpicker = $("#Kcolors").data("kendoColorPicker");
+                    //var selected_colorValue = colorpicker.value();
+                    //e.model.set("ColorHex",selected_colorValue);
+
+                    
+            }
+            //function onEdit(e) {
+            //    e.container.find("input[name=Description]").attr("maxlength", 50);
+            //}
+                function onAlertsDataBound(e) {
+                    
+                var grid = $("#Alerts").data("kendoGrid");
+                var gridData = grid.dataSource.view();
+
+                for (var i = 0; i < gridData.length; i++) {
+                    var currentUid = gridData[i].uid;
+                  
+                    if (gridData[i].Enabled) {
+                        var currenRow = grid.table.find("tr[data-uid='" + currentUid + "']");
+                     
+                        var editButton = $(currenRow).find(".k-grid-Enable");
+                        editButton.text("Disable");
+                    }
+                    var noterow = grid.table.find("tr[data-uid='" + currentUid + "']");
+                    var notetitle = $(noterow).find(".noteclass");
+                    if (typeof gridData[i].BreakingNewsDescription != "undefined" && gridData[i].BreakingNewsDescription !=null) {
+                        if (gridData[i].BreakingNewsDescription.toLowerCase() != "twitter")
+                            notetitle.attr("title", "Note");
+                        else
+                            notetitle.attr("title", "URL");
+                    }
+                    else
+                        notetitle.attr("title", "Note");
+                    
+                  
+                }
+
+
+                //var grid = $("#Alerts").data("kendoGrid");
+                //var gridData = grid.dataSource.view();
+                //for (var i = 0; i < gridData.length; i++) {
+                   
+                    
+
+                //}
+
+                
+                
+            }
+
+            function onAlertsRead() {
+                if (typeof ClientID != 'undefined')
+                    return { id: 0, clientID: ClientID };
+                else
+                    return { id: 0, clientID: '@Ticker.Controllers.Utilities.SessionBag.Current.ClientID' };
+
+                
+            }
+
+            function EnableType(e) { //, enabled) {
+                var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                if ((!dataItem.Enabled && confirm('Are you sure you would like to enable this alert: "' + dataItem.Note + '"?')) || dataItem.Enabled)
+                    $.ajax
+                       ({
+                           //"cache": "false",
+                           "type": "PUT",
+                           async: false,
+                           'url': "/api/BreakingNew/?id=" + dataItem.ID + "&Enabled=" + !dataItem.Enabled,
+                           "contentType": "application/json;charset=utf-8",
+                           //'accepts': "application/json",
+                           //'contentType': "application/json",
+                           //'dataType': 'json',
+                           //'global': false,
+                           //'data': jsonData,
+                           'success': function (data, status, jxhr) {
+                               try {
+                                   // if (!isIE || isDebugMode) {
+                                   //                            console.log("OnProgressHandler.FileTransferStatus Update succeeded...");
+                                   //                            console.log(data);
+                                   // }
+                               } catch (err) { }
+                           }, 'error': function (jxhr, status, thrown) {
+                               try {
+                                   // if (!isIE || isDebugMode) {
+                                   //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                   //                            console.log(jxhr);
+                                   //                            console.log(status);
+                                   //                            console.log(thrown);
+                                   //  }
+                               } catch (err) { }
+                           }, 'complete': function (data, status) {
+                               // if (!isIE || isDebugMode) {
+                               //                        console.log(data);
+                               //                        console.log(status);
+                               //  }
+                           }, 'statusCode': {
+                               404: function () {
+                                   //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                               }
+                           }
+                       });
+                AlertsRefresh();
+            }
+            </script>
+        </div>
+        <script type="text/javascript">
+            function onMenuOpen(e) {
+                if ($(e.item).text() == "Alerts") {
+
+                    //check for valid client set
+                    if (typeof ClientID == 'undefined' && '@Ticker.Controllers.Utilities.SessionBag.Current.ClientID' == '')
+                        alert("Client must be set before an alert can changed.");
+                    else
+                        $("#divAlerts").slideToggle();
+
+                    $(".k-grid-add", "#divAlerts").text('');
+                    if ($("#ddlClients").data("kendoDropDownList") != undefined)
+                        $(".k-grid-add", "#divAlerts").append("<span class='k-icon k-add'></span>" + GetClient($("#ddlClients").data("kendoDropDownList").value()).Description + ' Alert');
+                    else if (typeof ClientID != 'undefined')
+                        $(".k-grid-add", "#divAlerts").append("<span class='k-icon k-add'></span>" + GetClient(ClientID).Description + ' Alert');
+                    else
+                        $(".k-grid-add", "#divAlerts").append("<span class='k-icon k-add'></span>" + GetClient(@Ticker.Controllers.Utilities.SessionBag.Current.ClientID).Description + ' Alert');
+                    
+            }
+        }
+        function expandAll(treeView) {
+            treeView.expand(treeView.element.find(".k-item"));
+            treeView.bind("dataBound", function (e) {
+                if (e.node != undefined)
+                    this.expand(e.node.find(".k-item"));
+            });
+        }
+        function onBreakingNewsTypes() {
+            var win = $("#winAlertTypes").data("kendoWindow");
+            win.refresh({
+                url: "/AlertTypes/"
+            });
+            win.center();
+            win.open();
+        }
+        function onAlertTypesClose(e) {
+           
+
+            history.go(0);
+        }
+        function GetSportType(Prefix) {
+            var SportType;
+            $.ajax
+                          ({
+                              "type": "GET",
+                              "async": false,//true,
+                              'url': "/api/Sport/?id=0&HivePrefix=" + Prefix,
+                              "contentType": "application/json;charset=utf-8",
+                              'success': function (data, status, jxhr) {
+                                  if (data == null)
+                                      SportType = null;
+                                  else
+                                      SportType = data.SportType;
+                              }
+                          });
+            return SportType;
+        }
+        </script>
+        <section id="main">
+            @RenderBody()
+        </section>
+        <footer>
+        </footer>
+    </div>
+</body>
+</html>

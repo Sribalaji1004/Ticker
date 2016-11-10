@@ -1,0 +1,459 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@(Html.Kendo().DropDownList()
+        .HtmlAttributes(new { style = "width:200px" })
+        .Name("ddlDHLeagues")
+        //.DataTextField("string")
+        .Events(e => e.Change("onDHLeaguesChange"))
+        //.DataValueField("string")
+        .DataSource(dataSource => dataSource
+        .Events(ds => ds.RequestEnd("onDHLeaguesRequestEnd"))
+        .Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["DataHiveUrl"] + "base/leagues").Type(HttpVerbs.Get))
+        )
+)
+<div id="tvDHGames" style="color: #82CAFF"></div>
+
+<script type="text/javascript">
+    var DHLeague;
+    var DHLeagueChange;
+    var GamesPrevious = false;
+    function onDHLeaguesChange(e) {
+        var ddl = $("#ddlDHLeagues").data("kendoDropDownList");
+        DHLeague = ddl.value();
+        DHLeagueChange = true;
+
+        var serviceRoot = DataHiveUrl + "results/";
+        notes = new kendo.data.HierarchicalDataSource({
+            transport: {
+                read: {
+                    url:  "/api/GameHiveNote/",
+                    dataType: "json"
+                }
+            },
+            schema: {
+                data: "notes",
+                model: {
+                    hasChildren: false
+                    //id: "HiveID",
+                    //fields: {NoteColor: {type: "string"},},
+                    //text: "NoteColor",
+                    //NoteColor: "NoteColor",
+                    //expanded: false,
+                    //hasChildren: false
+                    //hasChildren: "HasEmployees"
+                }
+            }
+        }); 
+
+        var Today="/today";
+        var SportType; 
+
+        if (DHLeague!=undefined)
+        {
+            SportType = GetSportType(DHLeague);
+            if (SportType !=null)
+            {
+                if (SportType.indexOf("Racing")!=-1)
+                    Today="/CurrentWeek";
+                else if (SportType.indexOf("Tennis")!=-1)
+                    Today="/CurrentWeek/Singles";
+            }
+
+            if ( DHLeague=="CFB")
+                Today="/CurrentWeek";
+            else if (DHLeague=="NFL" )
+                // Today="/CurrentWeek";
+                Today="/CurrentWeek";
+            
+        }
+
+        
+        if (GamesPrevious)
+            Today="/previous";
+
+        var url='';
+        if (DHLeague=='CBK' || DHLeague=='WCBK')
+            url = serviceRoot + DHLeague + Today + "/summary" ;//+ '/?$select=CorrelationId,VisitorTeamName,HomeTeamName,VisitorTeamAlias,HomeTeamAlias,League,HomeSeed,VisitorSeed,HomeRank,VisitorRank,DateTimeUtc';
+            // else if (DHLeague=='WCBK')
+            //   url = serviceRoot + DHLeague +  Today + '/?$select=CorrelationId,VisitorTeamName,HomeTeamName,VisitorTeamAlias,HomeTeamAlias,League,HomeSeed,VisitorSeed,HomeRank,VisitorRank,DateTimeUtc';
+        else if (DHLeague=='MLB' || DHLeague=='NBA' || DHLeague=='NHL')
+            url = DataHiveUrl + "schedules/" +DHLeague+"/CurrentWeek";
+        else
+            url = serviceRoot + DHLeague + Today;
+
+        var newds= new kendo.data.HierarchicalDataSource({
+            transport: {
+                read: {
+                    url: url
+                }
+            },
+            requestEnd: onnewRequestEnd,
+            schema: {
+                model: {
+                    id: "CorrelationId",
+                    hasChildren: true,
+                    //expanded: true,
+                              
+                }
+            }
+        });
+
+        homogeneous = new kendo.data.HierarchicalDataSource({
+            transport: {
+                read: {
+                    url: url
+                }
+            },
+            requestEnd: onDHGamesRequestEnd,
+            schema: {
+                model: {
+                    id: "CorrelationId",
+                    //hasChildren: true,
+                    expanded: true,
+                    children: {
+                        transport: {
+                            read: {
+                                url:  "/api/GameHiveNote/",
+                                dataType: "json",
+                                data: {ClientID: '@ViewData["ClientID"]' }
+                            }
+                        },
+                        schema: {
+                            //data: "notes",
+                            model: {
+                                hasChildren: false
+                            }
+                        }
+                    }                
+                }
+            }
+        });
+
+        if ($("#tvDHGames").data("kendoTreeView")!=undefined)
+        {
+            if (DHLeague=='MLB' || DHLeague=='NBA' || DHLeague=='NHL')
+            {
+                var treeview = $("#tvDHGames").data("kendoTreeView");
+                treeview.setDataSource(new kendo.data.HierarchicalDataSource({
+                    transport: {
+                        read: {
+                            url: url
+                        }
+                    },
+                    requestEnd: onnewRequestEnd,
+                    //  expand: onDatesExpand,
+                    schema: {
+                        model: {
+                            id: "CorrelationId",
+                            hasChildren: true,
+                            //expanded: true,
+                            children: {
+                                transport: {
+                                    read: {
+                                        url:  url,
+                                        dataType: "json",
+                                        //data: {ClientID: '@ViewData["ClientID"]' }
+                                    }
+                                },
+                                requestEnd: onGameRequestEnd,
+                                schema: {
+                                    //data: "notes",
+                                    model: {
+                                        id: "GameId",
+                                        hasChildren: true,
+                                        children: {
+                                            transport: {
+                                                read: {
+                                                    url:  url,
+                                                    dataType: "json",
+                                                    //data: {ClientID: '@ViewData["ClientID"]' }
+                                                }
+                                            },
+                                            requestEnd: onNoteRequestEnd,
+                                            schema: {
+                                                //data: "notes",
+                                                model: {
+                                                    id: "CorrelationId",
+                                                    hasChildren: false
+
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                              
+                        }
+                    }
+                }));
+            }
+            else
+            {
+                var treeview = $("#tvDHGames").data("kendoTreeView");
+                treeview.setDataSource(new kendo.data.HierarchicalDataSource({
+                    transport: {
+                        read: {
+                            url: url, //serviceRoot + DHLeague + Today,
+                        }
+                    },
+                    requestEnd: onDHGamesRequestEnd,
+                    schema: {
+                        model: {
+                            id: "CorrelationId",
+                            //hasChildren: true,
+                            expanded: true,
+                            children: {
+                                transport: {
+                                    read: {
+                                        url:  "/api/GameHiveNote/",
+                                        dataType: "json",
+                                        data: {ClientID: '@ViewData["ClientID"]' }
+                                    }
+                                },
+                                schema: {
+                                    //data: "notes",
+                                    model: {
+                                        hasChildren: false
+                                    }
+                                }
+                            }                
+                        }
+                    }  
+                }));
+            }
+        }
+        else
+        {
+            if (DHLeague=='MLB' || DHLeague=='NBA' || DHLeague=='NHL')
+            {
+                var ktv = $("#tvDHGames").kendoTreeView({
+                    dataSource: newds,
+                    dragAndDrop: true,
+                    //drop: onDropAppend,
+                    // expand: onDatesExpand,
+                    dataTextField: ["Name","Game","Note"]//, "Note"]
+                }); 
+            }
+            else
+            {
+
+            }
+            var ktv = $("#tvDHGames").kendoTreeView({
+                dataSource: homogeneous,
+                dragAndDrop: true,
+                //drop: onDropAppend,
+                dataTextField: ["Name","Game" ,"Note"]
+            });    
+        }
+
+    }
+
+    function onDHLeaguesRequestEnd(e) {
+    }
+
+
+    function onnewRequestEnd(e) {
+        var fullresponse = e.response;
+
+        for (var i = 0; i < e.response.length; i++) {
+            e.response[i].DateTimeUtc = new Date(e.response[i].DateTimeUtc.replace(/-/g, "/"));
+            Date.prototype.yyyymmdd = function () {
+                var yyyy = this.getFullYear().toString();
+                var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
+                var dd = this.getDate().toString();
+                return (mm[1] ? mm : "0" + mm[0]) + "/" + (dd[1] ? dd : "0" + dd[0]) + "/" + yyyy;
+            };
+
+            e.response[i].DateTimeUtc = new Date(e.response[i].DateTimeUtc).yyyymmdd();
+        }
+
+        var UniqueNames = $.unique(fullresponse.map(function (d) { return d.DateTimeUtc; }));
+        alert(UniqueNames);
+        //e.response=[];
+        e.response.length = 0;
+        for (var r = 0; r < UniqueNames.length; r++) {
+            e.response.push({ key: r, fauxGame: true, Name: UniqueNames[r] });
+            //e.response[r].Name= UniqueNames[r];
+        }
+        e.response.unshift({ key: "3", fauxGame: true, Name: "Previous - Quick Rip" });
+        e.response.unshift({ key: "2", fauxGame: true, Name: "Previous" });
+        e.response.unshift({ key: "1", fauxGame: true, Name: "Today - Quick Rip" });
+        e.response.unshift({ key: "0", fauxGame: true, Name: "Today" });
+    }
+
+
+    function onDHGamesRequestEnd(e) {
+        if (!DHLeagueChange || e.response == undefined) return;
+        // alert(JSON.stringify(e.response));
+        // alert(e.response.length);
+        if ((DHLeague.indexOf("CFB") != -1 || DHLeague.indexOf("CBK") != -1) && e.response.length > 0)
+            SortGamesByRankingSpecial(e.response, DHLeague);
+        // alert(e.response.length);
+        for (var r = 0; r < e.response.length; r++) {
+
+            var SportType;
+
+            if (e.response[r].League != undefined) {
+
+                SportType = GetSportType(e.response[r].League);
+                if (SportType.indexOf("Racing") != -1) {
+                    if (e.response[r].Description != null)
+                        e.response[r].Name = e.response[r].Description + " @@ " + e.response[r].Race;
+                    else
+                        e.response[r].Name = e.response[r].Race;
+                }
+                else if (SportType.indexOf("Tennis") != -1) {
+                }
+                else if (SportType.indexOf("Golf") != -1)
+                    e.response[r].Name = e.response[r].Name + " @@ " + e.response[r].Location.City + ", " + e.response[r].Location.CountryOrState;
+                else if (e.response[r].VisitorTeamAlias == null || e.response[r].HomeTeamAlias == null)
+                    e.response[r].Name = e.response[r].VisitorTeamName.toUpperCase() + " @@ " + e.response[r].HomeTeamName.toUpperCase();
+                else
+                    e.response[r].Name = e.response[r].VisitorTeamAlias.toUpperCase() + " @@ " + e.response[r].HomeTeamAlias.toUpperCase();
+
+                //e.response[r].children=notes;//e.response[r];
+
+                //e.response[r].hasChildren=true;
+
+
+                //e.response[r].hasChildren=true;
+                //line below shows carret if gamehivenote exists
+                $.ajax
+                    ({
+                        //"cache": "false",
+                        "type": "GET",
+                        async: false,
+                        'url': "/api/GameHiveNote/?useGrid=True&CorrelationId=" + e.response[r].CorrelationId + "&ClientID=" + '@ViewData["ClientID"]',
+                        "contentType": "application/json;charset=utf-8",
+                        'success': function (data, status, jxhr) {
+                            try {
+                                e.response[r].hasChildren = data.Total > 0;
+                            } catch (err) { }
+                        }, 'error': function (jxhr, status, thrown) {
+                            try {
+                                // if (!isIE || isDebugMode) {
+                                //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                //                            console.log(jxhr);
+                                //                            console.log(status);
+                                //                            console.log(thrown);
+                                //  }
+                            } catch (err) { }
+                        }, 'complete': function (data, status) {
+                            // if (!isIE || isDebugMode) {
+                            //                        console.log(data);
+                            //                        console.log(status);
+                            //  }
+                        }, 'statusCode': {
+                            404: function () {
+                                //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                            }
+                        }
+                    });
+            }
+        }
+
+        //if (DHLeague.indexOf("NASCAR")!=-1)
+        //    e.response.unshift({key: "3", fauxGame: true, Name: "Today's Leader List"});
+
+        if (DHLeague.indexOf("CBK") != -1) {
+            e.response.unshift({ key: "6", fauxGame: true, Name: "Top 25 - Previous" });
+            e.response.unshift({ key: "5", fauxGame: true, Name: "Top 25 - Today" });
+            e.response.unshift({ key: "4", fauxGame: true, Name: "AP Rankings" });
+        }
+
+        if (DHLeague.indexOf("CFB") != -1) {
+            e.response.unshift({ key: "9", fauxGame: true, Name: "Top 25 - Previous" });
+            e.response.unshift({ key: "8", fauxGame: true, Name: "Top 25 - Today" });
+            e.response.unshift({ key: "7", fauxGame: true, Name: "Top 25" });
+            e.response.unshift({ key: "6", fauxGame: true, Name: "Current Week" });
+            e.response.unshift({ key: "5", fauxGame: true, Name: "CFP Rankings" });
+            e.response.unshift({ key: "4", fauxGame: true, Name: "AP Rankings" });
+        }
+
+        if (DHLeague.indexOf("NASCARSprintCup") != -1 || DHLeague.indexOf("NASCARNationWide") != -1) {
+            e.response.unshift({ key: "4", fauxGame: true, Name: "Standings" });
+        }
+
+        if (DHLeague.indexOf("NFL") != -1) {
+            e.response.unshift({ key: "7", fauxGame: true, Name: "Weekly Leaders - Receiving" });
+            e.response.unshift({ key: "6", fauxGame: true, Name: "Weekly Leaders - Rushing" });
+            e.response.unshift({ key: "5", fauxGame: true, Name: "Weekly Leaders - Passing" });
+            e.response.unshift({ key: "4", fauxGame: true, Name: "Current Week" });
+
+
+        }
+
+        e.response.unshift({ key: "3", fauxGame: true, Name: "Previous - Quick Rip" });
+        e.response.unshift({ key: "2", fauxGame: true, Name: "Previous" });
+        e.response.unshift({ key: "1", fauxGame: true, Name: "Today - Quick Rip" });
+        e.response.unshift({ key: "0", fauxGame: true, Name: "Today" });
+        // alert(DHLeague.indexOf("CFB"));
+        DHLeagueChange = false;
+    }
+
+    function onNoteRequestEnd(e) {
+        var correlid = e.sender.options.data.CorrelationId;
+        e.response.length = 0;
+        $.ajax
+             ({
+                 //"cache": "false",
+                 "type": "GET",
+                 async: false,
+                 'url': "/api/GameHiveNote/?CorrelationId=" + correlid + "&ClientID=49",
+                 "contentType": "application/json;charset=utf-8",
+                 'success': function (data, status, jxhr) {
+                     try {
+                         for (var i = 0; i < data.length; i++) {
+
+                             e.response.push({ "Note": data[i].Note, "CorrelationId": data[i].HiveID });
+                         }
+                     } catch (err) { }
+                 }, 'error': function (jxhr, status, thrown) {
+                     try {
+
+                     } catch (err) { }
+                 }, 'complete': function (data, status) {
+
+                 }, 'statusCode': {
+                     404: function () {
+
+                     }
+                 }
+             });
+    }
+
+    function onGameRequestEnd(e) {
+        debugger;
+        var sdate = e.sender.options.data.Name;
+        for (var i = 0; i < e.response.length; i++) {
+            e.response[i].DateTimeUtc = new Date(e.response[i].DateTimeUtc.replace(/-/g, "/"));
+            Date.prototype.yyyymmdd = function () {
+                var yyyy = this.getFullYear().toString();
+                var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
+                var dd = this.getDate().toString();
+                return (mm[1] ? mm : "0" + mm[0]) + "/" + (dd[1] ? dd : "0" + dd[0]) + "/" + yyyy;
+            };
+
+            e.response[i].DateTimeUtc = new Date(e.response[i].DateTimeUtc).yyyymmdd();
+        }
+        lstgamenames = [];
+        for (var i = 0; i < e.response.length; i++) {
+            if (e.response[i].DateTimeUtc == sdate) {
+                lstgamenames.push({ "GameName": e.response[i].VisitingTeam["Alias"].toUpperCase() + " @@ " + e.response[i].HomeTeam["Alias"].toUpperCase(), "CorrelationId": e.response[i].CorrelationId });
+            }
+        }
+        e.response.length = 0;
+        for (var j = 0; j < lstgamenames.length; j++) {
+
+            e.response.push({ key: j, fauxGame: true, Game: lstgamenames[j].GameName, CorrelationId: lstgamenames[j].CorrelationId });
+
+        }
+
+
+    }
+
+    </script>

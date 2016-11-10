@@ -1,0 +1,2425 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="FoxTickModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="auth_admin_log">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="action_time" Type="datetime" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="content_type_id" Type="int" />
+          <Property Name="object_id" Type="nvarchar(max)" />
+          <Property Name="object_repr" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="action_flag" Type="smallint" Nullable="false" />
+          <Property Name="change_message" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="auth_content_type">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="app_label" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="model" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BreakingNews">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TopicMovie" Type="nvarchar" MaxLength="50" />
+          <Property Name="IntroText" Type="nvarchar" MaxLength="50" />
+          <Property Name="Note" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Enabled" Type="bit" Nullable="false" />
+          <Property Name="BreakingNewsTypeID" Type="int" Nullable="false" />
+          <Property Name="ClientID" Type="tinyint" Nullable="false" />
+          <Property Name="HeaderText" Type="nvarchar" MaxLength="50" />
+          <Property Name="Repeat" Type="int" Nullable="false" />
+          <Property Name="NumberOfGraphicsBetween" Type="tinyint" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="SortOrder" Type="tinyint" />
+          <Property Name="ExpiresOn" Type="datetime" />
+          <Property Name="ExpiresIn" Type="tinyint" />
+          <Property Name="ExpirationMode" Type="int" />
+          <Property Name="HeaderImage" Type="nchar" MaxLength="50" />
+          <Property Name="ColorHex" Type="nvarchar" MaxLength="20" />
+          <Property Name="IntroMovie" Type="nvarchar(max)" />
+          <Property Name="TopicText" Type="nvarchar(max)" />
+          <Property Name="HeaderMovie" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="BreakingNewsExpirationModes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="BreakingNewsTypes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Enabled" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" Nullable="false" />
+          <Property Name="Abbreviation" Type="nvarchar" MaxLength="10" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="LockClient" Type="bit" />
+          <Property Name="SponsorSync" Type="nvarchar" MaxLength="10" />
+          <Property Name="DataHiveEnabled" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ClientShares">
+          <Key>
+            <PropertyRef Name="ClientFrom" />
+            <PropertyRef Name="ClientTo" />
+          </Key>
+          <Property Name="ClientFrom" Type="tinyint" Nullable="false" />
+          <Property Name="ClientTo" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ClientSports">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="SportID" Type="int" Nullable="false" />
+          <Property Name="AltShortDisplay" Type="nvarchar" MaxLength="20" />
+          <Property Name="AltLongDisplay" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="ClientTeams">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="TeamID" Type="int" Nullable="false" />
+          <Property Name="AltAbbreviation" Type="nchar" MaxLength="10" />
+          <Property Name="AltCityName" Type="nchar" MaxLength="50" />
+          <Property Name="AltNickName" Type="nchar" MaxLength="50" />
+          <Property Name="AltPrimaryColor" Type="nchar" MaxLength="11" />
+          <Property Name="AltSecondaryColor" Type="nchar" MaxLength="11" />
+          <Property Name="AltRanking" Type="int" />
+        </EntityType>
+        <EntityType Name="GameHiveNotes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HiveID" Type="nvarchar" MaxLength="50" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="Note" Type="text" Nullable="false" />
+          <Property Name="NoteColor" Type="text" />
+          <Property Name="TeamID" Type="int" />
+          <Property Name="Header" Type="nvarchar" MaxLength="50" />
+          <Property Name="SortOrder" Type="int" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="SportID" Type="int" />
+          <Property Name="GameNoteType" Type="nvarchar(max)" />
+          <Property Name="UserDefinedNum" Type="int" />
+          <Property Name="LeagueCode" Type="nchar" MaxLength="10" />
+          <Property Name="TeamCode" Type="nchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="GameNotes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GameID" Type="int" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="Note" Type="text" Nullable="false" />
+          <Property Name="NoteColor" Type="text" />
+          <Property Name="TeamID" Type="int" />
+          <Property Name="Header" Type="nvarchar" MaxLength="50" />
+          <Property Name="SortOrder" Type="int" />
+          <Property Name="Imported" Type="bit" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="InGameStatID" Type="int" />
+        </EntityType>
+        <EntityType Name="Games">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SportID" Type="int" Nullable="false" />
+          <Property Name="StatsIncID" Type="bigint" Nullable="false" />
+          <Property Name="VisitorsID" Type="int" Nullable="false" />
+          <Property Name="HomeID" Type="int" Nullable="false" />
+          <Property Name="VisitorsScore" Type="int" Nullable="false" />
+          <Property Name="HomeScore" Type="int" Nullable="false" />
+          <Property Name="GameStatusID" Type="tinyint" Nullable="false" />
+          <Property Name="StatusID" Type="int" Nullable="false" />
+          <Property Name="Clock" Type="nvarchar" MaxLength="8" />
+          <Property Name="GameDateTime" Type="datetime" />
+          <Property Name="BoxScore" Type="bit" Nullable="false" />
+          <Property Name="Details" Type="varchar(max)" />
+          <Property Name="ScoreAlertID" Type="tinyint" />
+          <Property Name="LastVisitorsScore" Type="int" />
+          <Property Name="LastHomeScore" Type="int" />
+          <Property Name="DetailsPreScore" Type="varchar(max)" />
+          <Property Name="DetailsPostScore" Type="varchar(max)" />
+          <Property Name="StatusIDPreScore" Type="int" />
+          <Property Name="TeamID" Type="int" />
+          <Property Name="Header" Type="nchar" MaxLength="50" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="ScoreDescription" Type="nvarchar(max)" />
+          <Property Name="SortOrder" Type="int" />
+          <Property Name="BlockData" Type="bit" Nullable="false" />
+          <Property Name="ScoreLastUpdated" Type="datetime" />
+          <Property Name="ScoreDescriptionAlt" Type="nvarchar(max)" />
+          <Property Name="CSSID" Type="int" />
+          <Property Name="HiveID" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="GameStatuses">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GroupAnimationTypes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Description" Type="text" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GroupGames">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HiveID" Type="nvarchar" MaxLength="50" />
+          <Property Name="GroupID" Type="int" Nullable="false" />
+          <Property Name="GameID" Type="int" />
+          <Property Name="SportID" Type="int" Nullable="false" />
+          <Property Name="SortOrder" Type="int" />
+          <Property Name="SDMLeagueCode" Type="nvarchar(max)" />
+          <Property Name="DataSource" Type="int" />
+        </EntityType>
+        <EntityType Name="Groups">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="OnAirName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="TeamID" Type="int" />
+          <Property Name="Header" Type="nvarchar" MaxLength="50" />
+          <Property Name="GroupAnimationTypeID" Type="int" Nullable="false" />
+          <Property Name="Editable" Type="bit" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="SDMTeamCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="SDMLeagueCode" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="LeaguesSettings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="LeagueCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="SettingsID" Type="int" />
+          <Property Name="OptionsID" Type="int" />
+        </EntityType>
+        <EntityType Name="Notes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupID" Type="int" Nullable="false" />
+          <Property Name="Note" Type="text" Nullable="false" />
+          <Property Name="NoteColor" Type="text" />
+          <Property Name="TeamID" Type="int" />
+          <Property Name="Header" Type="nvarchar" MaxLength="50" />
+          <Property Name="SortOrder" Type="int" />
+          <Property Name="Imported" Type="bit" />
+          <Property Name="LastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+        </EntityType>
+        <EntityType Name="PlaylistDetails">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlaylistID" Type="int" Nullable="false" />
+          <Property Name="EntryTypeID" Type="tinyint" Nullable="false" />
+          <Property Name="EntryID" Type="int" Nullable="false" />
+          <Property Name="HiveID" Type="nvarchar" MaxLength="50" />
+          <Property Name="SortOrder" Type="int" />
+          <Property Name="OnAirName" Type="nvarchar" MaxLength="50" />
+          <Property Name="NotesTypeID" Type="tinyint" />
+          <Property Name="RipCount" Type="tinyint" />
+          <Property Name="RipGameStatusTypeID" Type="int" />
+          <Property Name="Specifics1" Type="nvarchar" MaxLength="20" />
+          <Property Name="SDMLeagueCode" Type="nvarchar(max)" />
+          <Property Name="DataSource" Type="int" />
+        </EntityType>
+        <EntityType Name="Playlists">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastUpdated" Type="datetime" />
+          <Property Name="Locked" Type="bit" />
+          <Property Name="Staged" Type="bit" />
+          <Property Name="PlaylistTypeID" Type="tinyint" />
+          <Property Name="ScoreboardID" Type="int" />
+        </EntityType>
+        <EntityType Name="PlaylistTypes">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Settings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Value" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="SettingsOptions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SettingsOptionValueID" Type="int" Nullable="false" />
+          <Property Name="Value" Type="nvarchar(max)" />
+          <Property Name="SettingsID" Type="int" />
+        </EntityType>
+        <EntityType Name="Sports">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="ShortDisplay" Type="nvarchar" MaxLength="20" />
+          <Property Name="LongDisplay" Type="nvarchar" MaxLength="50" />
+          <Property Name="StatsIncName" Type="nvarchar" MaxLength="50" />
+          <Property Name="KeepResultsInDays" Type="int" />
+          <Property Name="SportType" Type="nvarchar" MaxLength="20" />
+          <Property Name="DisplayField" Type="nvarchar" MaxLength="12" />
+          <Property Name="GameFrequency" Type="nvarchar" MaxLength="5" />
+          <Property Name="HivePrefix" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Statuses">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SportID" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="40" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'FoxTickNew.dbo.Teams' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Teams">
+          <Key>
+            <PropertyRef Name="ID" />
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="StatsIncID" Type="int" Nullable="false" />
+          <Property Name="SportID" Type="int" Nullable="false" />
+          <Property Name="Abbreviation" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="CityName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="NickName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PrimaryColor" Type="nchar" MaxLength="11" />
+          <Property Name="SecondaryColor" Type="nchar" MaxLength="11" />
+          <Property Name="Ranking" Type="int" />
+          <Property Name="Wins" Type="int" />
+          <Property Name="Loss" Type="int" />
+          <Property Name="Tie" Type="int" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="20" />
+          <Property Name="LastName" Type="varchar" MaxLength="20" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="Admin" Type="bit" />
+          <Property Name="Inactive" Type="bit" />
+          <Property Name="SecurityLevelID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__auth_admi__conte__66EA454A">
+          <End Role="auth_content_type" Type="Self.auth_content_type" Multiplicity="0..1" />
+          <End Role="auth_admin_log" Type="Self.auth_admin_log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="auth_content_type">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="auth_admin_log">
+              <PropertyRef Name="content_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__auth_admi__user___67DE6983">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="auth_admin_log" Type="Self.auth_admin_log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="auth_admin_log">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_BreakingNewsTypeBreakingNews">
+          <End Role="BreakingNewsTypes" Type="Self.BreakingNewsTypes" Multiplicity="1" />
+          <End Role="BreakingNews" Type="Self.BreakingNews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BreakingNewsTypes">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="BreakingNews">
+              <PropertyRef Name="BreakingNewsTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientBreakingNews">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="BreakingNews" Type="Self.BreakingNews" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="BreakingNews">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientShareFrom">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="ClientShares" Type="Self.ClientShares" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClientShares">
+              <PropertyRef Name="ClientFrom" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientShareTo">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="ClientShares" Type="Self.ClientShares" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClientShares">
+              <PropertyRef Name="ClientTo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GameGroupGame">
+          <End Role="Games" Type="Self.Games" Multiplicity="0..1" />
+          <End Role="GroupGames" Type="Self.GroupGames" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupGames">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupGroupGame">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="1" />
+          <End Role="GroupGames" Type="Self.GroupGames" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupGames">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notes_Groups">
+          <End Role="Groups" Type="Self.Groups" Multiplicity="1" />
+          <End Role="Notes" Type="Self.Notes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Groups">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Notes">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="spTICK_GameNotes_GetByGameID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GameID" Type="int" Mode="In" />
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Games_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+          <Parameter Name="SportID" Type="int" Mode="In" />
+          <Parameter Name="PriorResults" Type="bit" Mode="In" />
+          <Parameter Name="OnlyFinals" Type="bit" Mode="In" />
+          <Parameter Name="OnlySorted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Games_GetByEntryID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+          <Parameter Name="EntryID" Type="int" Mode="In" />
+          <Parameter Name="EntryTypeID" Type="int" Mode="In" />
+          <Parameter Name="OnlyFinals" Type="bit" Mode="In" />
+          <Parameter Name="OnlySorted" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Group_GetByType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+          <Parameter Name="Type" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="spTICK_GroupTypes_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Importer_GameCreate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="SportID" Type="int" Mode="In" />
+          <Parameter Name="VisitorsID" Type="int" Mode="In" />
+          <Parameter Name="HomeID" Type="int" Mode="In" />
+          <Parameter Name="VisitorsScore" Type="int" Mode="In" />
+          <Parameter Name="HomeScore" Type="int" Mode="In" />
+          <Parameter Name="Clock" Type="nvarchar" Mode="In" />
+          <Parameter Name="GameStatusID" Type="int" Mode="In" />
+          <Parameter Name="Status" Type="nvarchar" Mode="In" />
+          <Parameter Name="GameDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="SortOrder" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Notes_GetByGroup" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GroupID" Type="int" Mode="In" />
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Playlist_Details_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PlaylistID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Playlist_Stage" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+          <Parameter Name="PlaylistID" Type="int" Mode="In" />
+          <Parameter Name="StageFlag" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Playlists_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="spTICK_ScoreAlert_SetClientComplete" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+          <Parameter Name="GameID" Type="int" Mode="In" />
+          <Parameter Name="ClientIP" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="spTICK_ScoreAlerts_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+          <Parameter Name="SportID" Type="int" Mode="In" />
+          <Parameter Name="ClientIP" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="spTICK_ScoreAlerts_Get_FTL" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientID" Type="int" Mode="In" />
+          <Parameter Name="SportID" Type="int" Mode="In" />
+          <Parameter Name="ClientIP" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="spTICK_Users_Get" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Uname" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="FoxTickModelStoreContainer">
+          <EntitySet Name="auth_admin_log" EntityType="Self.auth_admin_log" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="auth_content_type" EntityType="Self.auth_content_type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BreakingNews" EntityType="Self.BreakingNews" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BreakingNewsExpirationModes" EntityType="Self.BreakingNewsExpirationModes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BreakingNewsTypes" EntityType="Self.BreakingNewsTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientShares" EntityType="Self.ClientShares" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientSports" EntityType="Self.ClientSports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientTeams" EntityType="Self.ClientTeams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameHiveNotes" EntityType="Self.GameHiveNotes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameNotes" EntityType="Self.GameNotes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Games" EntityType="Self.Games" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameStatuses" EntityType="Self.GameStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupAnimationTypes" EntityType="Self.GroupAnimationTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupGames" EntityType="Self.GroupGames" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Groups" EntityType="Self.Groups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LeaguesSettings" EntityType="Self.LeaguesSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notes" EntityType="Self.Notes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlaylistDetails" EntityType="Self.PlaylistDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Playlists" EntityType="Self.Playlists" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlaylistTypes" EntityType="Self.PlaylistTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Settings" EntityType="Self.Settings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SettingsOptions" EntityType="Self.SettingsOptions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sports" EntityType="Self.Sports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Statuses" EntityType="Self.Statuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Teams" EntityType="Self.Teams" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[Teams].[ID] AS [ID], 
+[Teams].[StatsIncID] AS [StatsIncID], 
+[Teams].[SportID] AS [SportID], 
+[Teams].[Abbreviation] AS [Abbreviation], 
+[Teams].[CityName] AS [CityName], 
+[Teams].[NickName] AS [NickName], 
+[Teams].[PrimaryColor] AS [PrimaryColor], 
+[Teams].[SecondaryColor] AS [SecondaryColor], 
+[Teams].[Ranking] AS [Ranking], 
+[Teams].[Wins] AS [Wins], 
+[Teams].[Loss] AS [Loss], 
+[Teams].[Tie] AS [Tie]
+FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__auth_admi__conte__66EA454A" Association="Self.FK__auth_admi__conte__66EA454A">
+            <End Role="auth_content_type" EntitySet="auth_content_type" />
+            <End Role="auth_admin_log" EntitySet="auth_admin_log" />
+          </AssociationSet>
+          <AssociationSet Name="FK__auth_admi__user___67DE6983" Association="Self.FK__auth_admi__user___67DE6983">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="auth_admin_log" EntitySet="auth_admin_log" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BreakingNewsTypeBreakingNews" Association="Self.FK_BreakingNewsTypeBreakingNews">
+            <End Role="BreakingNewsTypes" EntitySet="BreakingNewsTypes" />
+            <End Role="BreakingNews" EntitySet="BreakingNews" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientBreakingNews" Association="Self.FK_ClientBreakingNews">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="BreakingNews" EntitySet="BreakingNews" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientShareFrom" Association="Self.FK_ClientShareFrom">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="ClientShares" EntitySet="ClientShares" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientShareTo" Association="Self.FK_ClientShareTo">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="ClientShares" EntitySet="ClientShares" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GameGroupGame" Association="Self.FK_GameGroupGame">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="GroupGames" EntitySet="GroupGames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupGroupGame" Association="Self.FK_GroupGroupGame">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="GroupGames" EntitySet="GroupGames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notes_Groups" Association="Self.FK_Notes_Groups">
+            <End Role="Groups" EntitySet="Groups" />
+            <End Role="Notes" EntitySet="Notes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Fox.Tick" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FoxTickerEntities" p1:LazyLoadingEnabled="false">
+          <EntitySet Name="Groups" EntityType="Fox.Tick.Group" />
+          <EntitySet Name="Notes" EntityType="Fox.Tick.Note" />
+          <EntitySet Name="Clients" EntityType="Fox.Tick.Client" />
+          <EntitySet Name="Teams" EntityType="Fox.Tick.Team" />
+          <EntitySet Name="PlaylistDetails" EntityType="Fox.Tick.PlaylistDetail" />
+          <EntitySet Name="Playlists" EntityType="Fox.Tick.Playlist" />
+          <FunctionImport Name="spTICK_GameNotes_GetByGameID" ReturnType="Collection(Fox.Tick.spTICK_GameNotes_GetByGameID_Result)">
+            <Parameter Name="GameID" Mode="In" Type="Int32" />
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="spTICK_Games_GetByEntryID" ReturnType="Collection(Fox.Tick.spTICK_Games_GetByEntryID_Result)">
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+            <Parameter Name="EntryID" Mode="In" Type="Int32" />
+            <Parameter Name="EntryTypeID" Mode="In" Type="Int32" />
+            <Parameter Name="OnlyFinals" Mode="In" Type="Boolean" />
+            <Parameter Name="OnlySorted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="spTICK_Notes_GetByGroup" ReturnType="Collection(Fox.Tick.spTICK_Notes_GetByGroup_Result)">
+            <Parameter Name="GroupID" Mode="In" Type="Int32" />
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="spTICK_ScoreAlerts_Get_FTL" ReturnType="Collection(Fox.Tick.spTICK_ScoreAlerts_Get_FTL_Result)">
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+            <Parameter Name="SportID" Mode="In" Type="Int32" />
+            <Parameter Name="ClientIP" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="spTICK_ScoreAlert_SetClientComplete">
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+            <Parameter Name="GameID" Mode="In" Type="Int32" />
+            <Parameter Name="ClientIP" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Games" EntityType="Fox.Tick.Game" />
+          <FunctionImport Name="spTICK_ScoreAlerts_Get" ReturnType="Collection(Fox.Tick.spTICK_ScoreAlerts_Get_Result)">
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+            <Parameter Name="SportID" Mode="In" Type="Int32" />
+            <Parameter Name="ClientIP" Mode="In" Type="String" />
+          </FunctionImport>
+          <AssociationSet Name="PlaylistPlaylistDetail" Association="Fox.Tick.PlaylistPlaylistDetail">
+            <End Role="Playlist" EntitySet="Playlists" />
+            <End Role="PlaylistDetail" EntitySet="PlaylistDetails" />
+          </AssociationSet>
+          <EntitySet Name="Sports" EntityType="Fox.Tick.Sport" />
+          <FunctionImport Name="spTICK_Games_Get" ReturnType="Collection(Fox.Tick.spTICK_Games_Get_Result)">
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+            <Parameter Name="SportID" Mode="In" Type="Int32" />
+            <Parameter Name="PriorResults" Mode="In" Type="Boolean" />
+            <Parameter Name="OnlyFinals" Mode="In" Type="Boolean" />
+            <Parameter Name="OnlySorted" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="spTICK_Importer_GameCreate">
+            <Parameter Name="SportID" Mode="In" Type="Int32" />
+            <Parameter Name="VisitorsID" Mode="In" Type="Int32" />
+            <Parameter Name="HomeID" Mode="In" Type="Int32" />
+            <Parameter Name="VisitorsScore" Mode="In" Type="Int32" />
+            <Parameter Name="HomeScore" Mode="In" Type="Int32" />
+            <Parameter Name="Clock" Mode="In" Type="String" />
+            <Parameter Name="GameStatusID" Mode="In" Type="Int32" />
+            <Parameter Name="Status" Mode="In" Type="String" />
+            <Parameter Name="GameDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="SortOrder" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Statuses" EntityType="Fox.Tick.Status" />
+          <AssociationSet Name="SportStatus" Association="Fox.Tick.SportStatus">
+            <End Role="Sport" EntitySet="Sports" />
+            <End Role="Status" EntitySet="Statuses" />
+          </AssociationSet>
+          <AssociationSet Name="SportGame" Association="Fox.Tick.SportGame">
+            <End Role="Sport" EntitySet="Sports" />
+            <End Role="Game" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="SportTeam" Association="Fox.Tick.SportTeam">
+            <End Role="Sport" EntitySet="Sports" />
+            <End Role="Team" EntitySet="Teams" />
+          </AssociationSet>
+          <EntitySet Name="GameNotes" EntityType="Fox.Tick.GameNote" />
+          <AssociationSet Name="GameGameNote" Association="Fox.Tick.GameGameNote">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="GameNote" EntitySet="GameNotes" />
+          </AssociationSet>
+          <EntitySet Name="ClientTeams" EntityType="Fox.Tick.ClientTeam" />
+          <AssociationSet Name="TeamClientTeam" Association="Fox.Tick.TeamClientTeam">
+            <End Role="Team" EntitySet="Teams" />
+            <End Role="ClientTeam" EntitySet="ClientTeams" />
+          </AssociationSet>
+          <EntitySet Name="ClientSports" EntityType="Fox.Tick.ClientSport" />
+          <AssociationSet Name="SportClientSport" Association="Fox.Tick.SportClientSport">
+            <End Role="Sport" EntitySet="Sports" />
+            <End Role="ClientSport" EntitySet="ClientSports" />
+          </AssociationSet>
+          <AssociationSet Name="SportTeam1" Association="Fox.Tick.SportTeam1">
+            <End Role="Sport" EntitySet="Sports" />
+            <End Role="Team" EntitySet="Teams" />
+          </AssociationSet>
+          <EntitySet Name="GroupAnimationTypes" EntityType="Fox.Tick.GroupAnimationType" />
+          <FunctionImport Name="spTICK_Group_GetByType" ReturnType="Collection(Fox.Tick.spTICK_Group_GetByType_Result)">
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+            <Parameter Name="Type" Mode="In" Type="String" />
+          </FunctionImport>
+          <AssociationSet Name="GroupAnimationTypeGroup" Association="Fox.Tick.GroupAnimationTypeGroup">
+            <End Role="GroupAnimationType" EntitySet="GroupAnimationTypes" />
+            <End Role="Group" EntitySet="Groups" />
+          </AssociationSet>
+          <FunctionImport Name="spTICK_GroupTypes_Get" ReturnType="Collection(String)">
+          <Parameter Name="ClientID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <AssociationSet Name="FK_Notes_Groups" Association="Fox.Tick.FK_Notes_Groups">
+            <End Role="Group" EntitySet="Groups" />
+            <End Role="Note" EntitySet="Notes" />
+          </AssociationSet>
+          <FunctionImport Name="spTICK_Users_Get" ReturnType="Collection(Fox.Tick.spTICK_Users_Get_Result)">
+          <Parameter Name="Uname" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Users" EntityType="Fox.Tick.User" />
+          <EntitySet Name="GameHiveNotes" EntityType="Fox.Tick.GameHiveNote" />
+          <EntitySet Name="auth_admin_log" EntityType="Fox.Tick.auth_admin_log" />
+          <AssociationSet Name="FK__auth_admi__user___36D11DD4" Association="Fox.Tick.FK__auth_admi__user___36D11DD4">
+            <End Role="User" EntitySet="Users" />
+            <End Role="auth_admin_log" EntitySet="auth_admin_log" />
+          </AssociationSet>
+          <EntitySet Name="auth_content_type" EntityType="Fox.Tick.auth_content_type" />
+          <AssociationSet Name="FK__auth_admi__conte__4CC05EF3" Association="Fox.Tick.FK__auth_admi__conte__4CC05EF3">
+            <End Role="auth_content_type" EntitySet="auth_content_type" />
+            <End Role="auth_admin_log" EntitySet="auth_admin_log" />
+          </AssociationSet>
+          <FunctionImport Name="spTICK_Playlist_Stage">
+            <Parameter Name="ClientID" Mode="In" Type="Int32" />
+            <Parameter Name="PlaylistID" Mode="In" Type="Int32" />
+            <Parameter Name="StageFlag" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <EntitySet Name="GroupGames" EntityType="Fox.Tick.GroupGame" />
+          <AssociationSet Name="FK_GameGroupGame" Association="Fox.Tick.FK_GameGroupGame">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="GroupGame" EntitySet="GroupGames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupGroupGame" Association="Fox.Tick.FK_GroupGroupGame">
+            <End Role="Group" EntitySet="Groups" />
+            <End Role="GroupGame" EntitySet="GroupGames" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SportGroupGame" Association="Fox.Tick.FK_SportGroupGame">
+            <End Role="Sport" EntitySet="Sports" />
+            <End Role="GroupGame" EntitySet="GroupGames" />
+          </AssociationSet>
+          <EntitySet Name="BreakingNews" EntityType="Fox.Tick.BreakingNew" />
+          <EntitySet Name="BreakingNewsTypes" EntityType="Fox.Tick.BreakingNewsType" />
+          <AssociationSet Name="FK_BreakingNewsTypeBreakingNews" Association="Fox.Tick.FK_BreakingNewsTypeBreakingNews">
+            <End Role="BreakingNewsType" EntitySet="BreakingNewsTypes" />
+            <End Role="BreakingNew" EntitySet="BreakingNews" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ClientBreakingNews" Association="Fox.Tick.FK_ClientBreakingNews">
+            <End Role="Client" EntitySet="Clients" />
+            <End Role="BreakingNew" EntitySet="BreakingNews" />
+          </AssociationSet>
+          <AssociationSet Name="ClientShares" Association="Fox.Tick.ClientShares">
+            <End Role="Client" EntitySet="Clients" />
+            <End Role="Client1" EntitySet="Clients" />
+          </AssociationSet>
+          <EntitySet Name="BreakingNewsExpirationModes" EntityType="Fox.Tick.BreakingNewsExpirationMode" />
+          <EntitySet Name="GameStatuses" EntityType="Fox.Tick.GameStatus" />
+          <FunctionImport Name="spTICK_Playlists_Get" ReturnType="Collection(Fox.Tick.spTICK_Playlists_Get_Result)">
+          <Parameter Name="ClientID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="spTICK_Playlist_Details_Get" ReturnType="Collection(Fox.Tick.spTICK_Playlist_Details_Get_Result)">
+          <Parameter Name="PlaylistID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="PlaylistTypes" EntityType="Fox.Tick.PlaylistType" />
+          <EntitySet Name="LeaguesSettings" EntityType="Fox.Tick.LeaguesSetting" />
+          <EntitySet Name="Settings" EntityType="Fox.Tick.Setting" />
+          <EntitySet Name="SettingsOptions" EntityType="Fox.Tick.SettingsOption" />
+          </EntityContainer>
+        <EntityType Name="Group">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="OnAirName" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="CreatedName" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Type" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="TeamID" Type="Int32" />
+          <Property Name="Header" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="GroupAnimationTypeID" Type="Int32" Nullable="false" />
+          <Property Name="Editable" Type="Boolean" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="GroupAnimationType" Relationship="Fox.Tick.GroupAnimationTypeGroup" FromRole="Group" ToRole="GroupAnimationType" />
+          <NavigationProperty Name="Notes" Relationship="Fox.Tick.FK_Notes_Groups" FromRole="Group" ToRole="Note" />
+          <NavigationProperty Name="GroupGames" Relationship="Fox.Tick.FK_GroupGroupGame" FromRole="Group" ToRole="GroupGame" />
+          <Property Type="String" Name="SDMTeamCode" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="SDMLeagueCode" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Note">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupID" Type="Int32" Nullable="false" />
+          <Property Name="Note1" Type="String" Nullable="false" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="NoteColor" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="TeamID" Type="Int32" />
+          <Property Name="Header" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="SortOrder" Type="Int32" />
+          <Property Name="Imported" Type="Boolean" />
+          <Property Name="LastUpdated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UserID" Type="Int32" />
+          <NavigationProperty Name="Group" Relationship="Fox.Tick.FK_Notes_Groups" FromRole="Note" ToRole="Group" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Byte" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Abbreviation" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Description" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="LockClient" />
+          <Property Type="String" Name="SponsorSync" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="DataHiveEnabled" Nullable="false" />
+          <NavigationProperty Name="BreakingNews" Relationship="Fox.Tick.FK_ClientBreakingNews" FromRole="Client" ToRole="BreakingNew" />
+          <NavigationProperty Name="ClientsTo" Relationship="Fox.Tick.ClientShares" FromRole="Client" ToRole="Client1" />
+          <NavigationProperty Name="Clients" Relationship="Fox.Tick.ClientShares" FromRole="Client1" ToRole="Client" />
+        </EntityType>
+        <EntityType Name="Team">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="StatsIncID" Nullable="false" />
+          <Property Type="Int32" Name="SportID" Nullable="false" />
+          <Property Type="String" Name="Abbreviation" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CityName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="NickName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="PrimaryColor" MaxLength="11" FixedLength="true" Unicode="true" />
+          <Property Type="String" Name="SecondaryColor" MaxLength="11" FixedLength="true" Unicode="true" />
+          <Property Type="Int32" Name="Ranking" />
+          <Property Type="Int32" Name="Wins" />
+          <Property Type="Int32" Name="Loss" />
+          <Property Type="Int32" Name="Tie" />
+          <NavigationProperty Name="Sport" Relationship="Fox.Tick.SportTeam" FromRole="Team" ToRole="Sport" />
+          <NavigationProperty Name="ClientTeams" Relationship="Fox.Tick.TeamClientTeam" FromRole="Team" ToRole="ClientTeam" />
+          <NavigationProperty Name="Sport1" Relationship="Fox.Tick.SportTeam1" FromRole="Team" ToRole="Sport" />
+        </EntityType>
+        <EntityType Name="PlaylistDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="PlaylistID" Nullable="false" />
+          <Property Type="Byte" Name="EntryTypeID" Nullable="false" />
+          <Property Type="Int32" Name="EntryID" Nullable="false" />
+          <Property Type="Int32" Name="SortOrder" />
+          <Property Type="String" Name="OnAirName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Playlist" Relationship="Fox.Tick.PlaylistPlaylistDetail" FromRole="PlaylistDetail" ToRole="Playlist" />
+          <Property Type="String" Name="HiveID" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Byte" Name="RipCount" />
+          <Property Type="Byte" Name="NotesTypeID" />
+          <Property Type="Int32" Name="RipGameStatusTypeID" />
+          
+          <Property Type="String" Name="SDMLeagueCode" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Specifics1" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DataSource" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Playlist">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="LastUpdated" Precision="3" />
+          <Property Type="Boolean" Name="Locked" />
+          <Property Type="Boolean" Name="Staged" />
+          <NavigationProperty Name="PlaylistDetails" Relationship="Fox.Tick.PlaylistPlaylistDetail" FromRole="Playlist" ToRole="PlaylistDetail" />
+          <Property Type="Byte" Name="PlaylistTypeID" />
+          <Property Type="Int32" Name="ScoreboardID" />
+          </EntityType>
+        <ComplexType Name="spTICK_GameNotes_GetByGameID_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="GameID" Nullable="false" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="String" Name="Note" Nullable="false" />
+          <Property Type="String" Name="NoteColor" Nullable="true" />
+          <Property Type="Int32" Name="TeamID" Nullable="false" />
+          <Property Type="Int32" Name="NoteTeamID" Nullable="false" />
+          <Property Type="String" Name="Header" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="NoteHeader" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+          <Property Type="Boolean" Name="Imported" Nullable="false" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="UserID" Nullable="true" />
+          <Property Type="String" Name="TeamAbbreviation" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="TeamCityName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TeamNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TeamPrimaryColor" Nullable="false" MaxLength="11" />
+          <Property Type="String" Name="TeamSecondaryColor" Nullable="false" MaxLength="11" />
+          <Property Type="String" Name="SportDescription" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="SportShortDisplay" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="InGameStatID" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="spTICK_Games_GetByEntryID_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int64" Name="StatsIncID" Nullable="false" />
+          <Property Type="String" Name="Matchup" Nullable="true" MaxLength="23" />
+          <Property Type="Int32" Name="VisitorsID" Nullable="false" />
+          <Property Type="Int32" Name="HomeID" Nullable="false" />
+          <Property Type="Int32" Name="VisitorsRanking" Nullable="true" />
+          <Property Type="Int32" Name="HomeRanking" Nullable="true" />
+          <Property Type="String" Name="VisitorsAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="HomeAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="VisitorsCityName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HomeCityName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="VisitorsNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="HomeNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="VisitorsCity" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HomeCity" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="VisitorsScore" Nullable="false" />
+          <Property Type="Int32" Name="HomeScore" Nullable="false" />
+          <Property Type="String" Name="VisitorsPrimaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="VisitorsSecondaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="HomePrimaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="HomeSecondaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="Int32" Name="LastVisitorsScore" Nullable="true" />
+          <Property Type="Int32" Name="LastHomeScore" Nullable="true" />
+          <Property Type="Byte" Name="ScoreAlertID" Nullable="true" />
+          <Property Type="String" Name="Clock" Nullable="false" MaxLength="8" />
+          <Property Type="Int32" Name="GameStatusID" Nullable="true" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="40" />
+          <Property Type="String" Name="Network" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="NetworkDescription" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="Editable" Nullable="false" />
+          <Property Type="DateTime" Name="GameDateTime" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="23" />
+          <Property Type="String" Name="Details" Nullable="true" />
+          <Property Type="String" Name="DetailsPostScore" Nullable="true" />
+          <Property Type="String" Name="DetailsPreScore" Nullable="true" />
+          <Property Type="String" Name="StatusPreScore" Nullable="true" MaxLength="40" />
+          <Property Type="String" Name="SportType" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+          <Property Type="Boolean" Name="BlockData" Nullable="false" />
+          <Property Type="String" Name="ScoreDescription" Nullable="true" />
+          <Property Type="Int32" Name="VisitorWins" Nullable="false" />
+          <Property Type="Int32" Name="VisitorLoss" Nullable="false" />
+          <Property Type="Int32" Name="VisitorTie" Nullable="false" />
+          <Property Type="Int32" Name="HomeWins" Nullable="false" />
+          <Property Type="Int32" Name="HomeLoss" Nullable="false" />
+          <Property Type="Int32" Name="HomeTie" Nullable="false" />
+          <Property Type="Int32" Name="CSSID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="spTICK_Notes_GetByGroup_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="GroupID" Nullable="false" />
+          <Property Type="String" Name="Note" Nullable="false" MaxLength="Max" />
+          <Property Type="String" Name="NoteColor" Nullable="true" MaxLength="Max" />
+          <Property Type="Int32" Name="SportID" Nullable="true" />
+          <Property Type="Int32" Name="TeamID" Nullable="false" />
+          <Property Type="Int32" Name="NoteTeamID" Nullable="false" />
+          <Property Type="Int32" Name="GroupTeamID" Nullable="false" />
+          <Property Type="String" Name="Header" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="NoteHeader" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="GroupHeader" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+          <Property Type="Boolean" Name="Imported" Nullable="true" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="UserID" Nullable="true" />
+          <Property Type="String" Name="TeamAbbreviation" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="TeamCityName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TeamNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TeamPrimaryColor" Nullable="false" MaxLength="11" />
+          <Property Type="String" Name="TeamSecondaryColor" Nullable="false" MaxLength="11" />
+          <Property Type="String" Name="SportDescription" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="SportShortDisplay" Nullable="false" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="spTICK_ScoreAlerts_Get_FTL_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int64" Name="StatsIncID" Nullable="false" />
+          <Property Type="String" Name="Matchup" Nullable="true" MaxLength="23" />
+          <Property Type="Int32" Name="VisitorsID" Nullable="false" />
+          <Property Type="Int32" Name="HomeID" Nullable="false" />
+          <Property Type="Int32" Name="VisitorsRanking" Nullable="true" />
+          <Property Type="Int32" Name="HomeRanking" Nullable="true" />
+          <Property Type="String" Name="VisitorsAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="HomeAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="VisitorsCityName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HomeCityName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="VisitorsNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="HomeNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="VisitorsCity" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HomeCity" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="VisitorsScore" Nullable="false" />
+          <Property Type="Int32" Name="HomeScore" Nullable="false" />
+          <Property Type="String" Name="VisitorsPrimaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="VisitorsSecondaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="HomePrimaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="HomeSecondaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="Int32" Name="LastVisitorsScore" Nullable="true" />
+          <Property Type="Int32" Name="LastHomeScore" Nullable="true" />
+          <Property Type="Byte" Name="ScoreAlertID" Nullable="true" />
+          <Property Type="String" Name="Clock" Nullable="false" MaxLength="8" />
+          <Property Type="Int32" Name="GameStatusID" Nullable="true" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="40" />
+          <Property Type="String" Name="Network" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="NetworkDescription" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="Editable" Nullable="false" />
+          <Property Type="DateTime" Name="GameDateTime" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="23" />
+          <Property Type="String" Name="Details" Nullable="true" />
+          <Property Type="String" Name="DetailsPostScore" Nullable="true" />
+          <Property Type="String" Name="DetailsPreScore" Nullable="true" />
+          <Property Type="String" Name="StatusPreScore" Nullable="true" MaxLength="40" />
+          <Property Type="String" Name="SportType" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+          <Property Type="Boolean" Name="BlockData" Nullable="false" />
+          <Property Type="String" Name="ScoreDescription" Nullable="true" />
+          <Property Type="Int32" Name="VisitorWins" Nullable="false" />
+          <Property Type="Int32" Name="VisitorLoss" Nullable="false" />
+          <Property Type="Int32" Name="VisitorTie" Nullable="false" />
+          <Property Type="Int32" Name="HomeWins" Nullable="false" />
+          <Property Type="Int32" Name="HomeLoss" Nullable="false" />
+          <Property Type="Int32" Name="HomeTie" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="SportID" Nullable="false" />
+          <Property Type="Int64" Name="StatsIncID" Nullable="false" />
+          <Property Type="Int32" Name="VisitorsID" Nullable="false" />
+          <Property Type="Int32" Name="HomeID" Nullable="false" />
+          <Property Type="Int32" Name="VisitorsScore" Nullable="false" />
+          <Property Type="Int32" Name="HomeScore" Nullable="false" />
+          <Property Type="Byte" Name="GameStatusID" Nullable="false" />
+          <Property Type="Int32" Name="StatusID" Nullable="false" />
+          <Property Type="String" Name="Clock" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="GameDateTime" Precision="3" />
+          <Property Type="Boolean" Name="BoxScore" Nullable="false" />
+          <Property Type="String" Name="Details" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="Byte" Name="ScoreAlertID" />
+          <Property Type="Int32" Name="LastVisitorsScore" />
+          <Property Type="Int32" Name="LastHomeScore" />
+          <Property Type="String" Name="DetailsPreScore" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DetailsPostScore" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="StatusIDPreScore" />
+          <Property Type="Int32" Name="TeamID" />
+          <Property Type="String" Name="Header" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="3" />
+          <Property Type="String" Name="ScoreDescription" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="SortOrder" />
+          <Property Type="Boolean" Name="BlockData" Nullable="false" />
+          <Property Type="DateTime" Name="ScoreLastUpdated" Precision="3" />
+          <Property Type="String" Name="ScoreDescriptionAlt" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="CSSID" />
+          <NavigationProperty Name="Sport" Relationship="Fox.Tick.SportGame" FromRole="Game" ToRole="Sport" />
+          <NavigationProperty Name="GameNotes" Relationship="Fox.Tick.GameGameNote" FromRole="Game" ToRole="GameNote" />
+          <NavigationProperty Name="GroupGames" Relationship="Fox.Tick.FK_GameGroupGame" FromRole="Game" ToRole="GroupGame" />
+        </EntityType>
+        <ComplexType Name="spTICK_ScoreAlerts_Get_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="SportType" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="VisitorsAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="HomeAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="Int32" Name="VisitorsScore" Nullable="false" />
+          <Property Type="Int32" Name="HomeScore" Nullable="false" />
+          <Property Type="Int32" Name="LastVisitorsScore" Nullable="true" />
+          <Property Type="Int32" Name="LastHomeScore" Nullable="true" />
+          <Property Type="String" Name="Clock" Nullable="true" MaxLength="8" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="40" />
+          <Property Type="String" Name="StatusPreScore" Nullable="true" MaxLength="40" />
+          <Property Type="String" Name="Details" Nullable="true" />
+          <Property Type="String" Name="DetailsPostScore" Nullable="true" />
+          <Property Type="String" Name="DetailsPreScore" Nullable="true" />
+          <Property Type="String" Name="ScoreDescription" Nullable="true" />
+          <Property Type="DateTime" Name="ScoreLastUpdated" Nullable="true" Precision="23" />
+        </ComplexType>
+        <Association Name="PlaylistPlaylistDetail">
+          <End Type="Fox.Tick.Playlist" Role="Playlist" Multiplicity="1" />
+          <End Type="Fox.Tick.PlaylistDetail" Role="PlaylistDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Playlist">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PlaylistDetail">
+              <PropertyRef Name="PlaylistID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Sport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Description" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ShortDisplay" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="LongDisplay" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="StatsIncName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="KeepResultsInDays" />
+          <Property Type="String" Name="SportType" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="DisplayField" MaxLength="12" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="GameFrequency" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Status" Relationship="Fox.Tick.SportStatus" FromRole="Sport" ToRole="Status" />
+          <NavigationProperty Name="Games" Relationship="Fox.Tick.SportGame" FromRole="Sport" ToRole="Game" />
+          <NavigationProperty Name="Teams" Relationship="Fox.Tick.SportTeam" FromRole="Sport" ToRole="Team" />
+          <NavigationProperty Name="ClientSports" Relationship="Fox.Tick.SportClientSport" FromRole="Sport" ToRole="ClientSport" />
+          <NavigationProperty Name="Teams1" Relationship="Fox.Tick.SportTeam1" FromRole="Sport" ToRole="Team" />
+          <Property Type="String" Name="HivePrefix" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GroupGames" Relationship="Fox.Tick.FK_SportGroupGame" FromRole="Sport" ToRole="GroupGame" />
+        </EntityType>
+        <ComplexType Name="spTICK_Games_Get_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int64" Name="StatsIncID" Nullable="false" />
+          <Property Type="String" Name="Matchup" Nullable="true" MaxLength="23" />
+          <Property Type="Int32" Name="VisitorsID" Nullable="false" />
+          <Property Type="Int32" Name="HomeID" Nullable="false" />
+          <Property Type="Int32" Name="VisitorsRanking" Nullable="true" />
+          <Property Type="Int32" Name="HomeRanking" Nullable="true" />
+          <Property Type="String" Name="VisitorsAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="HomeAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="VisitorsCityName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HomeCityName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="VisitorsNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="HomeNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="VisitorsCity" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="HomeCity" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="VisitorsScore" Nullable="false" />
+          <Property Type="Int32" Name="HomeScore" Nullable="false" />
+          <Property Type="String" Name="VisitorsPrimaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="VisitorsSecondaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="HomePrimaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="String" Name="HomeSecondaryColor" Nullable="true" MaxLength="11" />
+          <Property Type="Int32" Name="LastVisitorsScore" Nullable="true" />
+          <Property Type="Int32" Name="LastHomeScore" Nullable="true" />
+          <Property Type="Byte" Name="ScoreAlertID" Nullable="true" />
+          <Property Type="String" Name="Clock" Nullable="false" MaxLength="8" />
+          <Property Type="Int32" Name="GameStatusID" Nullable="true" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="40" />
+          <Property Type="String" Name="Network" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="NetworkDescription" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="Editable" Nullable="false" />
+          <Property Type="DateTime" Name="GameDateTime" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="23" />
+          <Property Type="String" Name="Details" Nullable="true" />
+          <Property Type="String" Name="DetailsPostScore" Nullable="true" />
+          <Property Type="String" Name="DetailsPreScore" Nullable="true" />
+          <Property Type="String" Name="StatusPreScore" Nullable="true" MaxLength="40" />
+          <Property Type="String" Name="SportType" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+          <Property Type="Boolean" Name="BlockData" Nullable="false" />
+          <Property Type="String" Name="ScoreDescription" Nullable="true" />
+          <Property Type="String" Name="ScoreDescriptionAlt" Nullable="true" />
+          <Property Type="Int32" Name="VisitorWins" Nullable="false" />
+          <Property Type="Int32" Name="VisitorLoss" Nullable="false" />
+          <Property Type="Int32" Name="VisitorTie" Nullable="false" />
+          <Property Type="Int32" Name="HomeWins" Nullable="false" />
+          <Property Type="Int32" Name="HomeLoss" Nullable="false" />
+          <Property Type="Int32" Name="HomeTie" Nullable="false" />
+          <Property Type="Int32" Name="CSSID" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="SportID" Nullable="false" />
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="40" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Sport" Relationship="Fox.Tick.SportStatus" FromRole="Status" ToRole="Sport" />
+        </EntityType>
+        <Association Name="SportStatus">
+          <End Type="Fox.Tick.Sport" Role="Sport" Multiplicity="1" />
+          <End Type="Fox.Tick.Status" Role="Status" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Status">
+              <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SportGame">
+          <End Type="Fox.Tick.Sport" Role="Sport" Multiplicity="1" />
+          <End Type="Fox.Tick.Game" Role="Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SportTeam">
+          <End Type="Fox.Tick.Sport" Role="Sport" Multiplicity="1" />
+          <End Type="Fox.Tick.Team" Role="Team" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Team">
+              <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="GameNote">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="GameID" Nullable="false" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="String" Name="Note" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="NoteColor" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="TeamID" />
+          <Property Type="String" Name="Header" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="SortOrder" />
+          <Property Type="Boolean" Name="Imported" Nullable="false" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="UserID" />
+          <Property Type="Int32" Name="InGameStatID" />
+          <NavigationProperty Name="Game" Relationship="Fox.Tick.GameGameNote" FromRole="GameNote" ToRole="Game" />
+        </EntityType>
+        <Association Name="GameGameNote">
+          <End Type="Fox.Tick.Game" Role="Game" Multiplicity="1" />
+          <End Type="Fox.Tick.GameNote" Role="GameNote" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GameNote">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ClientTeam">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="Int32" Name="TeamID" Nullable="false" />
+          <Property Type="String" Name="AltAbbreviation" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Type="String" Name="AltCityName" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Type="String" Name="AltNickName" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Type="String" Name="AltPrimaryColor" MaxLength="11" FixedLength="true" Unicode="true" />
+          <Property Type="String" Name="AltSecondaryColor" MaxLength="11" FixedLength="true" Unicode="true" />
+          <Property Type="Int32" Name="AltRanking" />
+          <NavigationProperty Name="Team" Relationship="Fox.Tick.TeamClientTeam" FromRole="ClientTeam" ToRole="Team" />
+        </EntityType>
+        <Association Name="TeamClientTeam">
+          <End Type="Fox.Tick.Team" Role="Team" Multiplicity="1" />
+          <End Type="Fox.Tick.ClientTeam" Role="ClientTeam" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Team">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClientTeam">
+              <PropertyRef Name="TeamID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ClientSport">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="Int32" Name="SportID" Nullable="false" />
+          <Property Type="String" Name="AltShortDisplay" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="AltLongDisplay" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Sport" Relationship="Fox.Tick.SportClientSport" FromRole="ClientSport" ToRole="Sport" />
+        </EntityType>
+        <Association Name="SportClientSport">
+          <End Type="Fox.Tick.Sport" Role="Sport" Multiplicity="1" />
+          <End Type="Fox.Tick.ClientSport" Role="ClientSport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ClientSport">
+              <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SportTeam1">
+          <End Type="Fox.Tick.Sport" Role="Sport" Multiplicity="1" />
+          <End Type="Fox.Tick.Team" Role="Team" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Team">
+              <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="GroupAnimationType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Groups" Relationship="Fox.Tick.GroupAnimationTypeGroup" FromRole="GroupAnimationType" ToRole="Group" />
+        </EntityType>
+        <ComplexType Name="spTICK_Group_GetByType_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="OnAirName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="CreatedName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Type" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TeamID" Nullable="true" />
+          <Property Type="String" Name="Header" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="GroupAnimationTypeID" Nullable="false" />
+          <Property Type="Boolean" Name="Editable" Nullable="true" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="23" />
+          <Property Type="Int32" Name="NoteCount" Nullable="true" />
+        </ComplexType>
+        <Association Name="GroupAnimationTypeGroup">
+          <End Type="Fox.Tick.GroupAnimationType" Role="GroupAnimationType" Multiplicity="1" />
+          <End Type="Fox.Tick.Group" Role="Group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GroupAnimationType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Group">
+              <PropertyRef Name="GroupAnimationTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notes_Groups">
+          <End Type="Fox.Tick.Group" Role="Group" Multiplicity="1" />
+          <End Type="Fox.Tick.Note" Role="Note" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Group">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Note">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="spTICK_Users_Get_Result">
+          <Property Type="Int32" Name="UserID" Nullable="false" />
+          <Property Type="String" Name="Username" Nullable="false" MaxLength="20" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="20" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="Boolean" Name="Admin" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Type="Int32" Name="UserID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Username" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="FirstName" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="LastName" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="Boolean" Name="Admin" />
+          <NavigationProperty Name="auth_admin_log" Relationship="Fox.Tick.FK__auth_admi__user___36D11DD4" FromRole="User" ToRole="auth_admin_log" />
+          <Property Type="Boolean" Name="Inactive" Nullable="true" DefaultValue="False" />
+          <Property Type="Int32" Name="SecurityLevelID" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GameHiveNote">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="HiveID" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="ClientID" Nullable="false" />
+          <Property Type="String" Name="Note" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="NoteColor" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="TeamID" />
+          <Property Type="String" Name="Header" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="SortOrder" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="UserID" />
+          <Property Type="Int32" Name="SportID" />
+          <Property Type="String" Name="GameNoteType" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="UserDefinedNum" />
+          <Property Type="String" Name="LeagueCode" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Type="String" Name="TeamCode" MaxLength="10" FixedLength="true" Unicode="true" />
+        </EntityType>
+        <EntityType Name="auth_admin_log">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="action_time" Nullable="false" Precision="3" />
+          <Property Type="Int32" Name="user_id" Nullable="false" />
+          <Property Type="Int32" Name="content_type_id" />
+          <Property Type="String" Name="object_id" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="object_repr" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="Int16" Name="action_flag" Nullable="false" />
+          <Property Type="String" Name="change_message" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="User" Relationship="Fox.Tick.FK__auth_admi__user___36D11DD4" FromRole="auth_admin_log" ToRole="User" />
+          <NavigationProperty Name="auth_content_type" Relationship="Fox.Tick.FK__auth_admi__conte__4CC05EF3" FromRole="auth_admin_log" ToRole="auth_content_type" />
+        </EntityType>
+        <Association Name="FK__auth_admi__user___36D11DD4">
+          <End Type="Fox.Tick.User" Role="User" Multiplicity="1" />
+          <End Type="Fox.Tick.auth_admin_log" Role="auth_admin_log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="auth_admin_log">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="auth_content_type">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="name" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="app_label" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="model" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="auth_admin_log" Relationship="Fox.Tick.FK__auth_admi__conte__4CC05EF3" FromRole="auth_content_type" ToRole="auth_admin_log" />
+        </EntityType>
+        <Association Name="FK__auth_admi__conte__4CC05EF3">
+          <End Type="Fox.Tick.auth_content_type" Role="auth_content_type" Multiplicity="0..1" />
+          <End Type="Fox.Tick.auth_admin_log" Role="auth_admin_log" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="auth_content_type">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="auth_admin_log">
+              <PropertyRef Name="content_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="GroupGame">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="HiveID" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="GroupID" Nullable="false" />
+          <Property Type="Int32" Name="GameID" />
+          <Property Type="Int32" Name="SportID" Nullable="false" />
+          <Property Type="Int32" Name="SortOrder" />
+          <NavigationProperty Name="Game" Relationship="Fox.Tick.FK_GameGroupGame" FromRole="GroupGame" ToRole="Game" />
+          <NavigationProperty Name="Group" Relationship="Fox.Tick.FK_GroupGroupGame" FromRole="GroupGame" ToRole="Group" />
+          <NavigationProperty Name="Sport" Relationship="Fox.Tick.FK_SportGroupGame" FromRole="GroupGame" ToRole="Sport" />
+          <Property Type="String" Name="SDMLeagueCode" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DataSource" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_GameGroupGame">
+          <End Type="Fox.Tick.Game" Role="Game" Multiplicity="0..1" />
+          <End Type="Fox.Tick.GroupGame" Role="GroupGame" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupGame">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupGroupGame">
+          <End Type="Fox.Tick.Group" Role="Group" Multiplicity="1" />
+          <End Type="Fox.Tick.GroupGame" Role="GroupGame" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Group">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupGame">
+              <PropertyRef Name="GroupID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SportGroupGame">
+          <End Type="Fox.Tick.Sport" Role="Sport" Multiplicity="1" />
+          <End Type="Fox.Tick.GroupGame" Role="GroupGame" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sport">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GroupGame">
+              <PropertyRef Name="SportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="BreakingNew">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <!--<Property Type="String" Name="OnAirName" MaxLength="50" FixedLength="false" Unicode="true" />-->
+          <Property Type="String" Name="Note" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="Enabled" Nullable="false" />
+          <Property Type="Int32" Name="BreakingNewsTypeID" Nullable="false" />
+          <Property Type="Byte" Name="ClientID" Nullable="false" />
+          <NavigationProperty Name="BreakingNewsType" Relationship="Fox.Tick.FK_BreakingNewsTypeBreakingNews" FromRole="BreakingNew" ToRole="BreakingNewsType" />
+          <NavigationProperty Name="Client" Relationship="Fox.Tick.FK_ClientBreakingNews" FromRole="BreakingNew" ToRole="Client" />
+          <Property Type="Int32" Name="Repeat" Nullable="false" />
+          <Property Type="Byte" Name="NumberOfGraphicsBetween" Nullable="false" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="3" />
+          <Property Type="Byte" Name="SortOrder" />
+          <Property Type="DateTime" Name="ExpiresOn" Precision="3" />
+          <Property Type="Byte" Name="ExpiresIn" />
+          <Property Type="Int32" Name="ExpirationMode" />
+          <Property Type="String" Name="IntroText" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="HeaderText" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="HeaderImage" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="TopicMovie" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ColorHex" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IntroMovie" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TopicText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HeaderMovie" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="BreakingNewsType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="Enabled" Nullable="false" />
+          <NavigationProperty Name="BreakingNews" Relationship="Fox.Tick.FK_BreakingNewsTypeBreakingNews" FromRole="BreakingNewsType" ToRole="BreakingNew" />
+        </EntityType>
+        <Association Name="FK_BreakingNewsTypeBreakingNews">
+          <End Type="Fox.Tick.BreakingNewsType" Role="BreakingNewsType" Multiplicity="1" />
+          <End Type="Fox.Tick.BreakingNew" Role="BreakingNew" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BreakingNewsType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="BreakingNew">
+              <PropertyRef Name="BreakingNewsTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ClientBreakingNews">
+          <End Type="Fox.Tick.Client" Role="Client" Multiplicity="1" />
+          <End Type="Fox.Tick.BreakingNew" Role="BreakingNew" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="BreakingNew">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ClientShares">
+          <End Type="Fox.Tick.Client" Role="Client" Multiplicity="*" />
+          <End Type="Fox.Tick.Client" Role="Client1" Multiplicity="*" />
+        </Association>
+        <EntityType Name="BreakingNewsExpirationMode">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="GameStatus">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Byte" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <ComplexType Name="spTICK_Playlists_Get_Result">
+          <Property Type="Int32" Name="PlaylistID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="Locked" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="spTICK_Playlist_Details_Get_Result">
+          <Property Type="Int32" Name="PlaylistID" Nullable="false" />
+          <Property Type="Int32" Name="PlaylistDetailsID" Nullable="false" />
+          <Property Type="Byte" Name="EntryTypeID" Nullable="false" />
+          <Property Type="Int32" Name="EntryID" Nullable="false" />
+          <Property Type="Int32" Name="SortOrder" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OnAirName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="Editable" Nullable="true" />
+          <Property Type="DateTime" Name="LastUpdated" Nullable="false" Precision="23" />
+          <Property Type="String" Name="Type" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TeamID" Nullable="false" />
+          <Property Type="String" Name="Header" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="TeamAbbreviation" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="TeamCityName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TeamNickName" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TeamPrimaryColor" Nullable="false" MaxLength="11" />
+          <Property Type="String" Name="TeamSecondaryColor" Nullable="false" MaxLength="11" />
+          <Property Type="String" Name="SportDescription" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="SportShortDisplay" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="SportID" Nullable="false" />
+          <Property Type="String" Name="SportType" Nullable="false" MaxLength="20" />
+          <Property Type="Int32" Name="AnimationTypeID" Nullable="false" />
+          <Property Type="String" Name="AnimationType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="HivePrefix" Nullable="true" MaxLength="50" />
+          <Property Type="Byte" Name="NotesTypeID" Nullable="true" />
+          <Property Type="Byte" Name="RipCount" Nullable="true" />
+          <Property Type="String" Name="DataSource" Nullable="true" />
+        </ComplexType>
+        <EntityType Name="PlaylistType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Type="Int32" Name="ID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Name" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="LeaguesSetting">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="LeagueCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SettingsID" Type="Int32" />
+          <Property Name="OptionsID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Setting">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SettingsOption">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SettingsID" Type="Int32" />
+          <Property Name="SettingsOptionValueID" Type="Int32" Nullable="false" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FoxTickModelStoreContainer" CdmEntityContainer="FoxTickerEntities">
+          <EntitySetMapping Name="Groups">
+            <EntityTypeMapping TypeName="Fox.Tick.Group">
+              <MappingFragment StoreEntitySet="Groups">
+                <ScalarProperty Name="SDMLeagueCode" ColumnName="SDMLeagueCode" />
+                <ScalarProperty Name="SDMTeamCode" ColumnName="SDMTeamCode" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OnAirName" ColumnName="OnAirName" />
+                <ScalarProperty Name="CreatedName" ColumnName="CreatedName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="GroupAnimationTypeID" ColumnName="GroupAnimationTypeID" />
+                <ScalarProperty Name="Editable" ColumnName="Editable" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notes">
+            <EntityTypeMapping TypeName="Fox.Tick.Note">
+              <MappingFragment StoreEntitySet="Notes">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="Note1" ColumnName="Note" />
+                <ScalarProperty Name="NoteColor" ColumnName="NoteColor" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="Imported" ColumnName="Imported" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clients">
+            <EntityTypeMapping TypeName="Fox.Tick.Client">
+              <MappingFragment StoreEntitySet="Clients">
+                <ScalarProperty Name="DataHiveEnabled" ColumnName="DataHiveEnabled" />
+                <ScalarProperty Name="SponsorSync" ColumnName="SponsorSync" />
+                <ScalarProperty Name="LockClient" ColumnName="LockClient" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Abbreviation" ColumnName="Abbreviation" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Teams">
+            <EntityTypeMapping TypeName="Fox.Tick.Team">
+              <MappingFragment StoreEntitySet="Teams">
+                <ScalarProperty Name="Tie" ColumnName="Tie" />
+                <ScalarProperty Name="Loss" ColumnName="Loss" />
+                <ScalarProperty Name="Wins" ColumnName="Wins" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="SecondaryColor" ColumnName="SecondaryColor" />
+                <ScalarProperty Name="PrimaryColor" ColumnName="PrimaryColor" />
+                <ScalarProperty Name="NickName" ColumnName="NickName" />
+                <ScalarProperty Name="CityName" ColumnName="CityName" />
+                <ScalarProperty Name="Abbreviation" ColumnName="Abbreviation" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="StatsIncID" ColumnName="StatsIncID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlaylistDetails">
+            <EntityTypeMapping TypeName="Fox.Tick.PlaylistDetail">
+              <MappingFragment StoreEntitySet="PlaylistDetails">
+                <ScalarProperty Name="DataSource" ColumnName="DataSource" />
+                <ScalarProperty Name="Specifics1" ColumnName="Specifics1" />
+                <ScalarProperty Name="SDMLeagueCode" ColumnName="SDMLeagueCode" />
+                <ScalarProperty Name="RipGameStatusTypeID" ColumnName="RipGameStatusTypeID" />
+                <ScalarProperty Name="NotesTypeID" ColumnName="NotesTypeID" />
+                <ScalarProperty Name="RipCount" ColumnName="RipCount" />
+                <ScalarProperty Name="HiveID" ColumnName="HiveID" />
+                <ScalarProperty Name="OnAirName" ColumnName="OnAirName" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="EntryID" ColumnName="EntryID" />
+                <ScalarProperty Name="EntryTypeID" ColumnName="EntryTypeID" />
+                <ScalarProperty Name="PlaylistID" ColumnName="PlaylistID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Playlists">
+            <EntityTypeMapping TypeName="Fox.Tick.Playlist">
+              <MappingFragment StoreEntitySet="Playlists">
+                <ScalarProperty Name="ScoreboardID" ColumnName="ScoreboardID" />
+                <ScalarProperty Name="PlaylistTypeID" ColumnName="PlaylistTypeID" />
+                <ScalarProperty Name="Staged" ColumnName="Staged" />
+                <ScalarProperty Name="Locked" ColumnName="Locked" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_GameNotes_GetByGameID" FunctionName="FoxTickModel.Store.spTICK_GameNotes_GetByGameID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_GameNotes_GetByGameID_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="NoteColor" ColumnName="NoteColor" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="NoteTeamID" ColumnName="NoteTeamID" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="NoteHeader" ColumnName="NoteHeader" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="Imported" ColumnName="Imported" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="TeamAbbreviation" ColumnName="TeamAbbreviation" />
+                <ScalarProperty Name="TeamCityName" ColumnName="TeamCityName" />
+                <ScalarProperty Name="TeamNickName" ColumnName="TeamNickName" />
+                <ScalarProperty Name="TeamPrimaryColor" ColumnName="TeamPrimaryColor" />
+                <ScalarProperty Name="TeamSecondaryColor" ColumnName="TeamSecondaryColor" />
+                <ScalarProperty Name="SportDescription" ColumnName="SportDescription" />
+                <ScalarProperty Name="SportShortDisplay" ColumnName="SportShortDisplay" />
+                <ScalarProperty Name="InGameStatID" ColumnName="InGameStatID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_Games_GetByEntryID" FunctionName="FoxTickModel.Store.spTICK_Games_GetByEntryID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_Games_GetByEntryID_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="StatsIncID" ColumnName="StatsIncID" />
+                <ScalarProperty Name="Matchup" ColumnName="Matchup" />
+                <ScalarProperty Name="VisitorsID" ColumnName="VisitorsID" />
+                <ScalarProperty Name="HomeID" ColumnName="HomeID" />
+                <ScalarProperty Name="VisitorsRanking" ColumnName="VisitorsRanking" />
+                <ScalarProperty Name="HomeRanking" ColumnName="HomeRanking" />
+                <ScalarProperty Name="VisitorsAbbreviation" ColumnName="VisitorsAbbreviation" />
+                <ScalarProperty Name="HomeAbbreviation" ColumnName="HomeAbbreviation" />
+                <ScalarProperty Name="VisitorsCityName" ColumnName="VisitorsCityName" />
+                <ScalarProperty Name="HomeCityName" ColumnName="HomeCityName" />
+                <ScalarProperty Name="VisitorsNickName" ColumnName="VisitorsNickName" />
+                <ScalarProperty Name="HomeNickName" ColumnName="HomeNickName" />
+                <ScalarProperty Name="VisitorsCity" ColumnName="VisitorsCity" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="VisitorsScore" ColumnName="VisitorsScore" />
+                <ScalarProperty Name="HomeScore" ColumnName="HomeScore" />
+                <ScalarProperty Name="VisitorsPrimaryColor" ColumnName="VisitorsPrimaryColor" />
+                <ScalarProperty Name="VisitorsSecondaryColor" ColumnName="VisitorsSecondaryColor" />
+                <ScalarProperty Name="HomePrimaryColor" ColumnName="HomePrimaryColor" />
+                <ScalarProperty Name="HomeSecondaryColor" ColumnName="HomeSecondaryColor" />
+                <ScalarProperty Name="LastVisitorsScore" ColumnName="LastVisitorsScore" />
+                <ScalarProperty Name="LastHomeScore" ColumnName="LastHomeScore" />
+                <ScalarProperty Name="ScoreAlertID" ColumnName="ScoreAlertID" />
+                <ScalarProperty Name="Clock" ColumnName="Clock" />
+                <ScalarProperty Name="GameStatusID" ColumnName="GameStatusID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Network" ColumnName="Network" />
+                <ScalarProperty Name="NetworkDescription" ColumnName="NetworkDescription" />
+                <ScalarProperty Name="Editable" ColumnName="Editable" />
+                <ScalarProperty Name="GameDateTime" ColumnName="GameDateTime" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="DetailsPostScore" ColumnName="DetailsPostScore" />
+                <ScalarProperty Name="DetailsPreScore" ColumnName="DetailsPreScore" />
+                <ScalarProperty Name="StatusPreScore" ColumnName="StatusPreScore" />
+                <ScalarProperty Name="SportType" ColumnName="SportType" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="BlockData" ColumnName="BlockData" />
+                <ScalarProperty Name="ScoreDescription" ColumnName="ScoreDescription" />
+                <ScalarProperty Name="VisitorWins" ColumnName="VisitorWins" />
+                <ScalarProperty Name="VisitorLoss" ColumnName="VisitorLoss" />
+                <ScalarProperty Name="VisitorTie" ColumnName="VisitorTie" />
+                <ScalarProperty Name="HomeWins" ColumnName="HomeWins" />
+                <ScalarProperty Name="HomeLoss" ColumnName="HomeLoss" />
+                <ScalarProperty Name="HomeTie" ColumnName="HomeTie" />
+                <ScalarProperty Name="CSSID" ColumnName="CSSID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_Notes_GetByGroup" FunctionName="FoxTickModel.Store.spTICK_Notes_GetByGroup">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_Notes_GetByGroup_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="NoteColor" ColumnName="NoteColor" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="NoteTeamID" ColumnName="NoteTeamID" />
+                <ScalarProperty Name="GroupTeamID" ColumnName="GroupTeamID" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="NoteHeader" ColumnName="NoteHeader" />
+                <ScalarProperty Name="GroupHeader" ColumnName="GroupHeader" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="Imported" ColumnName="Imported" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="TeamAbbreviation" ColumnName="TeamAbbreviation" />
+                <ScalarProperty Name="TeamCityName" ColumnName="TeamCityName" />
+                <ScalarProperty Name="TeamNickName" ColumnName="TeamNickName" />
+                <ScalarProperty Name="TeamPrimaryColor" ColumnName="TeamPrimaryColor" />
+                <ScalarProperty Name="TeamSecondaryColor" ColumnName="TeamSecondaryColor" />
+                <ScalarProperty Name="SportDescription" ColumnName="SportDescription" />
+                <ScalarProperty Name="SportShortDisplay" ColumnName="SportShortDisplay" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_ScoreAlerts_Get_FTL" FunctionName="FoxTickModel.Store.spTICK_ScoreAlerts_Get_FTL">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_ScoreAlerts_Get_FTL_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="StatsIncID" ColumnName="StatsIncID" />
+                <ScalarProperty Name="Matchup" ColumnName="Matchup" />
+                <ScalarProperty Name="VisitorsID" ColumnName="VisitorsID" />
+                <ScalarProperty Name="HomeID" ColumnName="HomeID" />
+                <ScalarProperty Name="VisitorsRanking" ColumnName="VisitorsRanking" />
+                <ScalarProperty Name="HomeRanking" ColumnName="HomeRanking" />
+                <ScalarProperty Name="VisitorsAbbreviation" ColumnName="VisitorsAbbreviation" />
+                <ScalarProperty Name="HomeAbbreviation" ColumnName="HomeAbbreviation" />
+                <ScalarProperty Name="VisitorsCityName" ColumnName="VisitorsCityName" />
+                <ScalarProperty Name="HomeCityName" ColumnName="HomeCityName" />
+                <ScalarProperty Name="VisitorsNickName" ColumnName="VisitorsNickName" />
+                <ScalarProperty Name="HomeNickName" ColumnName="HomeNickName" />
+                <ScalarProperty Name="VisitorsCity" ColumnName="VisitorsCity" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="VisitorsScore" ColumnName="VisitorsScore" />
+                <ScalarProperty Name="HomeScore" ColumnName="HomeScore" />
+                <ScalarProperty Name="VisitorsPrimaryColor" ColumnName="VisitorsPrimaryColor" />
+                <ScalarProperty Name="VisitorsSecondaryColor" ColumnName="VisitorsSecondaryColor" />
+                <ScalarProperty Name="HomePrimaryColor" ColumnName="HomePrimaryColor" />
+                <ScalarProperty Name="HomeSecondaryColor" ColumnName="HomeSecondaryColor" />
+                <ScalarProperty Name="LastVisitorsScore" ColumnName="LastVisitorsScore" />
+                <ScalarProperty Name="LastHomeScore" ColumnName="LastHomeScore" />
+                <ScalarProperty Name="ScoreAlertID" ColumnName="ScoreAlertID" />
+                <ScalarProperty Name="Clock" ColumnName="Clock" />
+                <ScalarProperty Name="GameStatusID" ColumnName="GameStatusID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Network" ColumnName="Network" />
+                <ScalarProperty Name="NetworkDescription" ColumnName="NetworkDescription" />
+                <ScalarProperty Name="Editable" ColumnName="Editable" />
+                <ScalarProperty Name="GameDateTime" ColumnName="GameDateTime" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="DetailsPostScore" ColumnName="DetailsPostScore" />
+                <ScalarProperty Name="DetailsPreScore" ColumnName="DetailsPreScore" />
+                <ScalarProperty Name="StatusPreScore" ColumnName="StatusPreScore" />
+                <ScalarProperty Name="SportType" ColumnName="SportType" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="BlockData" ColumnName="BlockData" />
+                <ScalarProperty Name="ScoreDescription" ColumnName="ScoreDescription" />
+                <ScalarProperty Name="VisitorWins" ColumnName="VisitorWins" />
+                <ScalarProperty Name="VisitorLoss" ColumnName="VisitorLoss" />
+                <ScalarProperty Name="VisitorTie" ColumnName="VisitorTie" />
+                <ScalarProperty Name="HomeWins" ColumnName="HomeWins" />
+                <ScalarProperty Name="HomeLoss" ColumnName="HomeLoss" />
+                <ScalarProperty Name="HomeTie" ColumnName="HomeTie" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_ScoreAlert_SetClientComplete" FunctionName="FoxTickModel.Store.spTICK_ScoreAlert_SetClientComplete" />
+          <EntitySetMapping Name="Games">
+            <EntityTypeMapping TypeName="Fox.Tick.Game">
+              <MappingFragment StoreEntitySet="Games">
+                <ScalarProperty Name="CSSID" ColumnName="CSSID" />
+                <ScalarProperty Name="ScoreDescriptionAlt" ColumnName="ScoreDescriptionAlt" />
+                <ScalarProperty Name="ScoreLastUpdated" ColumnName="ScoreLastUpdated" />
+                <ScalarProperty Name="BlockData" ColumnName="BlockData" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="ScoreDescription" ColumnName="ScoreDescription" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="StatusIDPreScore" ColumnName="StatusIDPreScore" />
+                <ScalarProperty Name="DetailsPostScore" ColumnName="DetailsPostScore" />
+                <ScalarProperty Name="DetailsPreScore" ColumnName="DetailsPreScore" />
+                <ScalarProperty Name="LastHomeScore" ColumnName="LastHomeScore" />
+                <ScalarProperty Name="LastVisitorsScore" ColumnName="LastVisitorsScore" />
+                <ScalarProperty Name="ScoreAlertID" ColumnName="ScoreAlertID" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="BoxScore" ColumnName="BoxScore" />
+                <ScalarProperty Name="GameDateTime" ColumnName="GameDateTime" />
+                <ScalarProperty Name="Clock" ColumnName="Clock" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="GameStatusID" ColumnName="GameStatusID" />
+                <ScalarProperty Name="HomeScore" ColumnName="HomeScore" />
+                <ScalarProperty Name="VisitorsScore" ColumnName="VisitorsScore" />
+                <ScalarProperty Name="HomeID" ColumnName="HomeID" />
+                <ScalarProperty Name="VisitorsID" ColumnName="VisitorsID" />
+                <ScalarProperty Name="StatsIncID" ColumnName="StatsIncID" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_ScoreAlerts_Get" FunctionName="FoxTickModel.Store.spTICK_ScoreAlerts_Get">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_ScoreAlerts_Get_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="SportType" ColumnName="SportType" />
+                <ScalarProperty Name="VisitorsAbbreviation" ColumnName="VisitorsAbbreviation" />
+                <ScalarProperty Name="HomeAbbreviation" ColumnName="HomeAbbreviation" />
+                <ScalarProperty Name="VisitorsScore" ColumnName="VisitorsScore" />
+                <ScalarProperty Name="HomeScore" ColumnName="HomeScore" />
+                <ScalarProperty Name="LastVisitorsScore" ColumnName="LastVisitorsScore" />
+                <ScalarProperty Name="LastHomeScore" ColumnName="LastHomeScore" />
+                <ScalarProperty Name="Clock" ColumnName="Clock" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="StatusPreScore" ColumnName="StatusPreScore" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="DetailsPostScore" ColumnName="DetailsPostScore" />
+                <ScalarProperty Name="DetailsPreScore" ColumnName="DetailsPreScore" />
+                <ScalarProperty Name="ScoreDescription" ColumnName="ScoreDescription" />
+                <ScalarProperty Name="ScoreLastUpdated" ColumnName="ScoreLastUpdated" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Sports">
+            <EntityTypeMapping TypeName="Fox.Tick.Sport">
+              <MappingFragment StoreEntitySet="Sports">
+                <ScalarProperty Name="HivePrefix" ColumnName="HivePrefix" />
+                <ScalarProperty Name="GameFrequency" ColumnName="GameFrequency" />
+                <ScalarProperty Name="DisplayField" ColumnName="DisplayField" />
+                <ScalarProperty Name="SportType" ColumnName="SportType" />
+                <ScalarProperty Name="KeepResultsInDays" ColumnName="KeepResultsInDays" />
+                <ScalarProperty Name="StatsIncName" ColumnName="StatsIncName" />
+                <ScalarProperty Name="LongDisplay" ColumnName="LongDisplay" />
+                <ScalarProperty Name="ShortDisplay" ColumnName="ShortDisplay" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_Games_Get" FunctionName="FoxTickModel.Store.spTICK_Games_Get">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_Games_Get_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="StatsIncID" ColumnName="StatsIncID" />
+                <ScalarProperty Name="Matchup" ColumnName="Matchup" />
+                <ScalarProperty Name="VisitorsID" ColumnName="VisitorsID" />
+                <ScalarProperty Name="HomeID" ColumnName="HomeID" />
+                <ScalarProperty Name="VisitorsRanking" ColumnName="VisitorsRanking" />
+                <ScalarProperty Name="HomeRanking" ColumnName="HomeRanking" />
+                <ScalarProperty Name="VisitorsAbbreviation" ColumnName="VisitorsAbbreviation" />
+                <ScalarProperty Name="HomeAbbreviation" ColumnName="HomeAbbreviation" />
+                <ScalarProperty Name="VisitorsCityName" ColumnName="VisitorsCityName" />
+                <ScalarProperty Name="HomeCityName" ColumnName="HomeCityName" />
+                <ScalarProperty Name="VisitorsNickName" ColumnName="VisitorsNickName" />
+                <ScalarProperty Name="HomeNickName" ColumnName="HomeNickName" />
+                <ScalarProperty Name="VisitorsCity" ColumnName="VisitorsCity" />
+                <ScalarProperty Name="HomeCity" ColumnName="HomeCity" />
+                <ScalarProperty Name="VisitorsScore" ColumnName="VisitorsScore" />
+                <ScalarProperty Name="HomeScore" ColumnName="HomeScore" />
+                <ScalarProperty Name="VisitorsPrimaryColor" ColumnName="VisitorsPrimaryColor" />
+                <ScalarProperty Name="VisitorsSecondaryColor" ColumnName="VisitorsSecondaryColor" />
+                <ScalarProperty Name="HomePrimaryColor" ColumnName="HomePrimaryColor" />
+                <ScalarProperty Name="HomeSecondaryColor" ColumnName="HomeSecondaryColor" />
+                <ScalarProperty Name="LastVisitorsScore" ColumnName="LastVisitorsScore" />
+                <ScalarProperty Name="LastHomeScore" ColumnName="LastHomeScore" />
+                <ScalarProperty Name="ScoreAlertID" ColumnName="ScoreAlertID" />
+                <ScalarProperty Name="Clock" ColumnName="Clock" />
+                <ScalarProperty Name="GameStatusID" ColumnName="GameStatusID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Network" ColumnName="Network" />
+                <ScalarProperty Name="NetworkDescription" ColumnName="NetworkDescription" />
+                <ScalarProperty Name="Editable" ColumnName="Editable" />
+                <ScalarProperty Name="GameDateTime" ColumnName="GameDateTime" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="DetailsPostScore" ColumnName="DetailsPostScore" />
+                <ScalarProperty Name="DetailsPreScore" ColumnName="DetailsPreScore" />
+                <ScalarProperty Name="StatusPreScore" ColumnName="StatusPreScore" />
+                <ScalarProperty Name="SportType" ColumnName="SportType" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="BlockData" ColumnName="BlockData" />
+                <ScalarProperty Name="ScoreDescription" ColumnName="ScoreDescription" />
+                <ScalarProperty Name="ScoreDescriptionAlt" ColumnName="ScoreDescriptionAlt" />
+                <ScalarProperty Name="VisitorWins" ColumnName="VisitorWins" />
+                <ScalarProperty Name="VisitorLoss" ColumnName="VisitorLoss" />
+                <ScalarProperty Name="VisitorTie" ColumnName="VisitorTie" />
+                <ScalarProperty Name="HomeWins" ColumnName="HomeWins" />
+                <ScalarProperty Name="HomeLoss" ColumnName="HomeLoss" />
+                <ScalarProperty Name="HomeTie" ColumnName="HomeTie" />
+                <ScalarProperty Name="CSSID" ColumnName="CSSID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_Importer_GameCreate" FunctionName="FoxTickModel.Store.spTICK_Importer_GameCreate" />
+          <EntitySetMapping Name="Statuses">
+            <EntityTypeMapping TypeName="Fox.Tick.Status">
+              <MappingFragment StoreEntitySet="Statuses">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameNotes">
+            <EntityTypeMapping TypeName="Fox.Tick.GameNote">
+              <MappingFragment StoreEntitySet="GameNotes">
+                <ScalarProperty Name="InGameStatID" ColumnName="InGameStatID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Imported" ColumnName="Imported" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="NoteColor" ColumnName="NoteColor" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientTeams">
+            <EntityTypeMapping TypeName="Fox.Tick.ClientTeam">
+              <MappingFragment StoreEntitySet="ClientTeams">
+                <ScalarProperty Name="AltRanking" ColumnName="AltRanking" />
+                <ScalarProperty Name="AltSecondaryColor" ColumnName="AltSecondaryColor" />
+                <ScalarProperty Name="AltPrimaryColor" ColumnName="AltPrimaryColor" />
+                <ScalarProperty Name="AltNickName" ColumnName="AltNickName" />
+                <ScalarProperty Name="AltCityName" ColumnName="AltCityName" />
+                <ScalarProperty Name="AltAbbreviation" ColumnName="AltAbbreviation" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientSports">
+            <EntityTypeMapping TypeName="Fox.Tick.ClientSport">
+              <MappingFragment StoreEntitySet="ClientSports">
+                <ScalarProperty Name="AltLongDisplay" ColumnName="AltLongDisplay" />
+                <ScalarProperty Name="AltShortDisplay" ColumnName="AltShortDisplay" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupAnimationTypes">
+            <EntityTypeMapping TypeName="Fox.Tick.GroupAnimationType">
+              <MappingFragment StoreEntitySet="GroupAnimationTypes">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_Group_GetByType" FunctionName="FoxTickModel.Store.spTICK_Group_GetByType">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_Group_GetByType_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OnAirName" ColumnName="OnAirName" />
+                <ScalarProperty Name="CreatedName" ColumnName="CreatedName" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="GroupAnimationTypeID" ColumnName="GroupAnimationTypeID" />
+                <ScalarProperty Name="Editable" ColumnName="Editable" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="NoteCount" ColumnName="NoteCount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_GroupTypes_Get" FunctionName="FoxTickModel.Store.spTICK_GroupTypes_Get" />
+          <FunctionImportMapping FunctionImportName="spTICK_Users_Get" FunctionName="FoxTickModel.Store.spTICK_Users_Get">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_Users_Get_Result">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Admin" ColumnName="Admin" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="Fox.Tick.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="SecurityLevelID" ColumnName="SecurityLevelID" />
+                <ScalarProperty Name="Inactive" ColumnName="Inactive" />
+                <ScalarProperty Name="Admin" ColumnName="Admin" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameHiveNotes">
+            <EntityTypeMapping TypeName="Fox.Tick.GameHiveNote">
+              <MappingFragment StoreEntitySet="GameHiveNotes">
+                <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
+                <ScalarProperty Name="LeagueCode" ColumnName="LeagueCode" />
+                <ScalarProperty Name="UserDefinedNum" ColumnName="UserDefinedNum" />
+                <ScalarProperty Name="GameNoteType" ColumnName="GameNoteType" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="NoteColor" ColumnName="NoteColor" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="HiveID" ColumnName="HiveID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="auth_admin_log">
+            <EntityTypeMapping TypeName="Fox.Tick.auth_admin_log">
+              <MappingFragment StoreEntitySet="auth_admin_log">
+                <ScalarProperty Name="change_message" ColumnName="change_message" />
+                <ScalarProperty Name="action_flag" ColumnName="action_flag" />
+                <ScalarProperty Name="object_repr" ColumnName="object_repr" />
+                <ScalarProperty Name="object_id" ColumnName="object_id" />
+                <ScalarProperty Name="content_type_id" ColumnName="content_type_id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="action_time" ColumnName="action_time" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="auth_content_type">
+            <EntityTypeMapping TypeName="Fox.Tick.auth_content_type">
+              <MappingFragment StoreEntitySet="auth_content_type">
+                <ScalarProperty Name="model" ColumnName="model" />
+                <ScalarProperty Name="app_label" ColumnName="app_label" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_Playlist_Stage" FunctionName="FoxTickModel.Store.spTICK_Playlist_Stage" />
+          <EntitySetMapping Name="GroupGames">
+            <EntityTypeMapping TypeName="Fox.Tick.GroupGame">
+              <MappingFragment StoreEntitySet="GroupGames">
+                <ScalarProperty Name="DataSource" ColumnName="DataSource" />
+                <ScalarProperty Name="SDMLeagueCode" ColumnName="SDMLeagueCode" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="HiveID" ColumnName="HiveID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BreakingNews">
+            <EntityTypeMapping TypeName="Fox.Tick.BreakingNew">
+              <MappingFragment StoreEntitySet="BreakingNews">
+                <ScalarProperty Name="HeaderMovie" ColumnName="HeaderMovie" />
+                <ScalarProperty Name="TopicText" ColumnName="TopicText" />
+                <ScalarProperty Name="IntroMovie" ColumnName="IntroMovie" />
+                <ScalarProperty Name="ColorHex" ColumnName="ColorHex" />
+                <ScalarProperty Name="TopicMovie" ColumnName="TopicMovie" />
+                <ScalarProperty Name="HeaderImage" ColumnName="HeaderImage" />
+                <ScalarProperty Name="HeaderText" ColumnName="HeaderText" />
+                <ScalarProperty Name="IntroText" ColumnName="IntroText" />
+                <ScalarProperty Name="ExpirationMode" ColumnName="ExpirationMode" />
+                <ScalarProperty Name="ExpiresIn" ColumnName="ExpiresIn" />
+                <ScalarProperty Name="ExpiresOn" ColumnName="ExpiresOn" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="NumberOfGraphicsBetween" ColumnName="NumberOfGraphicsBetween" />
+                <ScalarProperty Name="Repeat" ColumnName="Repeat" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="BreakingNewsTypeID" ColumnName="BreakingNewsTypeID" />
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BreakingNewsTypes">
+            <EntityTypeMapping TypeName="Fox.Tick.BreakingNewsType">
+              <MappingFragment StoreEntitySet="BreakingNewsTypes">
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="ClientShares" TypeName="Fox.Tick.ClientShares" StoreEntitySet="ClientShares">
+            <EndProperty Name="Client1">
+              <ScalarProperty Name="ID" ColumnName="ClientTo" />
+            </EndProperty>
+            <EndProperty Name="Client">
+              <ScalarProperty Name="ID" ColumnName="ClientFrom" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="BreakingNewsExpirationModes">
+            <EntityTypeMapping TypeName="Fox.Tick.BreakingNewsExpirationMode">
+              <MappingFragment StoreEntitySet="BreakingNewsExpirationModes">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameStatuses">
+            <EntityTypeMapping TypeName="Fox.Tick.GameStatus">
+              <MappingFragment StoreEntitySet="GameStatuses">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_Playlists_Get" FunctionName="FoxTickModel.Store.spTICK_Playlists_Get">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_Playlists_Get_Result">
+                <ScalarProperty Name="PlaylistID" ColumnName="PlaylistID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Locked" ColumnName="Locked" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="spTICK_Playlist_Details_Get" FunctionName="FoxTickModel.Store.spTICK_Playlist_Details_Get">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Fox.Tick.spTICK_Playlist_Details_Get_Result">
+                <ScalarProperty Name="PlaylistID" ColumnName="PlaylistID" />
+                <ScalarProperty Name="PlaylistDetailsID" ColumnName="PlaylistDetailsID" />
+                <ScalarProperty Name="EntryTypeID" ColumnName="EntryTypeID" />
+                <ScalarProperty Name="EntryID" ColumnName="EntryID" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OnAirName" ColumnName="OnAirName" />
+                <ScalarProperty Name="Editable" ColumnName="Editable" />
+                <ScalarProperty Name="LastUpdated" ColumnName="LastUpdated" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="Header" ColumnName="Header" />
+                <ScalarProperty Name="TeamAbbreviation" ColumnName="TeamAbbreviation" />
+                <ScalarProperty Name="TeamCityName" ColumnName="TeamCityName" />
+                <ScalarProperty Name="TeamNickName" ColumnName="TeamNickName" />
+                <ScalarProperty Name="TeamPrimaryColor" ColumnName="TeamPrimaryColor" />
+                <ScalarProperty Name="TeamSecondaryColor" ColumnName="TeamSecondaryColor" />
+                <ScalarProperty Name="SportDescription" ColumnName="SportDescription" />
+                <ScalarProperty Name="SportShortDisplay" ColumnName="SportShortDisplay" />
+                <ScalarProperty Name="SportID" ColumnName="SportID" />
+                <ScalarProperty Name="SportType" ColumnName="SportType" />
+                <ScalarProperty Name="AnimationTypeID" ColumnName="AnimationTypeID" />
+                <ScalarProperty Name="AnimationType" ColumnName="AnimationType" />
+                <ScalarProperty Name="HivePrefix" ColumnName="HivePrefix" />
+                <ScalarProperty Name="NotesTypeID" ColumnName="NotesTypeID" />
+                <ScalarProperty Name="RipCount" ColumnName="RipCount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="PlaylistTypes">
+            <EntityTypeMapping TypeName="Fox.Tick.PlaylistType">
+              <MappingFragment StoreEntitySet="PlaylistTypes">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LeaguesSettings">
+            <EntityTypeMapping TypeName="Fox.Tick.LeaguesSetting">
+              <MappingFragment StoreEntitySet="LeaguesSettings">
+                <ScalarProperty Name="OptionsID" ColumnName="OptionsID" />
+                <ScalarProperty Name="SettingsID" ColumnName="SettingsID" />
+                <ScalarProperty Name="LeagueCode" ColumnName="LeagueCode" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Settings">
+            <EntityTypeMapping TypeName="Fox.Tick.Setting">
+              <MappingFragment StoreEntitySet="Settings">
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SettingsOptions">
+            <EntityTypeMapping TypeName="Fox.Tick.SettingsOption">
+              <MappingFragment StoreEntitySet="SettingsOptions">
+                <ScalarProperty Name="SettingsOptionValueID" ColumnName="SettingsOptionValueID" />
+                <ScalarProperty Name="SettingsID" ColumnName="SettingsID" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Default" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram DiagramId="8b3e4c1f620e444fbd2a3c80ababdc35" Name="Diagram1" ZoomLevel="48">
+        <EntityTypeShape EntityType="Fox.Tick.Group" Width="1.5" PointX="1.25" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Fox.Tick.Note" Width="1.5" PointX="3.125" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Fox.Tick.Client" Width="1.5" PointX="11.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Fox.Tick.Team" Width="1.5" PointX="5.125" PointY="5.125" />
+        <EntityTypeShape EntityType="Fox.Tick.PlaylistDetail" Width="1.5" PointX="2.625" PointY="5.875" />
+        <EntityTypeShape EntityType="Fox.Tick.Playlist" Width="1.5" PointX="0.5" PointY="5.25" />
+        <EntityTypeShape EntityType="Fox.Tick.Game" Width="1.5" PointX="7.75" PointY="3.125" />
+        <AssociationConnector Association="Fox.Tick.PlaylistPlaylistDetail" />
+        <EntityTypeShape EntityType="Fox.Tick.Sport" Width="1.5" PointX="5.25" PointY="0.875" />
+        <EntityTypeShape EntityType="Fox.Tick.Status" Width="1.5" PointX="7.125" PointY="1" />
+        <AssociationConnector Association="Fox.Tick.SportStatus" />
+        <AssociationConnector Association="Fox.Tick.SportGame" />
+        <AssociationConnector Association="Fox.Tick.SportTeam" />
+        <EntityTypeShape EntityType="Fox.Tick.GameNote" Width="1.5" PointX="10.125" PointY="5.875" />
+        <AssociationConnector Association="Fox.Tick.GameGameNote" />
+        <EntityTypeShape EntityType="Fox.Tick.ClientTeam" Width="1.5" PointX="16.75" PointY="6.75" />
+        <AssociationConnector Association="Fox.Tick.TeamClientTeam" />
+        <EntityTypeShape EntityType="Fox.Tick.ClientSport" Width="1.5" PointX="8.875" PointY="0.5" />
+        <AssociationConnector Association="Fox.Tick.SportClientSport" />
+        <AssociationConnector Association="Fox.Tick.SportTeam1" />
+        <EntityTypeShape EntityType="Fox.Tick.GroupAnimationType" Width="1.5" PointX="3.375" PointY="0.625" />
+        <AssociationConnector Association="Fox.Tick.GroupAnimationTypeGroup" />
+        <AssociationConnector Association="Fox.Tick.FK_Notes_Groups" />
+        <EntityTypeShape EntityType="Fox.Tick.User" Width="1.5" PointX="11.875" PointY="7.875" />
+        <EntityTypeShape EntityType="Fox.Tick.GameHiveNote" Width="1.5" PointX="12" PointY="3.875" />
+        <EntityTypeShape EntityType="Fox.Tick.auth_admin_log" Width="1.5" PointX="13.875" PointY="7.625" />
+        <AssociationConnector Association="Fox.Tick.FK__auth_admi__user___36D11DD4" />
+        <EntityTypeShape EntityType="Fox.Tick.auth_content_type" Width="1.5" PointX="14.25" PointY="4.875" />
+        <AssociationConnector Association="Fox.Tick.FK__auth_admi__conte__4CC05EF3" />
+        <EntityTypeShape EntityType="Fox.Tick.GroupGame" Width="1.5" PointX="9.625" PointY="2.875" />
+        <AssociationConnector Association="Fox.Tick.FK_GameGroupGame" />
+        <AssociationConnector Association="Fox.Tick.FK_GroupGroupGame" />
+        <AssociationConnector Association="Fox.Tick.FK_SportGroupGame" />
+        <EntityTypeShape EntityType="Fox.Tick.BreakingNew" Width="1.5" PointX="13.625" PointY="0.625" />
+        <EntityTypeShape EntityType="Fox.Tick.BreakingNewsType" Width="1.5" PointX="16" PointY="1.375" />
+        <AssociationConnector Association="Fox.Tick.FK_BreakingNewsTypeBreakingNews" />
+        <AssociationConnector Association="Fox.Tick.FK_ClientBreakingNews" />
+        <AssociationConnector Association="Fox.Tick.ClientShares" />
+        <EntityTypeShape EntityType="Fox.Tick.BreakingNewsExpirationMode" Width="1.5" PointX="3.875" PointY="9.625" />
+        <EntityTypeShape EntityType="Fox.Tick.GameStatus" Width="1.5" PointX="1.25" PointY="9.25" />
+        <EntityTypeShape EntityType="Fox.Tick.PlaylistType" Width="1.5" PointX="9.7390983783356369" PointY="18.087489523965626" />
+        <EntityTypeShape EntityType="Fox.Tick.LeaguesSetting" Width="1.5" PointX="0.75" PointY="11.75" />
+        <EntityTypeShape EntityType="Fox.Tick.Setting" Width="1.5" PointX="6.75" PointY="11.75" />
+        <EntityTypeShape EntityType="Fox.Tick.SettingsOption" Width="1.5" PointX="8.75" PointY="11.75" />
+        </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

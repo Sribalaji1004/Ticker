@@ -1,0 +1,290 @@
+﻿@{
+    ViewBag.Title = "Playlist";
+}
+
+<h2>Playlist</h2>
+
+<div class="treeview-back">
+    @(Html.Kendo().TreeView()
+    .Name("lvPlaylistDetails")
+            //.Template("Playlist")
+            //.TagName("div")
+            //.ClientTemplateId("Playlist")
+            //.Pageable()
+    .Checkboxes(true)
+    .Events(e => e.DataBound("onDataBound"))
+    .Events(e => e.Expand("onExpand"))
+    .DataSource(dataSource =>
+    {
+        dataSource.Read(read => read.Url("/api/PlaylistItems/").Data("PlaylistDetail")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414);
+        //dataSource.ServerFiltering(true);
+        //dataSource.PageSize(12);
+    })
+    .DataTextField("Name")
+
+    //.Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
+)
+</div>
+
+<div class="treeview-back">
+    @(Html.Kendo().TreeView()
+    .Name("lvPlaylistAll")
+            //.Template("Playlist")
+            //.TagName("div")
+            //.ClientTemplateId("Playlist")
+            //.Pageable()
+    .Checkboxes(true)
+    .Events(e => e.DataBound("onDataBound"))
+    .Events(e => e.Expand("onExpand"))
+    .DragAndDrop(true)
+    .Events(e => e.Drop("drop"))
+    .DataSource(dataSource =>
+    {
+        dataSource.Read(read => read.Url("/api/PlaylistItems/").Data("PlaylistALL")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414); //3533 - LITE NOTES
+        //dataSource.ServerFiltering(true);
+        //dataSource.PageSize(12);
+    })
+    .DataTextField("Name")
+            //.HtmlAttributes(new { title = "some text" })
+    .HtmlAttributes(new { style = "color: blue" })
+            //.Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
+)
+</div>
+<script type="text/javascript">
+    var PlaylistID;
+    var EntryID;
+    var EntryTypeID;
+    var ObjectType;
+    var Dirty;
+
+    function PlaylistALL(e) {
+        //alert(e.id);
+        //if (EntryID !=null)
+        //    alert('pld:' + EntryID);
+
+        //alert(PlaylistID + ' ' + EntryID + ' ' + EntryTypeID + ' ' + ObjectType);
+            
+        if (PlaylistID == null && EntryID == null)
+            //this.dataSource.transport.options.read.url = "/api/spTICK_Playlist_Details_Get_Result" + e;
+            return {id: @(ViewData["ClientID"])};
+        else if (EntryID == null)
+            //this.dataSource.transport.options.read.url = "/api/spTICK_Playlist_Details_Get_Result" + e;
+            return {id: @(ViewData["ClientID"]), playlistID: PlaylistID};
+        else if (ObjectType == null)
+            return {id: @(ViewData["ClientID"]), entryID: EntryID, EntryTypeID: EntryTypeID};
+        else
+            return {id: @(ViewData["ClientID"]), entryID: EntryID, EntryTypeID: EntryTypeID, ObjectType: ObjectType};
+
+    }
+
+    function addChildren(item, node) {
+        if (node.hasChildren) {
+            var children = node.children.data();
+            for (var i = 0; i < children.length; i++) {
+                var newItem = children[i].toJSON();
+                item.items.push(newItem);
+                addChildren(newItem, children[i]);
+            }
+        }
+        else {
+            delete item.items;
+        }
+    }
+    function drop(e){
+        e.preventDefault();
+        //var newItem = this.dataItem(e.sourceNode).toJSON();
+        //alert(e.dropPosition);
+        var item = this.dataItem(e.sourceNode),
+        newItem = item.toJSON();
+        addChildren(newItem, item);
+        alert(this.dataItem(e.sourceNode).EntryID);
+        if(e.dropPosition == "over"){
+            var treeview = $("#lvPlaylistDetails").data("kendoTreeView");
+            //var kendoTreeView = $("#lvPlaylistAll").data("kendoTreeView");
+
+            //addChildren(newItem, e.sourceNode);
+            treeview.append(newItem, $(e.destinationNode));
+        
+         
+            //alert(newItem);
+            //tree.append(newItem, $(e.destinationNode));
+        }
+    }
+
+function PlaylistDetail(e) {
+    //alert(e.id);
+    //if (EntryID !=null)
+    //    alert('pld:' + EntryID);
+
+    //alert(EntryID + ' ' + EntryTypeID + ' ' + ObjectType);
+
+    if (EntryID == null )
+        //this.dataSource.transport.options.read.url = "/api/spTICK_Playlist_Details_Get_Result" + e;
+        return {id: @(ViewData["ClientID"]), playlistID: @(ViewData["PlaylistID"])};
+    else if (ObjectType == null)
+        return {id: @(ViewData["ClientID"]), entryID: EntryID, EntryTypeID: EntryTypeID};
+    else
+        return {id: @(ViewData["ClientID"]), entryID: EntryID, EntryTypeID: EntryTypeID, ObjectType: ObjectType};
+
+}
+function onDataBound(e) {
+    //alert("Selecting: " + this.text(e.node));
+    //alert("Selecting: " + this.dataItem(e.node).EntryID);
+    //EntryID = this.dataItem(e.node).EntryID;
+          @*  
+            if (EntryID != null && Dirty==null)
+                //this.dataSource.transport.options.read.url = "/api/spTICK_Playlist_Details_Get_Result" + e;
+                //return {id: @(ViewData["PlaylistID"])};
+                //else
+            {
+                this.dataSource.transport.options.read.url = "/api/Group/" + EntryID;
+                this.dataSource.read()
+                Dirty = true;
+             //   alert(this.dataSource.transport.options.read.url);
+            }*@
+    //return { id: EntryID };
+
+}
+
+    function onExpand(e) {
+        //htmlNode = e.node;
+        //alert(htmlNode);
+        //model = this.dataItem(e.node);    
+        EntryID = this.dataItem(e.node).EntryID;
+        if (PlaylistID == null || EntryID == null)
+            PlaylistID = this.dataItem(e.node).ID;
+
+        EntryTypeID = this.dataItem(e.node).EntryTypeID;
+        ObjectType = this.dataItem(e.node).ObjectType;
+
+        if (ObjectType!=null)
+        {
+            EntryID = this.dataItem(e.node).ID;
+            EntryTypeID = 2;
+        }
+        
+        //Dirty = null;
+        //this.dataSource.transport.options.read.url = "/api/Group"
+        //this.datas
+        //this.dataSource.read()
+
+        //var treeView = $("#lvPlaylistDetails").data("kendoTreeView");
+
+        //alert(model.ID);
+    }
+
+</script>
+
+<style scoped>
+    .playlist-section {
+        width: 200px;
+    }
+</style>
+<style scoped="scoped">
+    .treeview-back {
+        float: left;
+        width: 300px;
+        margin: 30px;
+        padding: 20px;
+        -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.45), inner 0 0 30px rgba(0,0,0,0.07);
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+    }
+</style>
+@*@(Html.Kendo().ListView<Ticker.Data.PlaylistDetail>()
+    .Name("lvPlaylistDetails")
+    .TagName("div")
+    .ClientTemplateId("template")
+    //.Pageable()
+    .DataSource(dataSource => {
+        dataSource.Read(read => read.Url("api/spTICK_Playlist_Details_Get_Result" + "/1154").Type(HttpVerbs.Get));
+        dataSource.PageSize(12);
+    })        
+    .Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
+)*@
+
+@*<p>Drag and drop items within one TreeView or between the two.</p>
+
+<div class="treeview-back">
+
+    @(Html.Kendo().TreeView()
+        .Name("treeview-left")
+            //.DragAndDrop(true)
+          .Events(e => e.Drop("drop"))
+        .Items(treeview =>
+        {
+            treeview.Add().Text("Furniture")
+                .Expanded(true)
+                .Items(furniture =>
+                {
+                    furniture.Add().Text("Tables & Chairs");
+                    furniture.Add().Text("Sofas");
+                    furniture.Add().Text("Occasional Furniture");
+                });
+
+            treeview.Add().Text("Decor")
+                .Expanded(true)
+                .Items(furniture =>
+                {
+                    furniture.Add().Text("Bed Linen");
+                    furniture.Add().Text("Curtains & Blinds");
+                    furniture.Add().Text("Carpets");
+                });
+        })
+    )
+
+</div>
+
+<div class="treeview-back">
+
+    @(Html.Kendo().TreeView()
+        .Name("treeview-right")
+        .DragAndDrop(true)
+        .Events(e => e.Drop("drop"))
+        .Items(treeview =>
+        {
+            treeview.Add().Text("Storage")
+                .Expanded(true)
+                .Items(furniture =>
+                {
+                    furniture.Add().Text("Wall Shelving");
+                    furniture.Add().Text("Floor Shelving");
+                    furniture.Add().Text("Kids Storage");
+                });
+
+            treeview.Add().Text("Lights")
+                .Expanded(true)
+                .Items(furniture =>
+                {
+                    furniture.Add().Text("Ceiling");
+                    furniture.Add().Text("Table");
+                    furniture.Add().Text("Floor");
+                });
+        })
+    )
+
+</div>
+
+<script type="text/javascript">
+    function drop(e){
+        e.preventDefault();
+        var newItem = this.dataItem(e.sourceNode).toJSON();
+        //alert(e.dropPosition);
+        if(e.dropPosition == "over"){
+            var treeview = $("#treeview-left").data("kendoTreeView");
+            var kendoTreeView = $("#treeview-right").data("kendoTreeView")
+            treeview.append(newItem, $(e.destinationNode));
+        
+            newItem.closest(".k-item").find("> .k-group > .k-item").map(function() {
+                alert(kendoTreeView.text(this));
+                //return kendoTreeView.text(this);
+            });
+            //alert(newItem);
+            //tree.append(newItem, $(e.destinationNode));
+        }
+    }
+</script>*@
+<div style="clear: both" />

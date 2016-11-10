@@ -1,0 +1,25 @@
+﻿@model string
+
+@(Html.Kendo().DropDownListFor(m => m)
+        .Name("ddlEditorSports")
+        .DataTextField("ShortDisplay")
+        //.Events(e => e.Change("onTeamEditorSports"))
+        .DataValueField("ID")
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url("/Ticker/api/Sport").Type(HttpVerbs.Get))
+        )
+        //        .Value("1")
+)
+
+<script>
+
+    //$(document).ready(function () {
+    //    $(document.getElementById("templateTool")).kendoDropDownList({
+    //        change: function (e) {
+    //            var editor = $(document.getElementById("noteEditor")).data("kendoEditor");
+    //            editor.paste("<span style='color:" + e.sender.value() + ";'>" + editor.getSelection() + "</span>");
+    //        }
+    //    });
+    //});
+
+</script>

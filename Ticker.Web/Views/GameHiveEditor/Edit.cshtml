@@ -1,0 +1,2017 @@
+﻿@model Ticker.Data.spTICK_Games_GetByEntryID_Result
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+    <style>
+        .czDLGIcon {
+            padding-right: 10px;
+            width: 32px;
+            height: 32px;
+            padding-bottom: 10px;
+            background-repeat: no-repeat;
+        }
+
+
+
+        .czDLGText {
+            padding-right: 20px;
+            font-weight: bold;
+            padding-bottom: 10px;
+        }
+
+
+
+        .czDLGBtn {
+            margin-right: 5px;
+            border: 1px solid #666;
+            background-color: #0d0d0d;
+            color: white;
+            font-weight: bold;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            font-size: 13px;
+            padding: 4px 10px;
+            outline: 0;
+            -webkit-appearance: none;
+            cursor: pointer;
+            float: right;
+        }
+
+
+
+            .czDLGBtn:hover {
+                background-color: #1d1d1d;
+            }
+
+
+
+        .czWarning {
+            background-image: url('/assets/icons/dlgIcons/warning.png');
+        }
+
+
+
+        .czInformation {
+            background-image: url('/assets/icons/dlgIcons/information.png');
+        }
+
+
+
+        .czConfirm {
+            background-image: url('/assets/icons/dlgIcons/confirm.png');
+        }
+
+
+
+        .czError {
+            background-image: url('/assets/icons/dlgIcons/error.png');
+        }
+
+        .czStop {
+            background-image: url('/assets/icons/dlgIcons/stop.png');
+        }
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+
+        //----------
+      //  var today = new Date();
+      //  if (today.dst()) { alert("Daylight savings time!"); }
+        bolGroupEditor = false;
+        bolGameEditor = true;
+
+        Date.prototype.stdTimezoneOffset = function () {
+            var jan = new Date(this.getFullYear(), 0, 1);
+            var jul = new Date(this.getFullYear(), 6, 1);
+            return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+        }
+
+        Date.prototype.dst = function () {
+            return this.getTimezoneOffset() < this.stdTimezoneOffset();
+        }
+
+        Date.prototype.addHours = function (h) {
+            this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+            return this;
+        }
+        Date.prototype.EasternToUTCOffset = function () {
+            var today = new Date();
+            var offset;
+            if (today.dst())
+                offset = 4
+            else
+                offset = 5
+
+            return offset
+
+        }
+        Date.prototype.UTCToEasternOffset = function () {
+            var today = new Date();
+            var offset;
+            if (today.dst())
+                offset = -4
+            else
+                offset = -5
+
+            return offset
+
+        }
+
+        function formatAMPM(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            return strTime;
+        }
+
+        function UTCtoEastern(utcDate) {
+           // alert(utcDate);
+            d = new Date(utcDate);
+            var today = new Date();
+            var offset;
+            if (today.dst())
+                offset = -4
+            else
+                offset = -5
+
+            // convert to msec
+            // add local time zone offset 
+            // get UTC time in msec
+           // utc = d.getTime()  * 60000;
+            // alert(utc);
+            d.addHours(offset);
+           // alert(d);
+            return d;
+
+        }
+
+
+        //-------------------
+        var SportID;
+        var HomeID = null;
+        var VisitorID;
+        function GameGameLeagues(e) {
+            //alert(SportID);
+            if (SportID == null)
+                return { id: 0, sportID: 1, sort: 'Abbreviation' };
+                //return {id: 0, sportID: 1, sort: TeamSort};
+            else
+                return { id: 0, sportID: SportID, sort: 'Abbreviation' };
+
+        }
+        function onGameSports(e) {
+            var ddl = $("#ddlGameSports").data("kendoDropDownList");
+            //var dataItem =  ddl.dataItem(e.item.index());
+            SportID = ddl.value();//dataItem.value;
+            // alert('1');
+            var ddlTeam = $("#ddlGameTeam").data("kendoDropDownList");
+            ddlTeam.dataSource.read();
+            ddlTeam.dataSource.sync();
+            //alert('2');
+        }
+
+        function onStartTimeChange(e) {
+            var ddl = $("#dtpStartTime").data("kendoDateTimePicker");
+            var value = ddl.value();
+
+            if (value != "<None>") {
+                jsonData = '[{ "Name": "DateTimeUtc", "Value": "' + new Date(value).toISOString() + '", },]';
+                $.ajax
+                  ({
+                      //"cache": "false",
+                      "type": "POST",
+                      async: false,
+                      'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides/" + "@ViewData["HiveID"]",
+                      'data': jsonData,
+                      'accepts': "application/json",
+                      'contentType': "application/json",
+                      'dataType': 'json',
+                      'success': function (data, status, jxhr) {
+                          try {
+                              StartTimeRead();
+                          } catch (err) { }
+                      }, 'error': function (jxhr, status, thrown) {
+                          try {
+                              if (e.response[r].HiveID != 'undefined')
+                                  e.response[r].Name = "* Error obtaining data *";
+                              // if (!isIE || isDebugMode) {
+                              //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                              //                            console.log(jxhr);
+                              //                            console.log(status);
+                              //                            console.log(thrown);
+                              //  }
+                          } catch (err) { }
+                      }, 'complete': function (data, status) {
+                          // if (!isIE || isDebugMode) {
+                          //                        console.log(data);
+                          //                        console.log(status);
+                          //  }
+                      }, 'statusCode': {
+                          404: function () {
+                              //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                          }
+                      }
+                  });
+              }
+              else //remove override
+              {
+                  jsonData = '[{ "Name": "StartTime", "Value": "Unknown", },]';
+                  $.ajax
+                    ({
+                        //"cache": "false",
+                        "type": "POST",
+                        async: false,
+                        'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides/" + "@ViewData["HiveID"]",
+                        'data': jsonData,
+                        'accepts': "application/json",
+                        'contentType': "application/json",
+                        'dataType': 'json',
+                        'success': function (data, status, jxhr) {
+                            try {
+                                StartTimeRead();
+                            } catch (err) { }
+                        }, 'error': function (jxhr, status, thrown) {
+                            try {
+                                if (e.response[r].HiveID != 'undefined')
+                                    e.response[r].Name = "* Error obtaining data *";
+                                // if (!isIE || isDebugMode) {
+                                //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                //                            console.log(jxhr);
+                                //                            console.log(status);
+                                //                            console.log(thrown);
+                                //  }
+                            } catch (err) { }
+                        }, 'complete': function (data, status) {
+                            // if (!isIE || isDebugMode) {
+                            //                        console.log(data);
+                            //                        console.log(status);
+                            //  }
+                        }, 'statusCode': {
+                            404: function () {
+                                //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                            }
+                        }
+                    });
+
+                    $.ajax
+                      ({
+                          //"cache": "false",
+                          "type": "DELETE",
+                          async: false,
+                          'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/override/" + "@ViewData["HiveID"]" + "/Name/" + "StartTime",
+                          "contentType": "application/json;charset=utf-8",
+                          'success': function (data, status, jxhr) {
+                              try {
+                                  StartTimeRead();
+                              } catch (err) { }
+                          }, 'error': function (jxhr, status, thrown) {
+                              try {
+                                  if (e.response[r].HiveID != 'undefined')
+                                      e.response[r].Name = "* Error obtaining data *";
+                                  // if (!isIE || isDebugMode) {
+                                  //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                  //                            console.log(jxhr);
+                                  //                            console.log(status);
+                                  //                            console.log(thrown);
+                                  //  }
+                              } catch (err) { }
+                          }, 'complete': function (data, status) {
+                              // if (!isIE || isDebugMode) {
+                              //                        console.log(data);
+                              //                        console.log(status);
+                              //  }
+                          }, 'statusCode': {
+                              404: function () {
+                                  //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                              }
+                          }
+                      });
+                  }
+              }
+              function LogWrite(action, object_id, object_repr, change_message) {
+
+                  //jsonData = '[{ "action": "' + action + '", "object_id": "' + object_id + '", "object_repr": "' + object_repr + '", "change_message": "' + change_message + '", },]';
+
+                  $.ajax
+                    ({
+                        //"cache": "false",
+                        "type": "POST",
+                        async: false,
+                        'url': "/api/Log?action=" + action + "&object_id=" + object_id + "&object_repr=" + object_repr + "&change_message=" + change_message,
+                        'data': jsonData,
+                        'accepts': "application/json",
+                        'contentType': "application/json",
+                        'dataType': 'json',
+                        'success': function (data, status, jxhr) {
+                            try {
+
+                            } catch (err) { }
+                        }, 'error': function (jxhr, status, thrown) {
+                            try {
+
+                                // if (!isIE || isDebugMode) {
+                                //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                //                            console.log(jxhr);
+                                //                            console.log(status);
+                                //                            console.log(thrown);
+                                //  }
+                            } catch (err) { }
+                        }, 'complete': function (data, status) {
+                            // if (!isIE || isDebugMode) {
+                            //                        console.log(data);
+                            //                        console.log(status);
+                            //  }
+                        }, 'statusCode': {
+                            404: function () {
+                                //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                            }
+                        }
+                    });
+              }
+              function SetHiveValue(fieldname, fieldvalue) {
+                  debugger;
+                  var ajaxSuccess = false;
+                  if (fieldvalue != "<None>") {
+                      jsonData = '[{ "Name": "' + fieldname + '", "Value": "' + fieldvalue + '", },]';
+                      $.ajax
+                        ({
+                            //"cache": "false",
+                            "type": "POST",
+                            async: false,
+                            //'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides/" + "@ViewData["HiveID"]",
+                            'url': DataHiveUrl + "schedules/" + "@ViewData["HivePrefix"]" + "/overrides/" + "@ViewData["HiveID"]",
+                            'data': jsonData,
+                            'accepts': "application/json",
+                            'contentType': "application/json",
+                            'dataType': 'json',
+                            'success': function (data, status, jxhr) {
+                                try {
+                                    ajaxSuccess = true;
+                                } catch (err) { }
+                            }, 'error': function (jxhr, status, thrown) {
+                                try {
+
+                                    // if (!isIE || isDebugMode) {
+                                    //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                    //                            console.log(jxhr);
+                                    //                            console.log(status);
+                                    //                            console.log(thrown);
+                                    //  }
+                                } catch (err) { }
+                            }, 'complete': function (data, status) {
+                                ajaxSuccess = true;
+                                // if (!isIE || isDebugMode) {
+                                //                        console.log(data);
+                                //                        console.log(status);
+                                //  }
+                            }, 'statusCode': {
+                                404: function () {
+                                    //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                }
+                            }
+                        });
+                    }
+                    else //remove override
+                    {
+                        jsonData = '[{ "Name": "' + fieldname + '", "Value": "Unknown", },]';
+                        $.ajax
+                          ({
+                              //"cache": "false",
+                              "type": "POST",
+                              async: false,
+                              'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides/" + "@ViewData["HiveID"]",
+                              'data': jsonData,
+                              'accepts': "application/json",
+                              'contentType': "application/json",
+                              'dataType': 'json',
+                              'success': function (data, status, jxhr) {
+                                  try {
+
+                                  } catch (err) { }
+                              }, 'error': function (jxhr, status, thrown) {
+                                  try {
+                                      if (e.response[r].HiveID != 'undefined')
+                                          e.response[r].Name = "* Error obtaining data *";
+                                      // if (!isIE || isDebugMode) {
+                                      //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                      //                            console.log(jxhr);
+                                      //                            console.log(status);
+                                      //                            console.log(thrown);
+                                      //  }
+                                  } catch (err) { }
+                              }, 'complete': function (data, status) {
+                                  // if (!isIE || isDebugMode) {
+                                  //                        console.log(data);
+                                  //                        console.log(status);
+                                  //  }
+                              }, 'statusCode': {
+                                  404: function () {
+                                      //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                  }
+                              }
+                          });
+
+                          $.ajax
+                            ({
+                                //"cache": "false",
+                                "type": "DELETE",
+                                async: false,
+                                'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/override/" + "@ViewData["HiveID"]" + "/Name/" + fieldname,
+                                "contentType": "application/json;charset=utf-8",
+                                'success': function (data, status, jxhr) {
+                                    try {
+
+                                    } catch (err) { }
+                                }, 'error': function (jxhr, status, thrown) {
+                                    try {
+                                        if (e.response[r].HiveID != 'undefined')
+                                            e.response[r].Name = "* Error obtaining data *";
+                                        // if (!isIE || isDebugMode) {
+                                        //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                        //                            console.log(jxhr);
+                                        //                            console.log(status);
+                                        //                            console.log(thrown);
+                                        //  }
+                                    } catch (err) { }
+                                }, 'complete': function (data, status) {
+                                    ajaxSuccess = true;
+                                    // if (!isIE || isDebugMode) {
+                                    //                        console.log(data);
+                                    //                        console.log(status);
+                                    //  }
+                                }, 'statusCode': {
+                                    404: function () {
+                                        //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                    }
+                                }
+                            });
+                        }
+                        if (ajaxSuccess)
+                            LogWrite('@Ticker.Controllers.Utilities.Action_Flag.CHANGE.ToString()', '@ViewData["HivePrefix"]', jsonData, 'Hive override for ' + fieldname + ' changed to ' + fieldvalue + '.');
+              }
+              function onGameStatusChange(e) {
+                  //var ddl = $("#ddlGameStatus").data("kendoDropDownList");
+                  //var value = ddl.value();
+
+                  //SetHiveValue('Status',value);
+              }
+              function GetHiveValue(field) {
+                  var ajaxfail;
+                  var result;
+                  $.ajax
+                              ({
+                                  //"cache": "false",
+                                  "type": "GET",
+                                  async: false,
+                                  'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides?id=" + "@ViewData["HiveID"]",
+                                  "contentType": "application/json;charset=utf-8",
+                                  'success': function (data, status, jxhr) {
+                                      try {
+                                          for (var i = 0; i < data.Overrides.length; i++) {
+                                              if (data.Overrides[i].Name == field) {
+                                                  result = data.Overrides[i].Value;
+                                              }
+                                          }
+
+                                          //return data.Model[field];
+
+                                      } catch (err) { }
+                                  }, 'error': function (jxhr, status, thrown) {
+                                      try {
+
+                                          ajaxFail = true;
+                                          // if (!isIE || isDebugMode) {
+                                          //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                          //                            console.log(jxhr);
+                                          //                            console.log(status);
+                                          //                            console.log(thrown);
+                                          //  }
+                                      } catch (err) { }
+                                  }, 'complete': function (data, status) {
+                                      // if (!isIE || isDebugMode) {
+                                      //                        console.log(data);
+                                      //                        console.log(status);
+                                      //  }
+                                  }, 'statusCode': {
+                                      404: function () {
+                                          //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                      }
+                                  }
+                              });
+
+                              if (ajaxFail)
+                                  $.ajax
+                                           ({
+                                               //"cache": "false",
+                                               "type": "GET",
+                                               async: false,
+                                               'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/?id=" + "@ViewData["HiveID"]",
+                                                     //"contentType": "application/json;charset=utf-8",
+                                                     'success': function (data, status, jxhr) {
+                                                         try {
+                                                             //var ddl = $("#dtpStartTime").data("kendoDateTimePicker");
+                                                             //alert( JSON.stringify(data).length);
+
+
+                                                             $.each(data, function (key, row) {
+                                                                 //$.each(row, function(key, fieldValue) {
+                                                                 if (key == field)
+                                                                     result = data[key];
+                                                                 //})
+                                                             });
+
+
+
+                                                             //ddl.value(new Date(data.DateTimeUtc));
+                                                             //for (var i = 0; i < data.length; i++) {
+                                                             //    if (data[i].Name==field)
+                                                             //    {
+                                                             //        //alert(data[i].Value);
+                                                             //        return data[i].Value;
+                                                             //    }
+                                                             //}
+                                                             //alert(jxhr);
+
+                                                             //alert(data.Model[field]);
+                                                             //return data.Model[field];
+                                                         }
+                                                         catch (err) {
+                                                             alert(err);
+                                                         }
+                                                     }
+                                                 });
+
+                                             if (result != null)
+                                                 return result;
+
+                                         }
+                                         function onGameStatusDataBound(e) {
+                                             var ddl = $("#ddlGameStatus").data("kendoDropDownList");
+                                             ddl.value(GetHiveValue('Status'));
+                                             //alert(GetHiveValue('Status'));
+                                             return;
+                                             $.ajax
+                                                   ({
+                                                       //"cache": "false",
+                                                       "type": "GET",
+                                                       async: false,
+                                                       'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides?id=" + "@ViewData["HiveID"]",
+                                                       "contentType": "application/json;charset=utf-8",
+                                                       'success': function (data, status, jxhr) {
+                                                           try {
+                                                               for (var i = 0; i < data.Overrides.length; i++) {
+                                                                   if (data.Overrides[i].Name == "Status") {
+                                                                       var ddl = $("#ddlGameStatus").data("kendoDropDownList");
+                                                                       ddl.value(data.Overrides[i].Value);
+                                                                   }
+                                                               }
+                                                           } catch (err) { }
+                                                       }, 'error': function (jxhr, status, thrown) {
+                                                           try {
+                                                               ddl.value(GetHiveValue('Status'));
+                                                               // if (!isIE || isDebugMode) {
+                                                               //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                                               //                            console.log(jxhr);
+                                                               //                            console.log(status);
+                                                               //                            console.log(thrown);
+                                                               //  }
+                                                           } catch (err) { }
+                                                       }, 'complete': function (data, status) {
+                                                           // if (!isIE || isDebugMode) {
+                                                           //                        console.log(data);
+                                                           //                        console.log(status);
+                                                           //  }
+                                                       }, 'statusCode': {
+                                                           404: function () {
+                                                               //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                                           }
+                                                       }
+                                                   });
+                                               }
+                                               function onGameStatusRequestEnd(e) {
+                                                   e.response.unshift("<None>");
+                                               }
+                                               function onNetworkTypeChange(e) {
+                                                   var ddl = $("#ddlNetworkType").data("kendoDropDownList");
+                                                   var value = ddl.value();
+
+                                                   if (value != "<None>") {
+                                                       jsonData = '[{ "Name": "NetworkType", "Value": "' + value + '", },]';
+                                                       $.ajax
+                                                         ({
+                                                             //"cache": "false",
+                                                             "type": "POST",
+                                                             async: false,
+                                                             'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides/" + "@ViewData["HiveID"]",
+                                                 'data': jsonData,
+                                                 'accepts': "application/json",
+                                                 'contentType': "application/json",
+                                                 'dataType': 'json',
+                                                 'success': function (data, status, jxhr) {
+                                                     try {
+                                                         $("#ddlNetworkType").data("kendoDropDownList").read();
+                                                     } catch (err) { }
+                                                 }, 'error': function (jxhr, status, thrown) {
+                                                     try {
+                                                         if (e.response[r].HiveID != 'undefined')
+                                                             e.response[r].Name = "* Error obtaining data *";
+                                                         // if (!isIE || isDebugMode) {
+                                                         //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                                         //                            console.log(jxhr);
+                                                         //                            console.log(status);
+                                                         //                            console.log(thrown);
+                                                         //  }
+                                                     } catch (err) { }
+                                                 }, 'complete': function (data, status) {
+                                                     // if (!isIE || isDebugMode) {
+                                                     //                        console.log(data);
+                                                     //                        console.log(status);
+                                                     //  }
+                                                 }, 'statusCode': {
+                                                     404: function () {
+                                                         //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                                     }
+                                                 }
+                                             });
+                                         }
+                                         else //remove override
+                                         {
+                                             jsonData = '[{ "Name": "NetworkType", "Value": "Unknown", },]';
+                                             $.ajax
+                                               ({
+                                                   //"cache": "false",
+                                                   "type": "POST",
+                                                   async: false,
+                                                   'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides/" + "@ViewData["HiveID"]",
+                                                'data': jsonData,
+                                                'accepts': "application/json",
+                                                'contentType': "application/json",
+                                                'dataType': 'json',
+                                                'success': function (data, status, jxhr) {
+                                                    try {
+                                                        $("#ddlNetworkType").data("kendoDropDownList").read();
+                                                    } catch (err) { }
+                                                }, 'error': function (jxhr, status, thrown) {
+                                                    try {
+                                                        if (e.response[r].HiveID != 'undefined')
+                                                            e.response[r].Name = "* Error obtaining data *";
+                                                        // if (!isIE || isDebugMode) {
+                                                        //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                                        //                            console.log(jxhr);
+                                                        //                            console.log(status);
+                                                        //                            console.log(thrown);
+                                                        //  }
+                                                    } catch (err) { }
+                                                }, 'complete': function (data, status) {
+                                                    // if (!isIE || isDebugMode) {
+                                                    //                        console.log(data);
+                                                    //                        console.log(status);
+                                                    //  }
+                                                }, 'statusCode': {
+                                                    404: function () {
+                                                        //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                                    }
+                                                }
+                                            });
+
+                                            $.ajax
+                                              ({
+                                                  //"cache": "false",
+                                                  "type": "DELETE",
+                                                  async: false,
+                                                  'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/override/" + "@ViewData["HiveID"]" + "/Name/" + "NetworkType",
+                                                  "contentType": "application/json;charset=utf-8",
+                                                  'success': function (data, status, jxhr) {
+                                                      try {
+                                                          $("#ddlNetworkType").data("kendoDropDownList").read();
+                                                      } catch (err) { }
+                                                  }, 'error': function (jxhr, status, thrown) {
+                                                      try {
+                                                          if (e.response[r].HiveID != 'undefined')
+                                                              e.response[r].Name = "* Error obtaining data *";
+                                                          // if (!isIE || isDebugMode) {
+                                                          //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                                          //                            console.log(jxhr);
+                                                          //                            console.log(status);
+                                                          //                            console.log(thrown);
+                                                          //  }
+                                                      } catch (err) { }
+                                                  }, 'complete': function (data, status) {
+                                                      // if (!isIE || isDebugMode) {
+                                                      //                        console.log(data);
+                                                      //                        console.log(status);
+                                                      //  }
+                                                  }, 'statusCode': {
+                                                      404: function () {
+                                                          //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                                      }
+                                                  }
+                                              });
+                                          }
+                                      }
+                                      function onNetworkTypeDataBound(e) {
+                                          $.ajax
+                                                ({
+                                                    //"cache": "false",
+                                                    "type": "GET",
+                                                    async: false,
+                                                    'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides?id=" + "@ViewData["HiveID"]",
+                                                    "contentType": "application/json;charset=utf-8",
+                                                    'success': function (data, status, jxhr) {
+                                                        try {
+                                                            for (var i = 0; i < data.Overrides.length; i++) {
+                                                                if (data.Overrides[i].Name == "NetworkType") {
+                                                                    var ddl = $("#ddlNetworkType").data("kendoDropDownList");
+                                                                    ddl.value(data.Overrides[i].Value);
+                                                                }
+                                                            }
+                                                        } catch (err) { }
+                                                    }, 'error': function (jxhr, status, thrown) {
+                                                        try {
+                                                            if (e.response[r].HiveID != 'undefined')
+                                                                e.response[r].Name = "* Error obtaining data *";
+                                                            // if (!isIE || isDebugMode) {
+                                                            //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                                            //                            console.log(jxhr);
+                                                            //                            console.log(status);
+                                                            //                            console.log(thrown);
+                                                            //  }
+                                                        } catch (err) { }
+                                                    }, 'complete': function (data, status) {
+                                                        // if (!isIE || isDebugMode) {
+                                                        //                        console.log(data);
+                                                        //                        console.log(status);
+                                                        //  }
+                                                    }, 'statusCode': {
+                                                        404: function () {
+                                                            //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                            function onNetworkTypeRequestEnd(e) {
+                                                e.response.unshift("<None>");
+                                            }
+
+                                            if ("@ViewData["HiveID"]" == "") {
+
+                                      }
+                                      else //single game
+                                          $.ajax
+                                                     ({
+                                                         //"cache": "false",
+                                                         "type": "GET",
+                                                         async: false,
+                                                         'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/" + "@ViewData["HiveID"]",
+                                                   "contentType": "application/json;charset=utf-8",
+                                                   'success': function (data, status, jxhr) {
+                                                       try {
+                                                           $("#GameName").text(data.VisitorTeamAlias + " @@ " + data.HomeTeamAlias);
+                                                           $("#LastUpdatedUtc").text(data.LastUpdatedUtc);
+                                                           VisitorTeamAlias = data.VisitorTeamAlias;
+                                                           HomeTeamAlias = data.HomeTeamAlias;
+                                                       } catch (err) { }
+                                                   }, 'error': function (jxhr, status, thrown) {
+                                                       try {
+                                                           if (e.response[r].HiveID != 'undefined')
+                                                               e.response[r].Name = "* Error obtaining data *";
+                                                           // if (!isIE || isDebugMode) {
+                                                           //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                                           //                            console.log(jxhr);
+                                                           //                            console.log(status);
+                                                           //                            console.log(thrown);
+                                                           //  }
+                                                       } catch (err) { }
+                                                   }, 'complete': function (data, status) {
+                                                       // if (!isIE || isDebugMode) {
+                                                       //                        console.log(data);
+                                                       //                        console.log(status);
+                                                       //  }
+                                                   }, 'statusCode': {
+                                                       404: function () {
+                                                           //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                                       }
+                                                   }
+                                               });
+
+
+    </script>
+    <script type="text/javascript">
+        $("#onEditorSave").click(function (e) {
+            //e.preventDefault();
+
+            //var jsonData = '{ "ID": ' + PLD.keys("ID") + ', "OnAirName": "' + $("#OnAirName").val() + '", "EntryTypeID": "' + PLD.EntryTypeID + '", "EntryID": "' + PLD.EntryID + '", "PlaylistID": ' + PLD.PlaylistID + ', "SortOrder": ' + PLD.SortOrder + ' }';
+            //PLD.OnAirName = $("#OnAirName").val();
+
+            if ($('#OnAirName').is(":visible")) {
+                PLD.OnAirName = $("#txtOnAirName").val();
+                PLD.NotesTypeID = $("#ddlRipGameStatusType").val();
+                PLD.UserNum1 = $("#ddlRank").data("kendoDropDownList").value();
+                
+                if (PLD.NotesTypeID != 1 && PLD.EntryTypeID != 28 && PLD.EntryTypeID != 29 && PLD.EntryTypeID != 30)
+                    PLD.RipCount = 1;
+
+                jsonData = JSON.stringify(PLD);
+
+                $.ajax
+                 ({
+                     //"cache": "false",
+                     "type": "PUT",
+                     async: false,
+                     'url': "/api/PlaylistDetail/" + PlaylistDetailID,
+                     'data': jsonData,
+                     "contentType": "application/json;charset=utf-8",
+                     'success': function (data, status, jxhr) {
+                         try {
+                             //$("#OnAirName").val(data.OnAirName);
+                         } catch (err) { }
+                     }, 'error': function (jxhr, status, thrown) {
+                         try {
+                             if (e.response[r].HiveID != 'undefined')
+                                 e.response[r].Name = "* Error obtaining data *";
+                             // if (!isIE || isDebugMode) {
+                             //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                             //                            console.log(jxhr);
+                             //                            console.log(status);
+                             //                            console.log(thrown);
+                             //  }
+                         } catch (err) { }
+                     }, 'complete': function (data, status) {
+                         // if (!isIE || isDebugMode) {
+                         //                        console.log(data);
+                         //                        console.log(status);
+                         //  }
+                     }, 'statusCode': {
+                         404: function () {
+                             //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                         }
+                     }
+                 });
+            }
+
+            if ($("#chkStartTime").is(':checked')) {
+                debugger;
+                 //alert($("#StartTime").val());
+                var today = new Date();
+                var strDate = new Date($("#StartTime").val()).addHours(today.EasternToUTCOffset());
+                var strSdate = strDate.getMonth() + 1 + "/" + strDate.getDate() + "/" + strDate.getFullYear() + " " + formatAMPM(strDate);
+               // alert(strSdate);
+                SetHiveValue('DateTimeUtc', strSdate);
+            }
+
+            if ($("#chkPeriod").is(':checked'))
+                SetHiveValue('Period', $("#Period").val());
+
+            //SetHiveValue('VisitorTeamName',$("#VisitorTeamName").val());
+            //SetHiveValue('HomeTeamName',$("#HomeTeamName").val());
+
+            if ($("#chkVisitorScore").is(':checked'))
+                SetHiveValue('VisitorScore', $("#VisitorScore").val());
+
+            if ($("#chkHomeScore").is(':checked'))
+                SetHiveValue('HomeScore', $("#HomeScore").val());
+
+            if ($("#chkOverrideClock").is(':checked'))
+                SetHiveValue('Clock', $("#Clock").val());
+
+            if ($("#chkGameStatus").is(':checked')) {
+                var ddl = $("#ddlGameStatus").data("kendoDropDownList");
+                var value = ddl.value();
+
+                SetHiveValue('Status', value);
+            }
+
+            if ($("#chkNetworkType").is(':checked')) {
+                var ddl = $("#ddlNetworkType").data("kendoDropDownList");
+                var value = ddl.value();
+
+                SetHiveValue('NetworkType', value);
+            }
+
+            if (RankUsed) //($('#Ranks').is(":visible"))
+            {
+                if ($("#chkVisitorRank").is(':checked'))
+                    SetHiveValue('VisitorRank', $("#VisitorRank").val());
+                if ($("#chkHomeRank").is(':checked'))
+                    SetHiveValue('HomeRank', $("#HomeRank").val());
+            }
+            if (SeedUsed) //($('#Seeds').is(":visible"))
+            {
+                if ($("#chkVisitorSeed").is(':checked'))
+                    SetHiveValue('VisitorSeed', $("#VisitorSeed").val());
+                if ($("#chkHomeSeed").is(':checked'))
+                    SetHiveValue('HomeSeed', $("#HomeSeed").val());
+            }
+
+
+            $('#winEditor').data('kendoWindow').close();
+        });
+
+    </script>
+
+    @*    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+    
+        <fieldset>*@
+    @*  <div id="example"></div>
+
+    <script id="javascriptTemplate" type="text/x-kendo-template">
+        <ul>
+        # for (var i = 0; i < data.length; i++) { #
+            <li>#= data[i].VisitorTeamAlias + " @@ " + data[i].HomeTeamAlias #</li>
+       
+          @(
+ Html.Kendo().Grid<Ticker.Data.GameHiveNote>()
+    .Name("Notes_#=data[i].CorrelationId#")
+     .DataSource(dataSource => dataSource
+        .Ajax()
+        .Read(read => read.Url("http://datahive.foxneo.com/datahive/api/results/mlb/5202109390622019e4b353e0").Type(HttpVerbs.Get))
+        .Create(create => create.Url("/api/GameHiveNote").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/GameHiveNote").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/GameHiveNote").Type(HttpVerbs.Delete))
+     ).ToClientTemplate()
+        )
+
+
+        # } #
+        </ul>
+    </script>
+
+    <script type="text/javascript">
+        //Get the external template definition using a jQuery selector
+        var template = kendo.template($("#javascriptTemplate").html());
+        
+        //Create some dummy data
+        var data = ["Todd", "Steve", "Burke", "@ViewData["HivePrefix"]"];
+
+        $.ajax
+                        ({
+                            //"cache": "false",
+                            "type": "GET",
+                            async: false,
+                            'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]",
+                            "contentType": "application/json;charset=utf-8",
+                            'success': function (data, status, jxhr) {
+                                try {
+                                    var result = template(data); //Execute the template
+                                    $("#example").html(result); //Append the result
+                                   
+                                } catch (err) { }
+                            }, 'error': function (jxhr, status, thrown) {
+                                try {
+                                    if (e.response[r].HiveID!='undefined')
+                                        e.response[r].Name = "* Error obtaining data *";
+                                    // if (!isIE || isDebugMode) {
+                                    //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                    //                            console.log(jxhr);
+                                    //                            console.log(status);
+                                    //                            console.log(thrown);
+                                    //  }
+                                } catch (err) { }
+                            }, 'complete': function (data, status) {
+                                // if (!isIE || isDebugMode) {
+                                //                        console.log(data);
+                                //                        console.log(status);
+                                //  }
+                            }, 'statusCode': {
+                                404: function () {
+                                    //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                                }
+                            }
+                        });
+
+    </script>*@
+    @(Html.Kendo().TabStrip()
+          .Name("tabstrip")
+          .Items(tabstrip =>
+          {
+              tabstrip.Add().Text("General")
+                  .Selected(true)
+                  .Content(@<text>
+    <table border="0" style="width: 100%">
+        <tr id="trGameInfo">
+            <td colspan="2">
+                <div class="editor-field">
+                    <h1><span id="GameName"></span></h1>
+                </div>
+            </td>
+            <td colspan="2">
+                <div style="font-size: x-small; float: right;">Last Updated:<span id="LastUpdatedUtc" /></div>
+            </td>
+        </tr>
+        <tr id="overrides" style="display: none;">
+            <td colspan="4">
+                <span style="color: red">OVERRIDES ON</span>
+            </td>
+        </tr>
+
+        <tr id="trNetworkType">
+            <td>Network Type:
+                <input type="checkbox" id="chkNetworkType" onclick="CheckboxOverride(this, 'NetworkType')" /></td>
+            <td>
+                @(Html.Kendo().DropDownList()
+        .Name("ddlNetworkType")
+                        //.Events(e => e.Change("onNetworkTypeChange"))
+        .Events(e => e.DataBound("onNetworkTypeDataBound"))
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["DataHiveUrl"] + "base/networks").Type(HttpVerbs.Get)
+        )
+        .Events(e => e.RequestEnd("onNetworkTypeRequestEnd"))
+        )
+)
+            </td>
+        </tr>
+        <tr id="OnAirName">
+            <td>On Air Name:</td>
+            <td>
+                <input type="text" class="k-textbox" id="txtOnAirName" maxlength="50" /></td>
+            <td style="float: right">
+                <!--<button class="k-button" id="onEditorSave">Save</button>-->
+            </td>
+        </tr>
+        <tr id="Rips">
+            <td>Rip Type:</td>
+            <td>
+                 @(Html.Kendo().DropDownList()
+        .Name("ddlRipGameStatusType")
+        //.Events(e => e.DataBound("onRipGameStatusTypeDataBound"))
+        .DataValueField("ID")
+        .DataTextField("Description")
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url("/api/GameStatus/").Type(HttpVerbs.Get))
+        )
+)
+            </td>
+        </tr>
+        <tr id="ddlRankshow">
+            <td>Rank Selection:</td>
+            <td>
+                 
+<input id="ddlRank" />
+            </td>
+        </tr>
+    </table>
+    <br />
+    </text>);
+              tabstrip.Add().Text("Overrides")
+                  .Selected(false)
+                  .Content(@<text>
+    <table border="0" style="width: 100%">
+        <tr id="trGameStatus">
+            <td>Game Status: 
+                <input type="checkbox" id="chkGameStatus" onclick="CheckboxOverride(this, 'Status')" /></td>
+            <td>
+                @(Html.Kendo().DropDownList()
+        .Name("ddlGameStatus")
+        .Events(e => e.Change("onGameStatusChange"))
+        .Events(e => e.DataBound("onGameStatusDataBound"))
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["DataHiveUrl"] + "base/GameStatus").Type(HttpVerbs.Get)
+        )
+        .Events(e => e.RequestEnd("onGameStatusRequestEnd"))
+        )
+)
+            </td>
+            <td>Start Time (Eastern):
+             <input type="checkbox" id="chkStartTime" onclick="CheckboxOverride(this, 'DateTimeUtc')" />
+                
+
+            </td>
+            <td>
+                <input type="text" id="StartTime"  />
+                <script>
+                    $("#StartTime").kendoDateTimePicker({
+                        
+                    });
+
+                </script>
+            </td>
+        </tr>
+        <tr style="display: none">
+            <td>Period:
+                <input type="checkbox" id="chkPeriod" onclick="CheckboxOverride(this, 'Period')" /></td>
+            <td>
+                <input type="text" id="Period" class="k-textbox" />
+            </td>
+        </tr>
+        @*<tr>
+            <td>Visitor Team Name</td>
+            <td>
+                <input type="text" id="VisitorTeamName" class="k-textbox" /></td>
+            <td>Visitor Score:</td>
+            <td>
+                <input type="text" id="VisitorScore" class="k-textbox" /></td>
+        </tr>*@
+        <tr>
+            @*            <td>Home Team Name:</td>
+            <td>
+                <input type="text" id="HomeTeamName" class="k-textbox" /></td>*@
+            <td>Visitor Score:
+                <input type="checkbox" id="chkVisitorScore" onclick="CheckboxOverride(this, 'VisitorScore')" /></td>
+            <td>
+                <input type="text" id="VisitorScore" class="k-textbox" /></td>
+
+            <td>Home Score:
+                <input type="checkbox" id="chkHomeScore" onclick="CheckboxOverride(this, 'HomeScore')" /></td>
+            <td>
+                <input type="text" id="HomeScore" class="k-textbox" /></td>
+        </tr>
+        <tr>
+            <td>Clock:
+                <input type="checkbox" id="chkOverrideClock" onclick="CheckboxOverride(this, 'Clock')" /></td>
+            <td>
+                <input type="text" id="Clock" class="k-textbox" /></td>
+
+        </tr>
+        <tr id="Ranks" style="display: none">
+            <td>Visitor Rank:
+                <input type="checkbox" id="chkVisitorRank" onclick="CheckboxOverride(this, 'VisitorRank')" /></td>
+            <td>
+                <input type="text" id="VisitorRank" class="k-textbox" /></td>
+
+            <td>Home Rank:
+                <input type="checkbox" id="chkHomeRank" onclick="CheckboxOverride(this, 'HomeRank')" /></td>
+            <td>
+                <input type="text" id="HomeRank" class="k-textbox" /></td>
+        </tr>
+        <tr id="Seeds" style="display: none">
+            <td>Visitor Seed:
+                <input type="checkbox" id="chkVisitorSeed" onclick="CheckboxOverride(this, 'VisitorSeed')" /></td>
+            <td>
+                <input type="text" id="VisitorSeed" class="k-textbox" /></td>
+
+            <td>Home Seed:
+                <input type="checkbox" id="chkHomeSeed" onclick="CheckboxOverride(this, 'HomeSeed')" /></td>
+            <td>
+                <input type="text" id="HomeSeed" class="k-textbox" /></td>
+        </tr>
+        <script type="text/javascript">
+            var czDLGResult = "Cancel";
+
+            var czDLGWindow;
+
+            var czDLGCallBack;
+
+           
+
+            function czDLGClose(BtnResult) {
+
+                czDLGResult = BtnResult;
+
+                czDLGWindow.close();
+
+            };
+
+
+
+            function czDLGCloseCallBack(e) {
+
+                czDLGWindow.unbind("close", czDLGCloseCallBack);
+
+                if (czDLGCallBack !== null) {
+
+                    czDLGCallBack(czDLGResult);
+
+                }
+
+            }
+
+
+
+            function czDLG(Title, Message, Type, Buttons, theFunction) {
+
+                var DLGData = '<table cellpadding="0" cellspacing="0"><tr><td><div class="czDLGIcon ' + Type + '"></div></td>' +
+
+                    '<td><div class="czDLGText">' + Message + '</div></td></tr></table><div>';
+
+                for (var i in Buttons) {
+
+                    var s = Buttons[i];
+
+                    DLGData += '<input class="czDLGBtn" type="button" onclick="czDLGClose(\'' + s + '\')" value="' + s + '">';
+
+                }
+
+                DLGData += '</div>';
+
+                czDLGResult = "Cancel";
+
+                if (theFunction !== undefined) {
+
+                    czDLGCallBack = theFunction;
+
+                } else {
+
+                    czDLGCallBack = null;
+
+                }
+
+                czDLGWindow.bind("close", czDLGCloseCallBack);
+
+                czDLGWindow.title(Title);
+
+                czDLGWindow.center();
+
+                czDLGWindow.content(DLGData);
+
+                czDLGWindow.open();
+
+            }
+
+
+
+            $(document).ready(function () {
+
+                czDLGWindow = $("#czDLGWindow").kendoWindow({
+
+                    actions: ["Close"],
+
+                    draggable: true,
+
+                    modal: true,
+
+                    resizable: false,
+
+                    visible: false,
+
+                    title: "Confirm action",
+
+                }).data("kendoWindow");
+
+            });
+            var OverrideField;
+            var OverrideCheckbox;
+            function CheckBoxClose(dlgResult) {
+
+                //alert('Dialog Result: ' + dlgResult);
+
+                if (dlgResult == "OK") {
+
+                    jsonData = '[{ "Name": "' + OverrideField + '", "Value": "Unknown", },]';
+
+                    var ajaxSuccess = false;
+                    $.ajax
+                      ({
+                          //"cache": "false",
+                          "type": "DELETE",
+                          async: false,
+                          'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/override/" + "@ViewData["HiveID"]" + "/Name/" + OverrideField,
+                          "contentType": "application/json;charset=utf-8",
+                          //"contentType": "content-type:text/html",
+                          'crossDomain': true,
+                          'success': function (data, status, jxhr) {
+                              try {
+                                  StartTimeRead();
+                                  OverrideCheckbox.checked = false;
+                              } catch (err) { }
+                          }, 'error': function (jxhr, status, thrown) {
+                              try {
+                                  ajaxSuccess = true;
+                                  // if (!isIE || isDebugMode) {
+                                  //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                  //                            console.log(jxhr);
+                                  //                            console.log(status);
+                                  //                            console.log(thrown);
+                                  //  }
+                              } catch (err) { }
+                          }, 'complete': function (data, status) {
+                              ajaxSuccess = true;
+                              // if (!isIE || isDebugMode) {
+                              //                        console.log(data);
+                              //                        console.log(status);
+                              //  }
+                          }, 'statusCode': {
+                              404: function () {
+                                  //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                              }
+                          }
+                      });
+
+                      if (ajaxSuccess)
+                          LogWrite('@Ticker.Controllers.Utilities.Action_Flag.DELETION.ToString()', '@ViewData["HivePrefix"]', jsonData, 'Hive override for ' + OverrideField + ' deleted.');
+                }
+                else
+                    OverrideCheckbox.checked = true;
+
+              }
+              function CheckboxOverride(cb, field) {
+                  if (!cb.checked) {
+
+
+                      // czWarning / czInformation / czConfirm / czError / czStop     
+                      OverrideField = field;
+                      OverrideCheckbox = cb;
+                      czDLG("Remove Override", "Are you sure you want to remove the " + field + " override?", "czStop", ["Cancel", "OK"], CheckBoxClose);
+
+                      //if (!confirm("Are you sure you want to remove the " + field + " override?")) {
+                      //    cb.checked = true;
+                      //    return;
+                      //}
+
+                  }
+                  //else
+                  //    cb.checked=false;
+              }
+              var AnyOverrides = false;
+              function checkOverride(data, field) {
+                  try {
+
+                      for (var i = 0; i < data.Overrides.length; i++) {
+                          if (data.Overrides[i].Name == field) {
+                              AnyOverrides = true;
+                              return true;
+                          }
+                      }
+
+                      return false;
+                  }
+                  catch (err) {
+                      return false;
+                  }
+
+              }
+
+              function getValue(data, field) {
+                  try {
+                      for (var i = 0; i < data.Overrides.length; i++) {
+                          if (data.Overrides[i].Name == field) {
+                              return data.Overrides[i].Value;
+                          }
+                      }
+
+                      return data.Model[field];
+                  }
+                  catch (err) {
+                      return null;
+                  }
+
+              }
+
+              var RankUsed = false;
+              var SeedUsed = false;
+              function StartTimeRead() {
+                 // alert('@ViewData["HivePrefix"]');
+                  if ('@ViewData["HivePrefix"].ToString().ToLower()' != "cfbcfb" && '@ViewData["HivePrefix"].ToString().ToLower()' != "cfb" && '@ViewData["HivePrefix"].ToString().ToLower()' != "cbkcbk" && '@ViewData["HivePrefix"].ToString().ToLower()' != "cbk" && '@ViewData["HivePrefix"].ToString().ToLower()' != "wcbkwcbk" && '@ViewData["HivePrefix"].ToString().ToLower()' != "wcbk") {
+                      $("#ddlRankshow").css("display","none");
+                  }
+                  
+                  var ajaxfail;
+                  debugger;
+                  $.ajax
+                    ({
+                        //"cache": "false",
+                        "type": "GET",
+                        async: false,
+                        'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/overrides?id=" + "@ViewData["HiveID"]",
+                        "contentType": "application/json;charset=utf-8",
+                        'success': function (data, status, jxhr) {
+                            try {
+                                //var ddl = $("#dtpStartTime").data("kendoDateTimePicker");
+
+                                //ddl.value(new Date(data.Model.DateTimeUtc));
+                                if (checkOverride(data, 'DateTimeUtc')) {
+                                    $("#chkStartTime").attr("checked", true);
+                                    $("#StartTime").css("background-color", "#FF0000");
+                                }
+                                if (checkOverride(data, 'Period')) {
+                                    $("#chkPeriod").attr("checked", true);
+                                    $("#Period").css("background-color", "#FF0000");
+                                }
+                                if (checkOverride(data, 'VisitorScore')) {
+                                    $("#chkVisitorScore").attr("checked", true);
+                                    $("#VisitorScore").css("background-color", "#FF0000");
+                                }
+                                if (checkOverride(data, 'HomeScore')) {
+                                    $("#chkHomeScore").attr("checked", true);
+                                    $("#HomeScore").css("background-color", "#FF0000");
+                                }
+                                if (checkOverride(data, 'VisitorRank')) {
+                                    $("#chkVisitorRank").attr("checked", true);
+                                    $("#VisitorRank").css("background-color", "#FF0000");
+                                }
+                                if (checkOverride(data, 'HomeRank')) {
+                                    $("#chkHomeRank").attr("checked", true);
+                                    $("#HomeRank").css("background-color", "#FF0000");
+                                }
+                                if (checkOverride(data, 'VisitorSeed')) {
+                                    $("#chkVisitorSeed").attr("checked", true);
+                                    $("#VisitorSeed").css("background-color", "#FF0000");
+                                }
+                                if (checkOverride(data, 'HomeSeed')) {
+                                    $("#chkHomeSeed").attr("checked", true);
+                                    $("#HomeSeed").css("background-color", "#FF0000");
+                                }
+
+                                if (checkOverride(data, 'NetworkType')) {
+                                    $("#chkNetworkType").attr("checked", checkOverride(data, 'NetworkType'));
+                                    $("#ddlNetworkType").css("background-color", "#FF0000");
+                                }
+
+                                if (checkOverride(data, 'Status')) {
+                                    $("#chkGameStatus").attr("checked", true);
+                                    $("ddlGameStatus").css("background-color", "#FF0000");
+                                }
+
+                                var ddl = $("#ddlGameStatus").data("kendoDropDownList");
+                                ddl.value(data.Model.Status);
+
+                                // $("#StartTime").val(data.Model.DateTimeUtc);
+                                var dateTimePicker = $("#StartTime").data("kendoDateTimePicker");
+                                dateTimePicker.value(UTCtoEastern(data.Model.DateTimeUtc));//new Date(data.Model.DateTimeUtc));
+                              //  alert(data.DateTimeUtc);
+
+                                $("#Period").val(data.Model.Period);
+
+                                $("#VisitorTeamName").val(data.Model.VisitorTeamName);
+                                $("#HomeTeamName").val(data.Model.HomeTeamName);
+
+                                //$("#chkVisitorScore").attr("checked",checkOverride(data,VisitorScore));
+                                $("#VisitorScore").val(data.Model.VisitorScore);
+
+                                //$("#chkHomeScore").attr("checked",checkOverride(data,Clock));
+                                $("#HomeScore").val(data.Model.HomeScore);
+
+                                $("#Clock").val(data.Model.Clock);
+                                //chkOverrideClock
+                                if (checkOverride(data, 'Clock')) {
+                                    $("#chkOverrideClock").attr("checked", true);
+                                    $("#Clock").css("background-color", "#FF0000");
+                                }
+
+                                $("#VisitorRank").hide();
+                                $("#HomeRank").hide();
+
+                                try {
+                                    $("#VisitorRank").val(data.Model.VisitorRank);
+                                    $("#HomeRank").val(data.Model.HomeRank);
+
+                                    $("#VisitorRank").show();
+                                    $("#HomeRank").show();
+
+                                    $("#Ranks").show();
+                                    RankUsed = true;
+                                }
+                                catch (err) {
+                                }
+                                try {
+                                    $("#VisitorSeed").val(data.Model.VisitorSeed);
+
+                                    $("#HomeSeed").val(data.Model.HomeSeed);
+
+                                    $("#VisitorSeed").show();
+                                    $("#HomeSeed").show();
+
+                                    $("#Seeds").show();
+                                    SeedUsed = true;
+                                }
+                                catch (err) {
+                                }
+                            } catch (err) { }
+                        }, 'error': function (jxhr, status, thrown) {
+                            try {
+                                ajaxfail = true;
+                                // if (!isIE || isDebugMode) {
+                                //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                //                            console.log(jxhr);
+                                //                            console.log(status);
+                                //                            console.log(thrown);
+                                //  }
+                            } catch (err) { }
+                        }, 'complete': function (data, status) {
+                            // if (!isIE || isDebugMode) {
+                            //                        console.log(data);
+                            //                        console.log(status);
+                            //  }
+                        }, 'statusCode': {
+                            404: function () {
+                                //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                            }
+                        }
+                    });
+
+
+                    if (ajaxfail)
+                        $.ajax
+                ({
+                    //"cache": "false",
+                    "type": "GET",
+                    async: false,
+                    'url': DataHiveUrl + "results/" + "@ViewData["HivePrefix"]" + "/?id=" + "@ViewData["HiveID"]",
+                  "contentType": "application/json;charset=utf-8",
+                  'success': function (data, status, jxhr) {
+                      try {
+                          //var ddl = $("#dtpStartTime").data("kendoDateTimePicker");
+
+                          //ddl.value(new Date(data.DateTimeUtc));
+
+
+                       //   $("#StartTime").val(data.DateTimeUtc);
+                          var dateTimePicker = $("#StartTime").data("kendoDateTimePicker");
+                          dateTimePicker.value(dateTimePicker.value(UTCtoEastern(data.DateTimeUtc)));//new Date(data.DateTimeUtc));
+
+                          $("#Period").val(data.Period);
+
+                          $("#VisitorTeamName").val(data.VisitorTeamName);
+                          $("#HomeTeamName").val(data.HomeTeamName);
+
+                          $("#VisitorScore").val(data.VisitorScore);
+                          $("#HomeScore").val(data.HomeScore);
+
+                          $("#Clock").val(data.Clock);
+
+                          $("#VisitorRank").hide();
+                          $("#HomeRank").hide();
+
+                          try {
+                              $("#VisitorRank").val(data.VisitorRank);
+                              $("#HomeRank").val(data.HomeRank);
+
+                              $("#VisitorRank").show();
+                              $("#HomeRank").show();
+
+                              $("#Ranks").show();
+
+                              RankUsed = true;
+                          }
+                          catch (err) {
+                          }
+
+                          $("#VisitorSeed").hide();
+                          $("#HomeSeed").hide();
+
+                          try {
+                              $("#VisitorSeed").val(data.VisitorSeed);
+                              $("#HomeSeed").val(data.HomeSeed);
+
+                              $("#VisitorSeed").show();
+                              $("#HomeSeed").show();
+
+                              $("#Seeds").show();
+
+                              SeedUsed = true;
+                          }
+                          catch (err) {
+                          }
+                      } catch (err) { alert('overrides get' + err); }
+                  }
+              });
+
+      }
+            StartTimeRead();
+           
+            var data = [
+                       { text: "AP Ranking", value: "0" },
+                       { text: "CFP Ranking", value: "1" },
+            
+
+            ];
+
+            if ('@ViewData["HivePrefix"].ToString().ToLower()' == "cbkcbk" || '@ViewData["HivePrefix"].ToString().ToLower()' == "cbk" || '@ViewData["HivePrefix"].ToString().ToLower()' == "wcbkwcbk" || '@ViewData["HivePrefix"].ToString().ToLower()' == "wcbk") {
+                data = [
+                           { text: "AP Ranking", value: "0" },
+                           { text: "Tournament Seed", value: "1" },
+
+
+                ];
+            }
+
+
+            $("#ddlRank").kendoDropDownList({
+                dataTextField: "text",
+                dataValueField: "value",
+                dataSource: data,
+
+            });
+
+      //      $("#ddlRank").data("kendoDropDownList").value(2);
+
+        </script>
+
+
+    </table>
+    </text>);
+          })
+    )
+    <button class="k-button" id="onEditorSave">Save</button></td>
+    @* </fieldset>
+    }*@
+    <script type="text/javascript">
+        if (PLDLaunch == undefined || !PLDLaunch) {
+            $("tr#OnAirName").hide();
+            $("tr#Rips").hide();
+        }
+
+        var PLD;
+        $.ajax
+                      ({
+                          //"cache": "false",
+                          "type": "GET",
+                          async: false,
+                          'url': "/api/PlaylistDetail" + "?id=" + PlaylistDetailID,
+                          "contentType": "application/json;charset=utf-8",
+                          'success': function (data, status, jxhr) {
+                              try {
+                                  var jsonData = JSON.stringify(data).replace("{\"Data\":[", "").replace("],\"Total\":1,\"AggregateResults\":null,\"Errors\":null}", "");
+                                  PLD = JSON.parse(jsonData);
+                                  $("#txtOnAirName").val(PLD.OnAirName);
+                                  $("#ddlRipGameStatusType").val(PLD.NotesTypeID);
+                                  //$("#ddlRankSelection").val(2);
+                                  
+                                  if (PLD.UserNum1 != "" && PLD.UserNum1 != null) {
+                                    
+                                      $("#ddlRank").data("kendoDropDownList").value(PLD.UserNum1);
+                                  }
+                                  else
+                                      $("#ddlRank").data("kendoDropDownList").value(2);
+                                  //alert(PLD.UserNum1);
+                              } catch (err) { }
+                          }, 'error': function (jxhr, status, thrown) {
+                              try {
+                                  // if (!isIE || isDebugMode) {
+                                  //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                  //                            console.log(jxhr);
+                                  //                            console.log(status);
+                                  //                            console.log(thrown);
+                                  //  }
+                              } catch (err) { }
+                          }, 'complete': function (data, status) {
+
+                              // if (!isIE || isDebugMode) {
+                              //                        console.log(data);
+                              //                        console.log(status);
+                              //  }
+                          }, 'statusCode': {
+                              404: function () {
+                                  //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                              }
+                          }
+                      });
+
+
+        var TeamID;
+        function onEdit(e) {
+            //check if model is new
+         //   e.model.set('NoteColor', encodeURIComponent(e.model.get('NoteColor')));
+            
+            if (e.model.isNew()) {
+                
+                //Find parent grid current row
+                //parentRow = $(e.container).closest(".k-detail-row").prev();
+                ////find parent grid
+                //grid = parentRow.closest("[data-role=grid]").data("kendoGrid");
+                ////get the parent grid row DataItem
+                //parentDataItem = grid.dataItem(parentRow);
+
+                //if (parentDataItem.id == 0) {
+                //    grid.saveRow();
+                //    grid.one("dataBound", function (e) {
+                //        e.sender.expandRow(e.sender.tbody.find("tr:first"));
+                //    })
+                //    //grid.expandRow(grid.tbody.find(">tr.k-master-row:nth-child(1)"));
+                //    //alert("Please click Update on parent row to save changes first.");
+                //}
+                //else {
+                //set the parent grid dataItem field value to current ForeignKeyColumn field
+                e.model.set("HiveID", '@ViewData["HiveID"]');
+                if (typeof ClientID != 'undefined')
+                    e.model.set("ClientID", ClientID);
+                else
+                    e.model.set("ClientID", '@ViewData["ClientID"]');
+                //}
+            }
+            else {
+               // alert("Edit else");
+                TeamID = e.model.get('TeamID');
+            }
+        }
+
+        function onSave(e) {
+            debugger;
+            //get the currently selected value from the DDL
+            var ddlTeam = $("#ddlEditorTeam").data("kendoDropDownList");
+            var currentlySelectedValue = ddlTeam.value();
+          //  alert(currentlySelectedValue);
+            if (currentlySelectedValue == 0)
+                currentlySelectedValue = null;
+
+            //If current value is null
+            if (e.model.SortOrder == null) {
+                //set the value to the model
+                e.model.set("SortOrder", $("#Notes").data("kendoGrid").dataSource.data().length);
+            }
+            e.model.set("HiveID", '@ViewData["HiveID"]');
+
+            e.model.TeamID = 0;
+            e.model.set('TeamID', currentlySelectedValue);
+
+
+           
+            //db requires note to be non-null - set it temporarily (cleans on backend)
+            e.model.set('NoteColor', encodeURIComponent(e.model.get('NoteColor')));
+
+            e.model.set('Note', encodeURIComponent(e.model.get('NoteColor')));//e.model.get('NoteColor'));
+
+            e.model.set('UserID', '@HttpContext.Current.Session["UserID"].ToString()');
+
+            //SetHiveValue('VisitorTeamName',$("#VisitorTeamName").val());
+
+            //SetHiveValue('Period',$("#Period").val());
+
+            //SetHiveValue('DateTimeUtc',$("#StartTime").val());
+
+            //$("#Notes").data("kendoGrid").dataSource.read();
+            //$("#Notes").data("kendoGrid").dataSource.sync();
+            var ddlleague= $("#ddlDHLeagues").data("kendoDropDownList");
+
+            e.model.set("TeamCode", ddlTeam.text());
+            e.model.set("LeagueCode", ddlleague.text());
+
+           
+            var tcode = ddlTeam.text();
+            var lcode = ddlleague.text();
+
+            if (tcode != "NONE") {
+                $.when(ajax1(tcode, lcode)).done(function (a1) {
+                    if (a1.data.length > 0) {
+                        e.model.set("TeamID", a1.data[0].ID);
+                        e.model.set("SportID", a1.data[0].LeagueID);
+                    }
+                    else {
+                        e.model.set("TeamID", "-1");
+                        e.model.set("SportID", null);
+                    }
+
+                });
+            }
+            else {
+                e.model.set("TeamID","-1");
+                e.model.set("SportID", null);
+            }
+
+            
+
+        }
+
+        function ajax1(tc, lc) {
+            debugger;
+            return $.ajax
+         ({
+             type: "GET",
+
+             url: '@System.Configuration.ConfigurationManager.AppSettings["SDMUrl"]'+"/api/team/" + tc + "/" + lc,
+             contentType: "application/json",
+             async: false,
+             success: function (data, status, jxhr) {
+                 try {
+
+                     
+                     return data.data[0];
+                     //e.model.set("TeamID", data[0].ID);
+                 } catch (err) { }
+             }, error: function (jxhr, status, thrown) {
+                 try {
+                     alert("error");
+                     e.preventDefault();
+                 } catch (err) { }
+             }, complete: function (data, status) {
+
+
+             }, statusCode: {
+                 404: function () {
+                     alert("404");
+                     e.preventDefault();
+                 }
+             }
+         });
+        }
+
+        function onGameHiveNoteSync(e) {
+            //KN added this line to resort grid
+           // alert(e.type);
+            var grid = $("#Notes").data("kendoGrid");
+
+            grid.dataSource.read();
+        }
+        function onRequestEnd(e) {
+            if (e.type == "create")
+                $("#Notes").data("kendoGrid").dataSource.read();
+        }
+        function noteMoveUp(e) {
+            MoveNote(this.dataItem($(e.currentTarget).closest("tr")), -1);
+        }
+        function noteMoveDown(e) {
+            MoveNote(this.dataItem($(e.currentTarget).closest("tr")), 1);
+        }
+        function MoveNote(dataItem, newSortOrder) {
+            $.ajax
+           ({
+               "type": "PUT",
+               //async: true,
+               'url': "/api/GameHiveNote" + "?id=" + dataItem.ID + "&ParentID=" + '@ViewData["HiveID"]' + "&ObjectType=GameHiveNote&SortOrder=" + parseInt(dataItem.SortOrder + newSortOrder),
+               'accepts': "application/json",
+               'contentType': "application/json",
+               'dataType': 'json',
+               'global': false,
+               'data': '',
+               'success': function (data, status, jxhr) {
+                   try {
+                   } catch (err) { }
+               }, 'error': function (jxhr, status, thrown) {
+                   try {
+
+                   } catch (err) { }
+               }, 'complete': function (data, status) {
+                   $("#Notes").data("kendoGrid").dataSource.read();
+               }, 'statusCode': {
+                   404: function () {
+
+                   }
+               }
+           });
+       }
+       var userCollection;
+
+       function getUserNameByID(data) {
+           if (!userCollection)
+               userCollection = {};
+
+           if (userCollection[data] == undefined)
+               if (data != "0") //don't check on 'blank' users
+                   $.ajax
+                      ({
+                          "type": "GET",
+                          async: false,//true,
+                          'url': "/api/Users/" + data,
+                          "contentType": "application/json;charset=utf-8",
+                          'success': function (adata, status, jxhr) {
+                              try {
+                                  userCollection[data] = adata.FirstName + ' ' + adata.LastName;
+                              } catch (err) { }
+                          }, 'error': function (jxhr, status, thrown) {
+                              try {
+                                  // if (!isIE || isDebugMode) {
+                                  //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                                  //                            console.log(jxhr);
+                                  //                            console.log(status);
+                                  //                            console.log(thrown);
+                                  //  }
+                              } catch (err) { }
+                          }, 'complete': function (adata, status) {
+                              // if (!isIE || isDebugMode) {
+                              //                        console.log(data);
+                              //                        console.log(status);
+                              //  }
+                          }, 'statusCode': {
+                              404: function () {
+                                  //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                              }
+                          }
+                      });
+           return userCollection[data];
+       }
+       function onNotesDataBound(e) {
+           $(".k-grid-Up span").addClass("k-icon k-si-arrow-n");
+           $(".k-grid-Up").width(15);
+           $(".k-grid-Down span").addClass("k-icon k-si-arrow-s");
+           $(".k-grid-Down").width(15);
+       }
+    </script>
+    @(
+ Html.Kendo().Grid<Ticker.Data.GameHiveNote>()
+    .Name("Notes")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        //columns.ForeignKey(o => o.GameID, (System.Collections.IEnumerable)ViewData["Games"], "ID", "Name").Title("Game").Hidden();
+        columns.Bound(o => o.HiveID).Visible(false);
+        columns.Bound(o => o.ClientID).Visible(false);
+        //columns.ForeignKey(o => o.TeamID, (System.Collections.IEnumerable)ViewData["Teams"], "ID", "NickName").Title("Team").EditorTemplateName("Team").Width(15);
+        columns.ForeignKey(o => o.TeamID, (System.Collections.IEnumerable)ViewData["Teams"], "ID", "DisplayName").Title("Team").EditorTemplateName("Team").Width(15);
+        columns.Bound(o => o.Header).Width(15);
+        //columns.Bound(o => o.SportID).Title("Sport").EditorTemplateName("Sport");
+        //columns.Bound(o => o.TeamName).Title("TeamN").Visible(False);//.EditorTemplateName("Team");
+        columns.Bound(o => o.NoteColor).Title("Note").EditorTemplateName("Note").Encoded(false).Template(t => { }).ClientTemplate("<p style='white-space: pre;' title='Last Updated #= kendo.toString(LastUpdated, 'M/dd/yyyy h:mm tt') # by #= getUserNameByID(UserID)#'>#= NoteColor #</p>");//.ClientTemplate("Editor"); ;
+        columns.Bound(o => o.Note).Visible(false);
+        columns.Bound(o => o.LastUpdated).Visible(false);//.Width(50).Format("{0:MM/dd/yyyy h:mm tt}");
+        columns.Bound(o => o.UserID).Visible(false);
+        //columns.Bound(o => o.LastUpdatedBy).Visible(false);
+        //columns.ForeignKey(o => o.UserID, (System.Collections.IEnumerable)ViewData["Users"], "ID", "Name").Title("User");//.Visible(false);
+        columns.Bound(o => o.SortOrder).EditorTemplateName("TinyInt").Width(15);
+        columns.Command(c =>
+        {
+            c.Custom("Up").Click("noteMoveUp").Text("&nbsp;");
+            c.Custom("Down").Click("noteMoveDown").Text("&nbsp;");
+        }).Width(10).Title("Order");
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        }).Width(10);
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Note");
+            })
+            //.Sortable()
+    .Events(e => e.DataBound("onNotesDataBound"))
+    .Events(e => e.Edit("onEdit"))
+    .Events(e => e.Save("onSave"))
+    .Sortable(s => s.Enabled(true))
+            //.Events(events => events.DataBound("onDataBound"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+         {
+             model.Id(g => g.ID);
+             model.Field(g => g.ID).Editable(false);
+             model.Field(g => g.HiveID);//.Editable(false);//.DefaultValue(;
+             model.Field(g => g.ClientID);
+             model.Field(g => g.Header);//.DefaultValue(String.Empty);
+             model.Field(g => g.Note).DefaultValue(String.Empty);
+             model.Field(g => g.NoteColor).DefaultValue(String.Empty);
+             //model.Field(g => g.LastUpdatedBy);
+             model.Field(g => g.SortOrder);
+             model.Field(g => g.TeamID).DefaultValue(null);//.Editable(false);
+             //model.Field(g => g.SportID).DefaultValue(null);
+             model.Field(g => g.UserID);
+             model.Field(g => g.LeagueCode);
+             model.Field(g => g.TeamCode);
+
+         })
+        .Events(e => e.RequestEnd("onRequestEnd"))
+        .Events(e => e.Sync("onGameHiveNoteSync"))
+        .Read(read => read.Url("/api/GameHiveNote/?useGrid=True&CorrelationId=" + @ViewData["HiveID"] + "&ClientID=" + @ViewData["ClientID"]).Type(HttpVerbs.Get))
+        .Create(create => create.Url("/api/GameHiveNote").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/GameHiveNote").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/GameHiveNote").Type(HttpVerbs.Delete))
+     )
+        )
+    <style>
+        /* Set vertical align to the needed column (currently second column) cells */
+        #Notes tbody tr td:nth-child(2) {
+            vertical-align: top;
+        }
+
+        #Notes tbody tr td:nth-child(3) {
+            vertical-align: top;
+        }
+    </style>
+    <script type="text/javascript">
+
+
+      
+
+
+        $(function () {
+            HomeID = "";
+            VisitorID = "";
+            var grid = $("#Notes").data("kendoGrid");
+
+            // WebAPI needs the ID of the entity to be part of the URL e.g. PUT //api/Product/80
+            grid.dataSource.transport.options.update.url = function (data) {
+                return "/api/GameHiveNote/" + data.ID;
+            };
+
+            // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE //api/Product/80
+            grid.dataSource.transport.options.destroy.url = function (data) {
+                return "/api/GameHiveNote/" + data.ID;
+            };
+            if (EntryTypeID >= 10 || EntryTypeID == '@((int)Ticker.Data.Enums.EntryType.HiveTodaysGames)' || EntryTypeID == '@((int)Ticker.Data.Enums.EntryType.HivePriorGames)' || EntryTypeID == '@((int)Ticker.Data.Enums.EntryType.APRankings)')//rip type or todays/previous
+            {
+                $("#trGameInfo").hide();
+                $("#trNetworkType").hide();
+                $("#Notes").hide();
+            }
+
+            if (AnyOverrides) {
+                var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+
+                //tabStrip.select("li:second");        // Select by jQuery selector
+                //tabStrip.select(1);
+
+                $("#overrides").show();
+                //tabStrip.select(1).css("background-color", "#FF0000");
+            }
+            //alert(0);
+            //$("#tabstrip-2").css("background-color", "#FF0000");
+        });
+    </script>
+    <div id="czDLGWindow"></div>
+</body>
+</html>

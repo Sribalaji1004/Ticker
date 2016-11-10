@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Playlist";
+}
+
+<h2>Playlist</h2>
+@(
+ Html.Kendo().Grid<Ticker.Data.Playlist>()
+    .Name("Playlists")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        //columns.Bound(o => o.PlaylistID).Hidden();
+        //columns.ForeignKey(o => o.PlaylistID, (System.Collections.IEnumerable)ViewData["Playlists"], "ID", "Name").Title("Playlist").Hidden();
+        columns.Bound(o => o.Name);
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+            c.Custom("Details").Click("onDetails");
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Playlist");
+            })
+        //.Sortable()
+        //.Events(e => e.Edit("onEdit"))
+    .Events(e => e.Save("onSave"))
+        //.Events(events => events.DataBound("onDataBound"))
+        //.Events(events => events.DetailInit("onDetailInit"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.ClientID);
+                //model.Field(g => g.PlaylistID);//.Editable(false);//.DefaultValue(;
+                model.Field(g => g.Name).DefaultValue(String.Empty);
+            })
+        .Read(read => read.Url("/Ticker/api/Playlist/?id=0&clientID=" + ViewData["ClientID"]).Type(HttpVerbs.Get)) //3907 //1154 - twitter // //3414
+        .Create(create => create.Url("/Ticker/api/Playlist").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/Ticker/api/Playlist").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/Ticker/api/Playlist").Type(HttpVerbs.Delete))
+     )
+        //.Editable(ed=>ed.Mode(GridEditMode.PopUp).TemplateName("z"))  
+
+)
+<script type="text/javascript">
+    function onSave(e) {
+
+        //If current value is null
+        if (!e.model.ClientID) {
+            //set the value to the model
+            e.model.set('ClientID', "@(ViewData["ClientID"])");
+        }
+    }
+
+    function onDetails(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        window.location="/Ticker/PlaylistDetails/"+ dataItem.ID;
+        //var wnd = $("#Details").data("kendoWindow");
+
+        //wnd.content(detailsTemplate(dataItem));
+        //wnd.center().open();
+    }
+</script>
+

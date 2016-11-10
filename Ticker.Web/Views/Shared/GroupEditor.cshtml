@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Group Editor</title>
+</head>
+<body>
+    <div>
+        @model Ticker.Data.Note
+@if (Model != null && Model.NoteColor != null)
+{
+    using (Html.BeginForm("DescriptionEdit", "NoteColor", FormMethod.Post, new { @style = "width: 600px; height:550px;" }))
+    {
+    <div class="row">
+        <div class="columns editing-section">
+            @(Html.Kendo().Editor()
+                                          .Name("DescriptionEdit.CompanyDescription")
+                                            .HtmlAttributes(new { style = "float: left; width: 600px; height:450px;" })
+                                            .Encode(false)
+                                            .Tools(tools => tools
+                                                .Clear()
+                                                .Bold().Italic().Underline()
+                                                .FontName()
+                                                .FontSize()
+                                                .InsertUnorderedList()
+                                                .InsertOrderedList()
+                                                )
+                                         )
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="two columns">
+            <input type="submit" value="Save" class="nice blue radius small button  middle5" />
+        </div>
+        <div class="two columns">
+            @Html.ActionLink("Cancel", "About", "Company", new { id = Model.NoteColor }, new { @class = "nice blue radius small button middle5" })
+        </div>
+        <div class="eight columns"></div>
+    </div>
+    }
+}
+    </div>
+</body>
+</html>

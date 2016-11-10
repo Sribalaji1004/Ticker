@@ -1,0 +1,200 @@
+﻿@{
+    ViewBag.Title = "Stats for Selected Games";
+}
+
+<p>
+    <img style="float: left; margin: 0px 15px 0px 0px;" src="~/Content/images/menu.png" />
+    <h2>Stats Leader Builder</h2>
+    <div style="clear: both;" />
+</p>
+<div id="example">
+    <div class="demo-section k-header">
+        <div id="tabstrip">
+            <ul>
+                <li class="k-state-active">
+                    "CHI vs TEN  01/01/2015
+                </li>
+                <li>
+                    NY vs PHI  05/01/2015
+                </li>
+                <li>
+                    DAL vs SF  06/01/2015
+                </li>
+                <li>
+                    NY vs TEN  01/01/2015
+                </li>
+            </ul>
+            <div>
+              
+                    <div style="margin: 5px 15px 0px 10px;width:100%;">
+                        <div style="/*border:1px solid red;*/ width: 29%; height: 200px; display: inline-block">
+                            <div style="text-align:center;"> Available Stats for Chicago</div>
+                            <div style="height:10px;"></div>
+                            <div id="grid1"></div>
+
+                        </div>
+                        
+                        
+                         <div style="width: 1%; display: inline-block">&nbsp;</div>
+                        <div style="/*border: 1px solid red;*/ width: 29%; height: 200px; display: inline-block">
+
+                            <div style="text-align:center;"> Available Stats for Tennessee </div>
+                            <div style="height:10px;"></div>
+                            <div id="grid2"></div>
+                            </div>
+                        
+                        
+                        <div style="width: 3%; display: inline-block">&nbsp;</div>
+                        <div style="/*border: 1px solid red;*/ width: 35%; height: 200px; display: inline-block; text-align: center; vertical-align: top; ">
+
+                            <div style="margin: 5px 0px 0px 0px;width:100%;">
+                                <div style="display: inline-block; ">Selected stats for: <input type="text" id="selected_stats" style="width:100px; height:15px;" /> </div>
+                                <div style="display: inline-block; "> Keep Until: <input type="text" id="Keep_UntilDate" style="width:100px; height:15px;" /></div>
+                            </div>
+                            <div style="height:10px;"></div>
+                            <div id="grid3"></div>
+                        </div>
+                        
+                    </div>
+                   
+               
+                
+            </div>
+            <div>
+               
+                <div class="weather">
+                    <h2>NY vs PHI 05/01/2015</h2>
+                   
+                </div>
+            </div>
+            <div>
+               
+                <div class="weather">
+                    <h2>DAL vs SF 06/01/2015</h2>
+                    
+                </div>
+            </div>
+            <div>
+       
+                <div class="weather">
+                    <h2>NY vs TEN 01/01/2015</h2>
+                   
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#tabstrip").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                }
+            });
+
+
+        });
+        // grid-1
+
+        var entries = [
+   { Name: "Player1", Passing: "101", Rushing: "100", Receiving: "100" },
+    { Name: "Player2", Passing: "102", Rushing: "100", Receiving: "100" },
+     { Name: "Player3", Passing: "100", Rushing: "100", Receiving: "100" },
+      { Name: "Player4", Passing: "100", Rushing: "100", Receiving: "100" },
+       { Name: "Player5", Passing: "100", Rushing: "100", Receiving: "100" },
+        { Name: "Player6", Passing: "100", Rushing: "100", Receiving: "100" },
+         { Name: "Player7", Passing: "100", Rushing: "100", Receiving: "100" },
+         { Name: "Player8", Passing: "100", Rushing: "100", Receiving: "100" },
+         { Name: "Player9", Passing: "100", Rushing: "100", Receiving: "100" },
+         { Name: "Player10", Passing: "100", Rushing: "100", Receiving: "100" },
+  
+        ];
+        var entries1 = [
+  {Team:"Chicago", Name: "Player1", Passing: "No", Rushing: "Yes", Receiving: "No" },
+   { Team: "Tennessee", Name: "Player2", Passing: "Yes", Rushing: "Yes", Receiving: "Yes" },
+    { Team: "Newyork", Name: "Player3", Passing: "Yes", Rushing: "No", Receiving: "Yes" },
+     { Team: "Los Angels", Name: "Player4", Passing: "No", Rushing: "Yes", Receiving: "Yes" },
+      { Team: "Masco", Name: "Player5", Passing: "No", Rushing: "Yes", Receiving: "No" },
+       
+
+        ];
+
+
+        $("#grid1").kendoGrid({
+            dataSource: {
+                data: entries
+               
+            },
+            dataBound: onDataBound,
+
+            
+            columns: [
+
+                { field: "Name", title: "Name",width:100 },
+                 { field: "Passing", title: "Passing", width: 70 },
+                  { field: "Rushing", title: "Rushing", width: 70 },
+                   { field: "Receiving", title: "Receiving", width: 80 },
+                { field: "", title: "", width: 30 }
+            ],
+
+        }).data("kendoGrid");
+
+        function onDataBound(e) {
+            var grid = $("#grid1").data("kendoGrid");
+            $(grid.tbody).on("click", "td", function (e) {
+                debugger;
+                var row = $(this).closest("tr");
+
+                var rowIdx = $("tr", grid.tbody).index(row);
+                var colIdx = $("td", row).index(this);
+                $('.k-grid-content').find('tr').eq(rowIdx).find('td').eq(colIdx).css('background-color', '#00aba9');
+
+            });
+        }
+
+        // Grid -2
+
+      
+
+        $("#grid2").kendoGrid({
+            dataSource: {
+                data: entries,
+               
+            },
+            columns: [
+
+                { field: "Name", title: "Name", width: 100 },
+                 { field: "Passing", title: "Passing", width: 70 },
+                  { field: "Rushing", title: "Rushing", width: 70 },
+                   { field: "Receiving", title: "Receiving", width: 80 },
+                { field: "", title: "", width: 30 }
+            ],
+
+        }).data("kendoGrid");
+
+        // grid3
+
+
+        $("#grid3").kendoGrid({
+            dataSource: {
+                data: entries1,
+               
+            },
+            columns: [
+                { field: "Team", title: "Team" },
+                { field: "Name", title: "Name" },
+                 { field: "Passing", title: "Passing" },
+                  { field: "Rushing", title: "Rushing" },
+                   { field: "Receiving", title: "Receiving" },
+                { field: "", title: "", width: 40 }
+            ],
+
+        }).data("kendoGrid");
+
+
+    </script>
+</div>

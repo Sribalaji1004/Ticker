@@ -1,0 +1,13 @@
+﻿@model string
+
+@(
+ Html.Kendo().EditorFor(m => m)
+    .Tools(tools => tools
+       .Clear()
+       .BackColor()
+       .FontColor()
+       .Bold()
+       .Italic()
+      )
+    .HtmlAttributes(new { style = "width: 100%;height:220px" })
+)

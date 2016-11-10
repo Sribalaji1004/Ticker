@@ -1,0 +1,8 @@
+446 abda73aafd28510c89e42cc67910d4ec78aed552 2ddb25d5ef3bcbcb2ce842bb664066f453c90e28
+
+0675d46c1d78c3b757285b5d583b054dd023f886 Deployment -- Feature 1511-Need a header field, 1502- Every playlist group minimized, 1508-Wider Screen,  Bug 1446- update in Alert Type after choosing edit have no effect, 1503- toggling will lock display, 1512-new lines in notes,1375-sgl stack overflow error,
+87d3fd3637d1ef127ac89ffdb05433a14eccbb1f Feature addition-1475(Refreshes button), bug fix-1351Stale login (timeout) causes weird state,1502 By default-every playlist group mimimized
+8181e5237247d67053671ddc2580951e76cc7d8a Friday 08-09 Deployment including test tes test
+2d42113b713081a7157ab6563770b93846936b40 Deployment-- push bug fix for expanding the playlist. version 1.0.1.8
+87d3fd3637d1ef127ac89ffdb05433a14eccbb1f Feature addition-1475(Refreshes button), bug fix-1351Stale login (timeout) causes weird state,1502 By default-  every playlist group mimimized
+87d3fd3637d1ef127ac89ffdb05433a14eccbb1f Feature addition---1475(Refreshes button) and Bug fix bug 1351--Stale login (timeout) causes weird state, bug 1502 By default-every playlist group mimimized

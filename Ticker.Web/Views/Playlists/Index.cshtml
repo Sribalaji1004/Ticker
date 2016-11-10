@@ -1,0 +1,275 @@
+﻿@{
+    ViewBag.Title = "Playlist";
+}
+<div>
+    <div id="divClient" style="float: right">
+        <h2>Client: &nbsp;
+            @(Html.Kendo().DropDownList()
+        .Name("ddlClients")
+        .DataTextField("Description")
+        .DataValueField("ID")
+        .Events(e => e.Change("onClientChange"))
+        .Events(e => e.DataBound("onClientChange"))
+        .HtmlAttributes(new { style = "width: 500px !important;" })
+        .DataSource(dataSource =>
+        {
+            dataSource.Read(read =>
+              {
+                  //read.Action("GetClients", "Playlists");
+                  read.Url("/api/Client/0").Type(HttpVerbs.Get).Data("onClientsGet");
+              });
+        })
+)
+        </h2>
+    </div>
+    <div style="float: left">
+        <h2>Playlist</h2>
+    </div>
+</div>
+<div style="clear: both" />
+<script type="text/javascript">
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.location.href);
+        if (results == null)
+            return "";
+        else
+            return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    function onClientsGet(e) {
+        return { username: '@Session["username"]' };
+    }
+    var ClientID;
+    $(document).ready(function () {
+        if (getParameterByName("ClientID") != '') {
+            ClientID = getParameterByName("ClientID");
+            $("#ddlClients").data("kendoDropDownList").value(ClientID);
+        }
+    });
+    function onClientChange(e) {
+        //if ($("#ddlClients").data("kendoDropDownList").value() == ClientID)
+        //    return;
+
+        Refresh();
+        if ($("#ddlClients").data("kendoDropDownList").dataSource.data().length == 1)
+            $("#divClient").hide();
+        //setCookie("ClientID", $("#ddlClients").data("kendoDropDownList").value(), 14);
+        ClientID = $("#ddlClients").data("kendoDropDownList").value();
+        
+        if (getParameterByName("ClientID") == ClientID)
+            return;
+ 
+        var grid = $("#Alerts").data("kendoGrid");
+        grid.dataSource.read();
+        grid.dataSource.sync();
+
+        MenuSecurityTrim();
+
+        //window.location = "/Playlists?ClientID=" + ClientID;
+    }
+    function Refresh() {
+        var p = $("#Playlists").data("kendoGrid");
+        p.dataSource.read();
+        p.dataSource.sync();
+    }
+</script>
+@(
+ Html.Kendo().Grid<Ticker.Data.Playlist>()
+    .Name("Playlists")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden().Width(10);
+        //columns.Bound(o => o.PlaylistID).Hidden();
+        columns.Bound(o => o.Name).Width(200);
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+            c.Custom("Details").Click("onDetails");
+            //c.Custom("Stage").Click("onStage");
+        }).Width(200);
+        columns.Bound(o => o.Staged).Title("").ClientTemplate(
+            "# if (Staged) { # <button class='k-button' id='Stage#=id#' onclick='StagePlaylist(#=id#);'>Staged</button> # } else { # <button class='k-button' id='Stage#=id#' onclick='StagePlaylist(#=id#);'>Stage</button> # } #"
+     ).Width(100);
+        columns.ForeignKey(o => o.PlaylistTypeID, (System.Collections.IEnumerable)ViewData["PlaylistTypes"], "ID", "Name").Title("Type").Width(100);
+        columns.ForeignKey(o => o.ScoreboardID, (System.Collections.IEnumerable)ViewData["Scoreboards"], "ID", "Name").Title("Scoreboard").EditorTemplateName("Scoreboard").Width(100);
+        
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Playlist");
+            })
+        //.Sortable()
+    .Events(e => e.Edit("onEdit"))
+    .Events(e => e.Save("onSave"))
+    .Events(e => e.DataBound("onDataBound"))
+        //.Events(events => events.DataBound("onDataBound"))
+        //.Events(events => events.DetailInit("onDetailInit"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+        .Events(e => e.RequestEnd("onRequestEnd"))
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.ClientID);
+                //model.Field(g => g.PlaylistID);//.Editable(false);//.DefaultValue(;
+                model.Field(g => g.Name).DefaultValue(String.Empty);
+                model.Field(g => g.Staged).Editable(false);
+                model.Field(g => g.PlaylistTypeID);
+                model.Field(g => g.ScoreboardID);
+            })
+            
+        .Read(read => read.Url("/api/Playlist/").Type(HttpVerbs.Get).Data("PlaylistData")) //3907 //1154 - twitter // //3414
+        .Create(create => create.Url("/api/Playlist").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Playlist").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Playlist").Type(HttpVerbs.Delete))
+     )
+        //.Editable(ed=>ed.Mode(GridEditMode.PopUp).TemplateName("z"))  
+
+)
+<script type="text/javascript">
+    $(function () {
+
+        var grid = $("#Playlists").data("kendoGrid");
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. PUT /api/Product/80
+        grid.dataSource.transport.options.update.url = function (data) {
+            return "/api/Playlist/" + data.ID;
+        }
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE /api/Product/80
+        grid.dataSource.transport.options.destroy.url = function (data) {
+            return "/api/Playlist/" + data.ID;
+        }
+
+        if ('@Ticker.Controllers.Utilities.SessionBag.Current.ClientID' != '') {
+            $("#ddlClients").data("kendoDropDownList").value('@Ticker.Controllers.Utilities.SessionBag.Current.ClientID');
+        }
+
+    });
+        function PlaylistData(e) {
+            return { id: 0, clientID: $("#ddlClients").data("kendoDropDownList").value() };
+        }
+        function onScoreboardsGet(e) {
+            return { id: $("#ddlClients").data("kendoDropDownList").value(), scoreboards: true };
+        }
+        function filterScoreboards(e) {
+            return {
+                clientID: $("#ClientID").val()
+            };
+        }
+        function onEdit(e) {
+            e.container.find("input[name=Name]").attr("maxlength", 50);
+
+            //var inputLength = e.container.find("input[name='ScoreboardID']").length;
+            //if (inputLength > 0) { // user is currently editing the SomeForeignKeyID column
+            //    var dataItem = null;
+            //    var row = $('#ScoreboardID').closest('tr');
+            //    if (row.length > 0) // retrieve the data item of the current row
+            //        dataItem = $("#Playlists").data("kendoGrid").dataItem(row);
+                
+            //    if (dataItem != null) {
+            //        var filter = null;
+            //        filter = {
+            //            logic: 'and',
+            //            filters: [
+            //                { field: 'ClientID', operator: 'eq', value: 0 },
+            //                { field: 'ClientID', operator: 'eq', value: $("#ddlClients").data("kendoDropDownList").value() },
+            //            ]
+            //        };
+            //        // filter/limit the values in the drop down list
+            //        $('#ScoreboardID').data('kendoDropDownList').dataSource.filter(filter);
+            //    }
+            //}
+        }
+        function onSave(e) {
+
+            //If current value is null
+            if (!e.model.ClientID) {
+                //set the value to the model
+                e.model.set('ClientID', $("#ddlClients").data("kendoDropDownList").value());
+            }
+            e.model.set('PlaylistTypeID', $(e.container.find('[data-role=dropdownlist]')[0]).data().kendoDropDownList.value());
+            e.model.set('ScoreboardID', $(e.container.find('[data-role=dropdownlist]')[1]).data().kendoDropDownList.value());
+
+        }
+        function onRequestEnd(e) {
+            if (e.type === "update" || e.type === "create") {
+                //location.reload();
+                window.location = "/Playlists?ClientID=" + ClientID;
+            }
+        }
+
+        function onDetails(e) {
+            e.preventDefault();
+
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            window.location = "/PlaylistDetails/" + dataItem.ID;
+            //var wnd = $("#Details").data("kendoWindow");
+
+            //wnd.content(detailsTemplate(dataItem));
+            //wnd.center().open();
+        }
+        function onDataBound(e) {
+            $(".k-grid-Stage span").addClass("k-icon k-si-arrow-n");
+            $(".k-grid-Stage").width(15);
+
+            var grid = $("#Playlists").data("kendoGrid");
+            var gridData = grid.dataSource.view();
+
+            for (var i = 0; i < gridData.length; i++) {
+                var currentUid = gridData[i].uid;
+                if (gridData[i].Staged) {
+                    var currenRow = grid.table.find("tr[data-uid='" + currentUid + "']");
+                    var editButton = $(currenRow).find(".k-grid-delete");
+                    editButton.hide();
+                }
+            }
+        }
+        function StagePlaylist(e) {
+            $.ajax
+               ({
+                   //"cache": "false",
+                   "type": "PUT",
+                   async: false,
+                   'url': "/api/Playlist/" + e + "?Stage=True",
+                   "contentType": "application/json;charset=utf-8",
+                   //'accepts': "application/json",
+                   //'contentType': "application/json",
+                   //'dataType': 'json',
+                   //'global': false,
+                   //'data': jsonData,
+                   'success': function (data, status, jxhr) {
+                       try {
+                           // if (!isIE || isDebugMode) {
+                           //                            console.log("OnProgressHandler.FileTransferStatus Update succeeded...");
+                           //                            console.log(data);
+                           // }
+                       } catch (err) { }
+                   }, 'error': function (jxhr, status, thrown) {
+                       try {
+                           // if (!isIE || isDebugMode) {
+                           //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                           //                            console.log(jxhr);
+                           //                            console.log(status);
+                           //                            console.log(thrown);
+                           //  }
+                       } catch (err) { }
+                   }, 'complete': function (data, status) {
+                       // if (!isIE || isDebugMode) {
+                       //                        console.log(data);
+                       //                        console.log(status);
+                       //  }
+                   }, 'statusCode': {
+                       404: function () {
+                           //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                       }
+                   }
+               });
+            Refresh();
+        }
+</script>
+

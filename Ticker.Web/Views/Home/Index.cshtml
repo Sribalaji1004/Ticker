@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<h2><span id="clock">&nbsp;</span></h2>
+<script type="text/javascript">
+<!--
+
+    function init() {
+        timeDisplay = document.createTextNode("");
+        document.getElementById("clock").appendChild(timeDisplay);
+    }
+
+    function updateClock() {
+        var currentTime = new Date();
+
+        var currentHours = currentTime.getHours();
+        var currentMinutes = currentTime.getMinutes();
+        var currentSeconds = currentTime.getSeconds();
+
+        // Pad the minutes and seconds with leading zeros, if required
+        currentMinutes = (currentMinutes < 10 ? "0" : "") + currentMinutes;
+        currentSeconds = (currentSeconds < 10 ? "0" : "") + currentSeconds;
+
+        // Choose either "AM" or "PM" as appropriate
+        var timeOfDay = (currentHours < 12) ? "AM" : "PM";
+
+        // Convert the hours component to 12-hour format if needed
+        currentHours = (currentHours > 12) ? currentHours - 12 : currentHours;
+
+        // Convert an hours component of "0" to "12"
+        currentHours = (currentHours == 0) ? 12 : currentHours;
+
+        // Compose the string for display
+        var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+
+        function makeArray() {
+            for (i = 0; i < makeArray.arguments.length; i++)
+                this[i + 1] = makeArray.arguments[i];
+        }
+        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var months = new makeArray('January', 'February', 'March', 'April', 'May',
+        'June', 'July', 'August', 'September', 'October', 'November', 'December');
+        var date = new Date();
+        var dayOf = days[date.getDay()];
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var yy = date.getYear();
+        var year = (yy < 1000) ? yy + 1900 : yy;
+
+        // Update the time display
+        document.getElementById("clock").innerHTML = "Welcome to the Ticker! It's " + dayOf + ", " + months[month] + " " + day + ", " + year + ", " + currentTimeString + ".";
+    }
+    updateClock();
+    setInterval('updateClock()', 1000);
+    // -->
+</script>
+<br />
+@if (User.Identity.IsAuthenticated && Session.Count > 1)
+{
+    <p>
+        <b>You are already logged in!</b> Try visiting the
+		<p><a href="Playlists">Playlists</a></p>
+        area.
+    </p>
+}
+else
+{
+    <p>
+        Visit the
+		<p><a href="Playlists">Playlists</a></p>
+        area to trigger a login.
+    </p>
+}

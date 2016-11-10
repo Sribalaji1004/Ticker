@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Ticker" GeneratedClassName="Client">
+  <Profiles />
+  <Settings>
+    <Setting Name="IntroMoviePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Fox Ticker\Clients\FSN\Ventuz\Movies\Intro</Value>
+    </Setting>
+    <Setting Name="SponsorPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Fox Ticker\Clients\FSN\Elements\Sponsors</Value>
+    </Setting>
+    <Setting Name="IntroMovieDefault" Type="System.String" Scope="User">
+      <Value Profile="(Default)">FOXSPORTS.COM on msn.avi</Value>
+    </Setting>
+    <Setting Name="SponsorDefault" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TF-NFLonFOX.tga</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

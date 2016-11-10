@@ -1,0 +1,20 @@
+﻿@using Kendo.Mvc.UI
+
+@(Html.Kendo().DropDownListFor(m => m)
+                  .AutoBind(false)
+                  .OptionLabel("Select a value...")
+                  .DataTextField("Name")
+                  .DataValueField("ID")
+                  //.DataSource(dataSource =>
+                  //{
+                  //    dataSource.Read(read => read.Action("FilterScoreboards", "Home").Data("filterScoreboards"))
+                  //              .ServerFiltering(true);
+                  //})                                   
+                .DataSource(dataSource => {
+                dataSource.Read(read =>
+              {
+                  //read.Action("GetClients", "Playlists");
+                  read.Url("/api/Playlist").Type(HttpVerbs.Get).Data("onScoreboardsGet");
+              }); 
+          })
+            )

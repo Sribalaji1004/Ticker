@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "User Admin Page";
+}
+
+ <div>
+    <div id="divClient" style="float: right">
+        <h2>Client: &nbsp;
+            @(Html.Kendo().DropDownList()
+        .Name("ddlClients")
+        .DataTextField("Description")
+        .DataValueField("ID")
+        .Events(e => e.Change("onClientChange"))
+        .Events(e => e.DataBound("onClientChange"))
+        .DataSource(dataSource => {
+            dataSource.Read(read =>
+              {
+                  //read.Action("GetClients", "Playlists");
+                  read.Url("/api/Client/0").Type(HttpVerbs.Get).Data("onClientsGet");
+              }); 
+          })
+)
+        </h2>
+    </div>
+        <div style="float: left">
+        <h2>Users</h2>
+    </div>
+</div>
+<div style="clear: both" />
+<script type="text/javascript">
+    function onClientsGet(e) {
+        return { username: '@Session["username"]', forAdmin: true };
+    }
+    function onClientChange(e) {
+        var p = $("#Users").data("kendoGrid");
+        p.dataSource.read();
+        p.dataSource.sync();
+        if ($("#ddlClients").data("kendoDropDownList").dataSource.data().length == 1)
+            $("#divClient").hide();
+    }
+</script>
+@(
+ Html.Kendo().Grid<Ticker.Data.User>()
+    .Name("Users")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.UserID).Hidden();
+        //columns.Bound(o => o.PlaylistID).Hidden();
+        //columns.ForeignKey(o => o.PlaylistID, (System.Collections.IEnumerable)ViewData["Playlists"], "ID", "Name").Title("Playlist").Hidden();
+        columns.Bound(o => o.Username);
+        columns.Bound(o => o.FirstName);
+        columns.Bound(o => o.LastName);
+        columns.Bound<bool?>(o => o.Admin).Visible(false);
+        columns.Bound(o => o.Inactive).Visible(false);
+        columns.Command(c =>
+        {
+            c.Edit();
+            //c.Destroy();
+        });
+        columns.Bound(o => o.Admin).Title("").ClientTemplate(
+           "# if (Inactive) { # <button class='k-button' id='Admin#=id#' onclick='Inactivate(#=UserID#, false);'>Activate</button> # } else { # <button class='k-button' id='Admin#=UserID#' onclick='Inactivate(#=id#, true);'>Deactivate</button> # } #"
+    );
+        columns.Bound(o => o.Inactive).Title("Admin").ClientTemplate(
+            "# if (Admin) { # <button class='k-button' id='Admin#=id#' onclick='ToggleAdmin(#=UserID#, false);'>Remove Admin</button> # } else { # <button class='k-button' id='Admin#=UserID#' onclick='ToggleAdmin(#=id#, true);'>Admin</button> # } #"
+     );
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("New User");
+            })
+        //.Sortable()
+        //.Events(e => e.Edit("onEdit"))
+    .Events(e => e.Save("onSave"))
+        //.Events(events => events.DataBound("onDataBound"))
+        //.Events(events => events.DetailInit("onDetailInit"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.UserID);
+                model.Field(g => g.UserID).Editable(false);
+                model.Field(g => g.Username).DefaultValue(String.Empty);
+                //model.Field(g => g.PlaylistID);//.Editable(false);//.DefaultValue(;
+                model.Field(g => g.FirstName).DefaultValue(String.Empty);
+                model.Field(g => g.LastName).DefaultValue(String.Empty);
+                model.Field(g => g.ClientID);
+                model.Field(g => g.Admin);
+                model.Field(g => g.Inactive).Editable(false).DefaultValue(false);
+            })
+        .Read(read => read.Url("/api/Users/").Type(HttpVerbs.Get).Data("UsersData")) //3907 //1154 - twitter // //3414
+        .Create(create => create.Url("/api/Users").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Users").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Users").Type(HttpVerbs.Delete))
+     )
+        //.Editable(ed=>ed.Mode(GridEditMode.PopUp).TemplateName("z"))  
+
+)
+<script type="text/javascript">
+    $(function () {
+        var grid = $("#Users").data("kendoGrid");
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. PUT /api/Product/80
+        grid.dataSource.transport.options.update.url = function (data) {
+            return "/api/Users/" + data.UserID;
+        }
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE /api/Product/80
+        grid.dataSource.transport.options.destroy.url = function (data) {
+            return "/api/Users/" + data.UserID;
+        }
+
+    });
+    function UsersData(e) {
+        return { id: 0, clientID: $("#ddlClients").data("kendoDropDownList").value() };
+    }
+    function onSave(e) {
+
+        //If current value is null
+        if (!e.model.ClientID) {
+            //set the value to the model
+            e.model.set('ClientID', $("#ddlClients").data("kendoDropDownList").value());
+        }
+
+        e.model.set('Admin', 0);
+        e.model.set('Inactive', 0);
+    }
+    function Inactivate(e, inactive) {
+        $.ajax
+           ({
+               //"cache": "false",
+               "type": "PUT",
+               async: false,
+               'url': "/api/Users/" + e + "?Inactive=" + inactive,
+               "contentType": "application/json;charset=utf-8",
+               //'accepts': "application/json",
+               //'contentType': "application/json",
+               //'dataType': 'json',
+               //'global': false,
+               //'data': jsonData,
+               'success': function (data, status, jxhr) {
+                   try {
+                       // if (!isIE || isDebugMode) {
+                       //                            console.log("OnProgressHandler.FileTransferStatus Update succeeded...");
+                       //                            console.log(data);
+                       // }
+                   } catch (err) { }
+               }, 'error': function (jxhr, status, thrown) {
+                   try {
+                       // if (!isIE || isDebugMode) {
+                       //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                       //                            console.log(jxhr);
+                       //                            console.log(status);
+                       //                            console.log(thrown);
+                       //  }
+                   } catch (err) { }
+               }, 'complete': function (data, status) {
+                   // if (!isIE || isDebugMode) {
+                   //                        console.log(data);
+                   //                        console.log(status);
+                   //  }
+               }, 'statusCode': {
+                   404: function () {
+                       //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                   }
+               }
+           });
+        var p = $("#Users").data("kendoGrid");
+        p.dataSource.read();
+        p.dataSource.sync();;
+    }
+    function ToggleAdmin(e, adminstatus) {
+        $.ajax
+           ({
+               //"cache": "false",
+               "type": "PUT",
+               async: false,
+               'url': "/api/Users/?id=" + e + "&ToggleField=Admin&State=" + adminstatus,
+               "contentType": "application/json;charset=utf-8",
+               //'accepts': "application/json",
+               //'contentType': "application/json",
+               //'dataType': 'json',
+               //'global': false,
+               //'data': jsonData,
+               'success': function (data, status, jxhr) {
+                   try {
+                       // if (!isIE || isDebugMode) {
+                       //                            console.log("OnProgressHandler.FileTransferStatus Update succeeded...");
+                       //                            console.log(data);
+                       // }
+                   } catch (err) { }
+               }, 'error': function (jxhr, status, thrown) {
+                   try {
+                       // if (!isIE || isDebugMode) {
+                       //                            console.log("OnProgressHandler.FileTransferStatus Update failed... " + postURL + " failed! " + jsonData);
+                       //                            console.log(jxhr);
+                       //                            console.log(status);
+                       //                            console.log(thrown);
+                       //  }
+                   } catch (err) { }
+               }, 'complete': function (data, status) {
+                   // if (!isIE || isDebugMode) {
+                   //                        console.log(data);
+                   //                        console.log(status);
+                   //  }
+               }, 'statusCode': {
+                   404: function () {
+                       //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                   }
+               }
+           });
+        var p = $("#Users").data("kendoGrid");
+        p.dataSource.read();
+        p.dataSource.sync();;
+    }
+</script>

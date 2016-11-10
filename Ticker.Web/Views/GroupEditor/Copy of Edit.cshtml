@@ -1,0 +1,268 @@
+﻿@model Ticker.Data.Group
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+    @*    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
+    <link href="@Url.Content("~/Content/kendo/2013.1.319/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2013.1.319/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2013.1.319/kendo.silver.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2013.1.319/kendo.dataviz.silver.min.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/kendo/2013.1.319/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2013.1.319/kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2013.1.319/kendo.aspnetmvc.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+
+
+    @if (Model == null)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#winGroupEditor").data("kendoWindow").close();
+                //ClosePopupandRefresh('#winGroupEditor');
+            });
+        </script>
+    }
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+    
+        <fieldset>
+            <legend>Group</legend>
+
+            @Html.HiddenFor(model => model.ID)
+            @Html.HiddenFor(model => model.ClientID)
+            @Html.HiddenFor(model => model.CreatedName)
+            @Html.HiddenFor(model => model.Type)
+            @Html.HiddenFor(model => model.Editable)
+            @Html.HiddenFor(model => model.TeamID)
+
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Name)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.OnAirName)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.OnAirName)
+                @Html.ValidationMessageFor(model => model.OnAirName)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.TeamID)
+            </div>
+            <div class="editor-field">
+                <div>
+                    @(Html.Kendo().DropDownList()
+        .Name("ddlGroupSports")
+        .DataTextField("ShortDisplay")
+        .Events(e => e.Change("onGroupSports"))
+        .DataValueField("ID")
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url("/Ticker/api/Sport").Type(HttpVerbs.Get))
+        )
+            //        .Value("1")
+)
+                </div>
+                <div>
+                    @(Html.Kendo().DropDownList()
+        .Name("ddlTeam")
+        .DataTextField("Name")
+        .DataValueField("ID")
+        .DataSource(dataSource => dataSource
+        .Read(read => read.Url("/Ticker/api/Team").Type(HttpVerbs.Get).Data("GroupGameLeagues"))
+        )
+)
+                </div>
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Header)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Header)
+                @Html.ValidationMessageFor(model => model.Header)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.GroupAnimationTypeID)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.GroupAnimationTypeID)
+                @Html.ValidationMessageFor(model => model.GroupAnimationTypeID)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.LastUpdated)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.LastUpdated, new { disabled = "disabled", @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.LastUpdated)
+            </div>
+
+            <p>
+                <input type="submit" value="Save" />
+            </p>
+        </fieldset>
+    }
+    <script type="text/javascript">
+        $('form').submit(function (e) {
+            e.preventDefault();
+            $.post(this.action, $(this).serialize(), function (response) {
+                if (response.error) {
+                    alert(response.error);
+                }
+                else {
+                    ClosePopupandRefresh('#winGroupEditor');
+                    //wnd.close();
+                }
+            }, 'json');
+        });
+
+        function onEdit(e) {
+            //check if model is new
+            if (e.model.isNew()) {
+                //Find parent grid current row
+                //parentRow = $(e.container).closest(".k-detail-row").prev();
+                ////find parent grid
+                //grid = parentRow.closest("[data-role=grid]").data("kendoGrid");
+                ////get the parent grid row DataItem
+                //parentDataItem = grid.dataItem(parentRow);
+
+                //if (parentDataItem.id == 0) {
+                //    grid.saveRow();
+                //    grid.one("dataBound", function (e) {
+                //        e.sender.expandRow(e.sender.tbody.find("tr:first"));
+                //    })
+                //    //grid.expandRow(grid.tbody.find(">tr.k-master-row:nth-child(1)"));
+                //    //alert("Please click Update on parent row to save changes first.");
+                //}
+                //else {
+                //set the parent grid dataItem field value to current ForeignKeyColumn field
+                e.model.set("GroupID", '@Html.Raw(Model.ID)');
+                //}
+            }
+        }
+
+        function onSave(e) {
+
+            //get the currently selected value from the DDL
+            var currentlySelectedValue = $(e.container.find('[data-role=dropdownlist]')[0]).data().kendoDropDownList.value();
+
+            //If current value is null
+            if (!e.model.TeamID) {
+                //change the model value
+                e.model.TeamID = 0;
+                //set the value to the model
+                e.model.set('TeamID', currentlySelectedValue);
+            }
+            if (currentlySelectedValue = 0)
+                //    alert(currentlySelectedValue);
+                e.model.set('TeamID', currentlySelectedValue);
+
+            e.model.set('Note1', e.model.get('NoteColor'));
+        }
+
+    </script>
+    @(
+ Html.Kendo().Grid<Ticker.Data.Note>()
+    .Name("Notes")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        columns.ForeignKey(o => o.GroupID, (System.Collections.IEnumerable)ViewData["Groups"], "ID", "Name").Title("Group").Hidden();
+        columns.ForeignKey(o => o.TeamID, (System.Collections.IEnumerable)ViewData["Teams"], "ID", "NickName").Title("Team");
+        columns.Bound(o => o.NoteColor).Title("Note").EditorTemplateName("Note").Encoded(false);//.ClientTemplate("Editor"); ;
+        columns.Bound(o => o.Imported).Visible(false);
+        columns.Bound(o => o.LastUpdated).Visible(false);
+        columns.Bound(o => o.SortOrder).Visible(false);
+        columns.Bound(o => o.UserID).Visible(false);
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Note");
+            })
+            //.Sortable()
+    .Events(e => e.Edit("onEdit"))
+    .Events(e => e.Save("onSave"))
+            //.Events(events => events.DataBound("onDataBound"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.GroupID);//.Editable(false);//.DefaultValue(;
+                model.Field(g => g.Header);//.DefaultValue(String.Empty);
+                model.Field(g => g.Note1).DefaultValue(String.Empty);
+                model.Field(g => g.NoteColor).DefaultValue(String.Empty);
+                model.Field(g => g.Imported);
+                model.Field(g => g.LastUpdated);
+                model.Field(g => g.SortOrder);
+                model.Field(g => g.TeamID).DefaultValue(null);
+                model.Field(g => g.UserID);
+
+            })
+        .Read(read => read.Url("/Ticker/api/GroupNote/" + @Html.Raw(Model.ID)).Type(HttpVerbs.Get))
+        .Create(create => create.Url("/Ticker/api/Note").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/Ticker/api/Note").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/Ticker/api/Note").Type(HttpVerbs.Delete))
+     )
+        )
+    <script type="text/javascript">
+        $(function () {
+            var grid = $("#Notes").data("kendoGrid");
+
+            // WebAPI needs the ID of the entity to be part of the URL e.g. PUT //Ticker/api/Product/80
+            grid.dataSource.transport.options.update.url = function (data) {
+                return "/Ticker/api/Note/" + data.ID;
+            };
+
+            // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE //Ticker/api/Product/80
+            grid.dataSource.transport.options.destroy.url = function (data) {
+                return "/Ticker/api/Note/" + data.ID;
+            };
+        });
+        var SportID;
+        function GroupGameLeagues(e) {
+            if (SportID == null)
+                return null;
+                //return {id: 0, sportID: 1, sort: TeamSort};
+            else
+                return { id: 0, sportID: SportID, sort: 'NickName' };
+
+        }
+        function onGroupSports(e) {
+            var ddl = $("#ddlGroupSports").data("kendoDropDownList");
+            //var dataItem =  ddl.dataItem(e.item.index());
+            SportID = ddl.value();//dataItem.value;
+
+            var ddlTeam = $("#ddlTeam").data("kendoDropDownList");
+            ddlTeam.dataSource.read();
+            ddlTeam.dataSource.sync();
+        }
+    </script>
+</body>
+</html>

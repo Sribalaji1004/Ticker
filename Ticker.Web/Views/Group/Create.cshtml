@@ -1,0 +1,116 @@
+﻿@model Ticker.Data.Group
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+    
+        <fieldset>
+            <legend>Group</legend>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.ClientID)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.ClientID)
+                @Html.ValidationMessageFor(model => model.ClientID)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Name)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.OnAirName)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.OnAirName)
+                @Html.ValidationMessageFor(model => model.OnAirName)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.CreatedName)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.CreatedName)
+                @Html.ValidationMessageFor(model => model.CreatedName)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Type)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Type)
+                @Html.ValidationMessageFor(model => model.Type)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.TeamID)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.TeamID)
+                @Html.ValidationMessageFor(model => model.TeamID)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Header)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Header)
+                @Html.ValidationMessageFor(model => model.Header)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.GroupAnimationTypeID)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.GroupAnimationTypeID)
+                @Html.ValidationMessageFor(model => model.GroupAnimationTypeID)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Editable)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.Editable)
+                @Html.ValidationMessageFor(model => model.Editable)
+            </div>
+    
+            <div class="editor-label">
+                @Html.LabelFor(model => model.LastUpdated)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.LastUpdated)
+                @Html.ValidationMessageFor(model => model.LastUpdated)
+            </div>
+    
+            <p>
+                <input type="submit" value="Create" />
+            </p>
+        </fieldset>
+    }
+    
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</body>
+</html>

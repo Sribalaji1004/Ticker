@@ -1,0 +1,8 @@
+@model byte?
+
+@(Html.Kendo().NumericTextBoxFor(m => m)
+      .HtmlAttributes(new { style = "width:100%" })
+      .Format("#")
+      .Decimals(0)
+      .Min(0)
+)

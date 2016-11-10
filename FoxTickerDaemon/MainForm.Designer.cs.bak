@@ -1,0 +1,253 @@
+﻿namespace FoxTickerLite
+{
+    partial class Mainform
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.lstClient = new Telerik.WinControls.UI.RadListControl();
+            this.lstPlaylist = new Telerik.WinControls.UI.RadListControl();
+            this.radDesktopAlert1 = new Telerik.WinControls.UI.RadDesktopAlert(this.components);
+            this.radMenuItem1 = new Telerik.WinControls.UI.RadMenuItem();
+            this.radMenuItem2 = new Telerik.WinControls.UI.RadMenuItem();
+            this.lvPlayListDetail = new Telerik.WinControls.UI.RadListView();
+            this.lvNotes = new Telerik.WinControls.UI.RadListView();
+            this.cmdStop = new System.Windows.Forms.PictureBox();
+            this.cmdPlay = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lvGames = new Telerik.WinControls.UI.RadListView();
+            this.lblDebug = new System.Windows.Forms.Label();
+            this.tmrDebug = new System.Windows.Forms.Timer(this.components);
+            this.tmrPlayNextObject = new System.Windows.Forms.Timer(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.lstClient)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lstPlaylist)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lvPlayListDetail)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lvNotes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmdStop)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmdPlay)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lvGames)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // lstClient
+            // 
+            this.lstClient.CaseSensitiveSort = true;
+            this.lstClient.DisplayMember = "7";
+            this.lstClient.ItemHeight = 18;
+            this.lstClient.Location = new System.Drawing.Point(13, 25);
+            this.lstClient.Name = "lstClient";
+            this.lstClient.Size = new System.Drawing.Size(120, 217);
+            this.lstClient.TabIndex = 0;
+            this.lstClient.Text = "radListControl1";
+            this.lstClient.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.lstClient_SelectedIndexChanged);
+            // 
+            // lstPlaylist
+            // 
+            this.lstPlaylist.CaseSensitiveSort = true;
+            this.lstPlaylist.ItemHeight = 18;
+            this.lstPlaylist.Location = new System.Drawing.Point(140, 25);
+            this.lstPlaylist.Name = "lstPlaylist";
+            this.lstPlaylist.Size = new System.Drawing.Size(120, 217);
+            this.lstPlaylist.TabIndex = 1;
+            this.lstPlaylist.Text = "radListControl1";
+            this.lstPlaylist.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.lstPlaylist_SelectedIndexChanged);
+            // 
+            // radDesktopAlert1
+            // 
+            this.radDesktopAlert1.ContentImage = null;
+            this.radDesktopAlert1.ContentText = "<html><p><span style=\"font-size: 24pt\">Local Scoring <strong>Alert</strong>!</spa" +
+    "n></p><p><em>New Game Info ready!</em></p></html>";
+            this.radDesktopAlert1.OptionItems.AddRange(new Telerik.WinControls.RadItem[] {
+            this.radMenuItem1,
+            this.radMenuItem2});
+            this.radDesktopAlert1.PlaySound = false;
+            this.radDesktopAlert1.PopupAnimation = true;
+            this.radDesktopAlert1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.radDesktopAlert1.SoundToPlay = null;
+            this.radDesktopAlert1.ThemeName = null;
+            // 
+            // radMenuItem1
+            // 
+            this.radMenuItem1.AccessibleDescription = "Game 1 Info";
+            this.radMenuItem1.AccessibleName = "Game 1 Info";
+            this.radMenuItem1.Name = "radMenuItem1";
+            this.radMenuItem1.Text = "Game 1 Info";
+            this.radMenuItem1.Visibility = Telerik.WinControls.ElementVisibility.Visible;
+            // 
+            // radMenuItem2
+            // 
+            this.radMenuItem2.AccessibleDescription = "Game 2 Info";
+            this.radMenuItem2.AccessibleName = "Game 2 Info";
+            this.radMenuItem2.Name = "radMenuItem2";
+            this.radMenuItem2.Text = "Game 2 Info";
+            this.radMenuItem2.Visibility = Telerik.WinControls.ElementVisibility.Visible;
+            // 
+            // lvPlayListDetail
+            // 
+            this.lvPlayListDetail.GroupItemSize = new System.Drawing.Size(200, 20);
+            this.lvPlayListDetail.HorizontalScrollState = Telerik.WinControls.UI.ScrollState.AlwaysHide;
+            this.lvPlayListDetail.ItemSize = new System.Drawing.Size(200, 20);
+            this.lvPlayListDetail.Location = new System.Drawing.Point(267, 25);
+            this.lvPlayListDetail.Name = "lvPlayListDetail";
+            this.lvPlayListDetail.ShowCheckBoxes = true;
+            this.lvPlayListDetail.ShowColumnHeaders = false;
+            this.lvPlayListDetail.Size = new System.Drawing.Size(126, 217);
+            this.lvPlayListDetail.TabIndex = 5;
+            this.lvPlayListDetail.Text = "lvPlaylistDetail";
+            this.lvPlayListDetail.SelectedItemChanged += new System.EventHandler(this.lvPlayListDetail_SelectedItemChanged);
+            this.lvPlayListDetail.ItemCheckedChanged += new Telerik.WinControls.UI.ListViewItemEventHandler(this.lvPlayListDetail_ItemCheckedChanged);
+            // 
+            // lvNotes
+            // 
+            this.lvNotes.GroupItemSize = new System.Drawing.Size(200, 20);
+            this.lvNotes.ItemSize = new System.Drawing.Size(200, 20);
+            this.lvNotes.ItemSpacing = -1;
+            this.lvNotes.Location = new System.Drawing.Point(398, 256);
+            this.lvNotes.Name = "lvNotes";
+            this.lvNotes.ShowCheckBoxes = true;
+            this.lvNotes.ShowGridLines = true;
+            this.lvNotes.Size = new System.Drawing.Size(372, 217);
+            this.lvNotes.TabIndex = 6;
+            this.lvNotes.Text = "lvPlaylistDetail";
+            this.lvNotes.ViewType = Telerik.WinControls.UI.ListViewType.DetailsView;
+            this.lvNotes.ItemCheckedChanged += new Telerik.WinControls.UI.ListViewItemEventHandler(this.lvNotes_ItemCheckedChanged);
+            // 
+            // cmdStop
+            // 
+            this.cmdStop.Image = global::FoxTickerLite.Properties.Resources.stop2_48x48;
+            this.cmdStop.Location = new System.Drawing.Point(597, 107);
+            this.cmdStop.Name = "cmdStop";
+            this.cmdStop.Size = new System.Drawing.Size(48, 46);
+            this.cmdStop.TabIndex = 10;
+            this.cmdStop.TabStop = false;
+            this.cmdStop.Click += new System.EventHandler(this.cmdStop_Click);
+            // 
+            // cmdPlay
+            // 
+            this.cmdPlay.Image = global::FoxTickerLite.Properties.Resources.Play;
+            this.cmdPlay.Location = new System.Drawing.Point(527, 107);
+            this.cmdPlay.Name = "cmdPlay";
+            this.cmdPlay.Size = new System.Drawing.Size(48, 46);
+            this.cmdPlay.TabIndex = 9;
+            this.cmdPlay.TabStop = false;
+            this.cmdPlay.Click += new System.EventHandler(this.cmdPlay_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::FoxTickerLite.Properties.Resources.Studio_Tick_Pic30_E3;
+            this.pictureBox1.Location = new System.Drawing.Point(503, 51);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(182, 35);
+            this.pictureBox1.TabIndex = 11;
+            this.pictureBox1.TabStop = false;
+            // 
+            // lvGames
+            // 
+            this.lvGames.GroupItemSize = new System.Drawing.Size(200, 20);
+            this.lvGames.ItemSize = new System.Drawing.Size(200, 20);
+            this.lvGames.ItemSpacing = -1;
+            this.lvGames.Location = new System.Drawing.Point(13, 256);
+            this.lvGames.Name = "lvGames";
+            this.lvGames.ShowCheckBoxes = true;
+            this.lvGames.ShowGridLines = true;
+            this.lvGames.Size = new System.Drawing.Size(380, 217);
+            this.lvGames.TabIndex = 7;
+            this.lvGames.Text = "lvPlaylistDetail";
+            this.lvGames.ViewType = Telerik.WinControls.UI.ListViewType.DetailsView;
+            this.lvGames.SelectedItemChanged += new System.EventHandler(this.lvGames_SelectedItemChanged);
+            this.lvGames.ItemCheckedChanged += new Telerik.WinControls.UI.ListViewItemEventHandler(this.lvGames_ItemCheckedChanged);
+            // 
+            // lblDebug
+            // 
+            this.lblDebug.AutoSize = true;
+            this.lblDebug.Location = new System.Drawing.Point(542, 179);
+            this.lblDebug.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblDebug.Name = "lblDebug";
+            this.lblDebug.Size = new System.Drawing.Size(49, 13);
+            this.lblDebug.TabIndex = 12;
+            this.lblDebug.Text = "<debug>";
+            // 
+            // tmrDebug
+            // 
+            this.tmrDebug.Interval = 1000;
+            this.tmrDebug.Tick += new System.EventHandler(this.tmrDebug_Tick);
+            // 
+            // tmrPlayNextObject
+            // 
+            this.tmrPlayNextObject.Interval = 3000;
+            this.tmrPlayNextObject.Tick += new System.EventHandler(this.tmrPlayNextObject_Tick);
+            // 
+            // Mainform
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::FoxTickerLite.Properties.Resources.lgrey016;
+            this.ClientSize = new System.Drawing.Size(777, 485);
+            this.Controls.Add(this.lblDebug);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.cmdStop);
+            this.Controls.Add(this.cmdPlay);
+            this.Controls.Add(this.lvGames);
+            this.Controls.Add(this.lvNotes);
+            this.Controls.Add(this.lvPlayListDetail);
+            this.Controls.Add(this.lstPlaylist);
+            this.Controls.Add(this.lstClient);
+            this.Name = "Mainform";
+            this.Text = "Fox Ticker Lite";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.lstClient)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lstPlaylist)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lvPlayListDetail)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lvNotes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmdStop)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmdPlay)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.lvGames)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private Telerik.WinControls.UI.RadListControl lstClient;
+        private Telerik.WinControls.UI.RadListControl lstPlaylist;
+        private Telerik.WinControls.UI.RadDesktopAlert radDesktopAlert1;
+        private Telerik.WinControls.UI.RadListView lvPlayListDetail;
+        private Telerik.WinControls.UI.RadMenuItem radMenuItem1;
+        private Telerik.WinControls.UI.RadMenuItem radMenuItem2;
+        private Telerik.WinControls.UI.RadListView lvNotes;
+        private System.Windows.Forms.PictureBox cmdPlay;
+        private System.Windows.Forms.PictureBox cmdStop;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private Telerik.WinControls.UI.RadListView lvGames;
+        private System.Windows.Forms.Label lblDebug;
+        private System.Windows.Forms.Timer tmrDebug;
+        private System.Windows.Forms.Timer tmrPlayNextObject;
+    }
+}
+

@@ -1,0 +1,195 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@(Html.Kendo().Window()
+    .Name("winShares")
+    .Title("Client Shares Editor")
+    .Modal(true)
+    .Visible(false)
+    .Content(
+@<div id="clientshare">
+    @(Html.Kendo().Grid<Ticker.Data.Client>()
+    .Name("ClientShares")
+    .Editable(e => e.Enabled(false))
+    .Columns(columns =>
+    {
+        //        columns.Bound(o => o.ID).Hidden();
+        //        columns.Bound(o => o.Description);
+        columns.ForeignKey(o => o.ID, (System.Collections.IEnumerable)ViewData["Clients"], "ID", "Description").Title("Client");
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+        });
+
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Share");
+            })
+            //.Sortable()
+            //.Events(e => e.Edit("onEdit"))
+        .Events(e => e.DataBound("onClientShareDataBound"))
+            //.Events(e => e.DataBound("onDataBound"))
+            //.Events(events => events.DataBound("onDataBound"))
+            //.Events(events => events.DetailInit("onDetailInit"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                //model.Field(g => g.ID).Editable(false);
+                //                model.Field(g => g.Description);
+            })
+        .Read(read => read.Url("/api/ClientShare/").Data("ClientShareData").Type(HttpVerbs.Get)) //3907 //1154 - twitter // //3414
+        .Create(create => create.Url("/api/ClientShare").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/ClientShare").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/ClientShare").Type(HttpVerbs.Delete))
+     )
+    )
+</div>
+)
+)
+
+<script type="text/javascript">
+    $(function () {
+
+        var grid = $("#ClientShares").data("kendoGrid");
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. PUT /api/Product/80
+        grid.dataSource.transport.options.create.url = function (data) {
+            return "/api/ClientShare/" + ClientID; //'@HttpUtility.UrlEncode(Request.QueryString["ClientID"])';
+        }
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE /api/Product/80
+        grid.dataSource.transport.options.destroy.url = function (data) {
+            return "/api/ClientShare/" + ClientID + '?shareID=' + data.ID;
+            //return "/api/ClientShare/" + '@HttpUtility.UrlEncode(Request.QueryString["ClientID"])' + '?shareID=' + data.ID;
+        }
+
+    });
+    function ClientShareData() {
+        return { id: ClientID };
+    }
+    var ClientID;
+    function onClientShare(e) {
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        ClientID = dataItem.ID;
+        win = $("#winShares").data("kendoWindow");
+        win.center();
+        win.open();
+    }
+    function onClientShareDataBound(e) {
+        //this solution makes all rows editable / not editable initially
+        var grid = e.sender;
+        var data = grid.dataSource.view();
+
+        for (var i = 0; i < data.length; i++) {
+            var editButton = grid.tbody.find("tr[data-uid='" + data[i].uid + "'] .k-grid-edit");
+            editButton.addClass("k-state-disabled").removeClass("k-grid-edit");
+        }
+    }
+</script>
+
+@*<div id="grid"></div>
+<script>
+    $(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    dataType: "json",
+                    url: "/api/ClientShare/49"
+                },
+            },
+            groupable: true,
+            sortable: true,
+            pageable: {
+                refresh: true,
+                pageSizes: true
+            },
+            columns: [{
+                field: "ID",
+                title: "ID"
+            },
+            {
+                field: "Description",
+                width: 90,
+                title: "Description"
+            }
+            
+            ]
+        });
+    });
+</script>*@
+
+@(
+ Html.Kendo().Grid<Ticker.Data.Client>()
+    .Name("Clients")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ID).Hidden();
+        //columns.Bound(o => o.PlaylistID).Hidden();
+        //columns.ForeignKey(o => o.PlaylistID, (System.Collections.IEnumerable)ViewData["Playlists"], "ID", "Name").Title("Playlist").Hidden();
+        columns.Bound(o => o.Abbreviation);
+        columns.Bound(o => o.Description);
+        columns.Bound(o => o.DataHiveEnabled);
+        columns.Command(c =>
+        {
+            c.Edit();
+            c.Destroy();
+            c.Custom("Shares").Click("onClientShare");
+            //c.Custom("Stage").Click("onStage");
+        });
+
+    })
+            .ToolBar(tools =>
+            {
+                tools.Create().Text("Client");
+            })
+        //.Sortable()
+        //.Events(e => e.Edit("onEdit"))
+        //.Events(e => e.Save("onSave"))
+        //.Events(e => e.DataBound("onDataBound"))
+        //.Events(events => events.DataBound("onDataBound"))
+        //.Events(events => events.DetailInit("onDetailInit"))
+     .DataSource(dataSource => dataSource
+        .Ajax()
+         .Model(model =>
+            {
+                model.Id(g => g.ID);
+                model.Field(g => g.ID).Editable(false);
+                model.Field(g => g.Abbreviation);
+                model.Field(g => g.Description);
+                model.Field(g => g.LockClient).Editable(false);
+                model.Field(g => g.SponsorSync).Editable(false);
+                model.Field(g => g.DataHiveEnabled);
+                //model.Field(g => g.Name).DefaultValue(String.Empty);
+                //model.Field(g => g.Staged).Editable(false);
+            })
+        .Read(read => read.Url("/api/Client/").Type(HttpVerbs.Get)) //3907 //1154 - twitter // //3414
+        .Create(create => create.Url("/api/Client").Type(HttpVerbs.Post))
+        .Update(update => update.Url("/api/Client").Type(HttpVerbs.Put))
+        .Destroy(destroy => destroy.Url("/api/Client").Type(HttpVerbs.Delete))
+     )
+)
+
+<script type="text/javascript">
+    $(function () {
+
+        var grid = $("#Clients").data("kendoGrid");
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. PUT /api/Product/80
+        grid.dataSource.transport.options.update.url = function (data) {
+            return "/api/Client/" + data.ID;
+        }
+
+        // WebAPI needs the ID of the entity to be part of the URL e.g. DELETE /api/Product/80
+        grid.dataSource.transport.options.destroy.url = function (data) {
+            return "/api/Client/" + data.ID;
+        }
+
+    });
+    function onClientShares() {
+    }
+</script>

@@ -1,0 +1,830 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using FOXTickerDataEngine;
+using Telerik.WinControls.UI;
+using VentuzRemoting;
+
+namespace FoxTickerLite
+{
+    public partial class Mainform : Form
+    {
+        FoxTickerEntities db;// = new FoxTickerEntities();
+        SceneFOX TickerScene;
+
+        //Lists of lists to ommit
+        //List<GroupObject> groupsOmitted = new List<GroupObject>();
+        List<PlaylistObject> playlistsOmitted = new List<PlaylistObject>();
+        PlaylistObject oPlaylist = null;
+        List<spTICK_Games_GetByEntryID_Result> curGames;
+
+
+        public Mainform()
+        {
+            InitializeComponent();
+            db = new FoxTickerEntities();
+
+            //#if !DEBUG
+            TickerScene = new SceneFOX(VZ_Callback);
+            TickerScene.Initialize("C:\\Fox Ticker\\Clients\\FSN\\Ventuz\\Director.vzd");
+            //#endif
+
+        }
+        void VZ_Callback(object sender, VentuzArgs eventName)
+        {
+            switch (eventName.message)
+            {
+                case "/INTRO_COMPLETE":
+                    //PlayNextObject();
+                    bTimetoPlayNextObject = true;
+                    break;
+                case "/NOTE_COMPLETE":
+                    //                    PlayNextObject();
+                    bTimetoPlayNextObject = true;
+                    break;
+            }
+            //MessageBox.Show(eventName.message);
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            lstClient.DataSource = db.Clients.ToList();
+            lstClient.ValueMember = "ID";
+            lstClient.DisplayMember = "Abbreviation";
+#if DEBUG
+            lstClient.Items[15].Selected = true;
+#endif
+
+            lvNotes.Columns.Add("Note", "Note");
+            lvNotes.Columns["Note"].Width = lvNotes.Width - 20;
+
+            lvGames.Columns.Add("GameList", "Game List");
+            lvGames.Columns.Add("V", "V");
+            lvGames.Columns.Add("H", "H");
+            lvGames.Columns.Add("Status", "Status");
+            lvGames.Columns.Add("Clock", "Clock");
+
+            lvGames.Columns["GameList"].Width = lvNotes.Width / 5;
+            lvGames.Columns["V"].Width = lvNotes.Width / 8;
+            lvGames.Columns["H"].Width = lvNotes.Width / 8;
+            lvGames.Columns["Status"].Width = lvNotes.Width / 5;
+            lvGames.Columns["Clock"].Width = lvNotes.Width / 5;
+
+            tmrDebug.Enabled = true;
+
+            //lvNotes.Columns.Add("Header", "Header");
+            //lvNotes.Columns.Add("Status", "Status");
+        }
+
+        private void lstClient_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
+        {
+            try
+            {
+                if (!lstClient.SelectedValue.GetType().Equals(typeof(Client)))
+                {
+                    int clientID = int.Parse(lstClient.SelectedValue.ToString()); // ((Client)lstClient.SelectedValue).ID;
+                    if (db.Playlists.Where(pl => pl.ClientID == clientID).Count() > 0)
+                        lstPlaylist.DataSource = db.Playlists.Where(pl => pl.ClientID == clientID).ToList();
+                    else
+                        lstPlaylist.DataSource = new DataTable();
+                    lstPlaylist.DisplayMember = "Name";
+                    lstPlaylist.ValueMember = "ID";
+                    //foreach (Playlist pl in db.Playlists.Where(pl => pl.ClientID == clientID).ToList())
+                    //{
+                    //    RadListDataItem lvi = new RadListDataItem();
+                    //    lvi.Text = pl.Name;
+                    //    lvi.Value = pl.ID;
+                    //    lvi.Tag = pl;
+                    //    lstPlaylist.Items.Add(lvi);
+                    //}
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        Group curGroup;
+        private void cmdStop_Click(object sender, EventArgs e)
+        {
+            //tmrPlayNextObject.Enabled = false;
+            cmdStop.Image = global::FoxTickerLite.Properties.Resources.stop2_48x48;
+            TickerScene.Ticker_Retract();
+            tmrPlayNextObject.Enabled = false;
+        }
+        private void cmdPlay_Click(object sender, EventArgs e)
+        {
+            cmdStop.Image = global::FoxTickerLite.Properties.Resources.stop_48x48;
+            //apply omitted playlist details if playlist has them
+            if (playlistsOmitted.Where(pow => pow.ID == oPlaylist.ID).Count() > 0)
+                oPlaylist.playlistdetailsOmitted = playlistsOmitted.Where(pow => pow.ID == oPlaylist.ID).FirstOrDefault().playlistdetailsOmitted;
+            oPlaylist.Load(oPlaylist.ID);//int.Parse(lstPlaylist.SelectedValue.ToString()));
+            tmrPlayNextObject.Enabled = true;
+            TickerScene.Ticker_Insert("C:\\Fox Ticker\\Clients\\FSN\\Ventuz\\Movies\\Intro\\NFL.COM.avi", "C:\\Fox Ticker\\Clients\\FSN\\Elements\\Sponsors\\TF-MLBonFOX.tga", null, oPlaylist.OnAirName);
+
+
+            //// Get first note and pass it into Insert call so scene can handle.
+            //foreach (ListViewDataItem lvi in lvPlayListDetail.Items)
+            //{
+            //    if (lvi.CheckState == Telerik.WinControls.Enumerations.ToggleState.On)
+            //    {
+            //        Group g = (Group)lvi.Tag;
+            //        switch (lvi.Tag.GetType().BaseType.Name)
+            //        {
+            //            case "Group":
+            //                List<spTICK_Notes_GetByGroup_Result> lngbg = db.spTICK_Notes_GetByGroup(g.ID, g.ClientID).ToList();
+
+            //                foreach (spTICK_Notes_GetByGroup_Result note in lngbg)
+            //                {
+            //                    //skip notes that are unchecked
+            //                    ListViewDataItem testNote = lvNotes.FindItemByKey(note);
+            //                    if (testNote != null)
+            //                        if (testNote.CheckState == Telerik.WinControls.Enumerations.ToggleState.Off)
+            //                            continue;
+
+            //                    if (note.GroupID == g.ID)
+            //                    {
+            //                        TickerScene.Ticker_Insert("C:\\Fox Ticker\\Clients\\FSN\\Ventuz\\Movies\\Intro\\NFL.COM.avi", "C:\\Fox Ticker\\Clients\\FSN\\Elements\\Sponsors\\TF-MLBonFOX.tga", note, g.OnAirName);
+
+            //                        System.Threading.Thread.Sleep(4000); //sleep for 4 seconds
+
+            //                        tmrPlayNextObject.Enabled = true;
+            //                        return;
+            //                    }
+            //                }
+            //                break;
+            //        }
+            //    }
+            //}
+        }
+
+        private void lstPlaylist_SelectedIndexChanged(object sender, Telerik.WinControls.UI.Data.PositionChangedEventArgs e)
+        {
+            Cursor = Cursors.WaitCursor;
+
+            int counter = 0;
+            lvPlayListDetail.Items.Clear();
+            lvGames.Items.Clear();
+            curGames = new List<spTICK_Games_GetByEntryID_Result>();
+
+            if (!lstPlaylist.SelectedValue.GetType().Equals(typeof(Playlist)))
+            {
+
+                int playlistID = int.Parse(lstPlaylist.SelectedValue.ToString());
+                List<spTICK_Playlist_Details_Get_Result> lpld = db.spTICK_Playlist_Details_Get(playlistID).OrderBy(pldo => pldo.SortOrder).ToList();
+                List<spTICK_Playlist_Details_Get_Result> lopld = new List<spTICK_Playlist_Details_Get_Result>();
+
+                //save current playlistOmitted
+                if (playlistsOmitted.Where(pldow => pldow.ID == oPlaylist.ID).Count() > 0) //remove old instance
+                    playlistsOmitted.Remove(playlistsOmitted.Where(pldow => pldow.ID == oPlaylist.ID).First());
+
+                if (oPlaylist != null)
+                    playlistsOmitted.Add(oPlaylist);
+
+                if (playlistsOmitted.Where(pldow => pldow.ID == playlistID).Count() > 0)
+                {
+                    oPlaylist = playlistsOmitted.Where(pldow => pldow.ID == playlistID).First();
+                    //if (playlistOmitted.PlaylistDetails != null)
+                    lopld = oPlaylist.playlistdetailsOmitted;
+                }
+                else
+                {
+                    oPlaylist = new PlaylistObject();
+                    oPlaylist.db = db;
+                    oPlaylist.ID = playlistID;
+                    //oPlaylist.playlistdetailsOmitted = new List<spTICK_Playlist_Details_Get_Result>();
+                }
+
+                int ID;
+                //foreach (spTICK_Playlist_Details_Get_Result pld in lpld.Except(lopld))
+                foreach (spTICK_Playlist_Details_Get_Result pld in lpld)
+                {
+                    ListViewDataItem lvi = new ListViewDataItem();
+                    switch (pld.EntryTypeID)
+                    {
+                        case 1: //A group.  The GroupID is defined in the EntryID field.
+                            if (db.Groups.Where(g => g.ID == pld.EntryID).Count() > 0)
+                            {
+                                lvi.Tag = pld.PlaylistDetailsID;// 
+                                Group group = db.Groups.Where(g => g.ID == pld.EntryID).First();
+                                // Group group = ((Group)lvi.Tag);
+                                ID = pld.EntryID;
+                                lvi.Text = group.Name;
+
+                                //if (groupsOmitted.Where(gow => gow.group.ID == group.ID).Count() == 0)
+                                if (lopld.Where(lopldw => lopldw.EntryID == ID).Count() == 0)
+                                    lvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+                                lvPlayListDetail.Items.Add(lvi);
+
+                                //val = int.Parse(lstPlaylist.SelectedValue.ToString());
+                                //List<Game> g = db.Games.Where(gw => gw.ID == val).ToList();
+
+                            }
+                            break;
+                        case 2: //A singular game.  The GameID is defined in the EntryID field
+                            if (db.Games.Where(g => g.ID == pld.EntryID).Count() > 0)
+                            {
+                                Game game = db.Games.Where(g => g.ID == pld.EntryID).First();
+                                ID = pld.PlaylistDetailsID;
+                                //if (lopld.Where(lopldw => lopldw.EntryID == ID).Count() == 0)
+                                //    lvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+
+                                string gameText = "";
+                                if (game.Header != null)
+                                    gameText = game.Header;
+                                else if (game.ScoreDescription != "")
+                                    gameText = game.ScoreDescription;
+                                else
+                                    gameText = game.ScoreDescriptionAlt;
+
+                                Telerik.WinControls.Enumerations.ToggleState chk = Telerik.WinControls.Enumerations.ToggleState.On;
+
+                                if (oPlaylist.OmissionsExist(ID))
+                                {
+                                    List<GameObject> loGame = oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == ID).First().gamesOmitted.Where(gow => gow.ID == ID).ToList();
+                                    if (loGame.Count() > 0)
+                                        if (loGame.First().GamesOmitted.Where(lgow => lgow.ID == game.ID).Count() > 0)
+                                            chk = Telerik.WinControls.Enumerations.ToggleState.Off;
+                                }
+
+
+                                var itemName = String.Format("listItem{0}", counter++);
+                                var values = new string[] { gameText, game.VisitorsScore.ToString(), game.HomeScore.ToString(), db.Statuses.Where(sw => sw.ID == game.StatusID).FirstOrDefault().Description, game.Clock };
+                                var nlvi = new Telerik.WinControls.UI.ListViewDataItem(itemName, values) { Tag = game, CheckState = chk, Text = gameText };
+                                lvGames.Items.Add(nlvi);
+                            }
+                            break;
+                        case 3: //All games for a given sport for today.  The sport is defined in the EntryID field.
+                            lvi.Tag = pld.PlaylistDetailsID;
+                            ID = pld.EntryID;
+                            lvi.Text = pld.Name;
+                            //lvi.Value = pld.EntryID;
+                            if (lopld.Where(lopldw => lopldw.EntryID == ID).Count() == 0)
+                                lvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+                            lvPlayListDetail.Items.Add(lvi);
+
+                            break;
+                        case 4: //All games for a given sport prior to today.  The sport is defined in the EntryID field.
+                            lvi.Tag = pld.PlaylistDetailsID;
+                            ID = pld.EntryID;
+                            lvi.Text = pld.Name;
+                            //lvi.Value = pld.EntryID;
+                            if (lopld.Where(lopldw => lopldw.EntryID == ID).Count() == 0)
+                                lvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+                            lvPlayListDetail.Items.Add(lvi);
+
+
+                            break;
+                        case 5: //Ads
+                            break;
+                    }
+                }
+            }
+            ProcessNotes();
+
+            //set to top
+            if (lvGames.Items.Count > 0)
+                lvGames.SelectedIndex = 0;
+
+            if (lvPlayListDetail.Items.Count > 0)
+                lvPlayListDetail.SelectedIndex = 0;
+
+            Cursor = Cursors.Default;
+        }
+
+        private void ProcessNotes()
+        {
+            //lvNotes.Items.Clear();
+            //int counter = 0;
+            //foreach (ListViewDataItem lvi in lvPlayListDetail.Items)
+            //{
+            //    if (lvi.CheckState == Telerik.WinControls.Enumerations.ToggleState.On)
+            //    {
+
+            //        switch (lvi.Tag.GetType().BaseType.Name)
+            //        {
+            //            case "Group":
+            //                int groupID = ((Group)lvi.Tag).ID;
+            //                int clientID = int.Parse(lstClient.SelectedValue.ToString());
+            //                List<spTICK_Notes_GetByGroup_Result> lngbg = db.spTICK_Notes_GetByGroup(groupID, clientID).ToList();
+
+            //                foreach (spTICK_Notes_GetByGroup_Result ngbg in lngbg)
+            //                {
+            //                    var itemName = String.Format("listItem{0}", counter++);
+            //                    var values = new string[] { ngbg.Note, ngbg.Header };
+            //                    var nlvi = new Telerik.WinControls.UI.ListViewDataItem(itemName, values) { BackColor = Color.FromName(ngbg.NoteColor), Tag = ngbg };
+            //                    if (notesOmitted.Where(now => now.groupID == ngbg.GroupID).Count() > 0)
+            //                    {
+            //                        if (notesOmitted.Where(now => now.groupID == ngbg.GroupID).First().groupNotes.Where(gnw => gnw.ID == ngbg.ID).Count() == 0)
+            //                            nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+            //                    }
+            //                    else
+            //                        nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+
+            //                    lvNotes.Items.Add(nlvi);
+            //                }
+            //                break;
+            //        }
+
+            //    }
+            //}
+        }
+
+        private void lvPlayListDetail_ItemCheckedChanged(object sender, ListViewItemEventArgs e)
+        {
+            ListViewDataItem lvi = (ListViewDataItem)e.Item;
+            PlaylistObject po;
+            int clientID = int.Parse(lstClient.SelectedValue.ToString());
+            int entryID = (int)lvi.Tag;
+            int playlistID = (int)lstPlaylist.SelectedItem.Value;
+            //switch (lvi.Tag.GetType().BaseType.Name)
+            //{
+            //    case "Group": //A group.  The GroupID is defined in the EntryID field.
+            //        ID = db.Groups.Where(g => g.ID == ID).First().ID;//(int)lvi.Tag;//((Group)lvi.Tag).ID;
+            //        break;
+            //    case "spTICK_Games_GetByEntryID_Result":
+            //        //ID = ((spTICK_Games_GetByEntryID_Result)lvi.Tag).ID;
+            //        break;
+            //}
+            //int playlistID = int.Parse(lstPlaylist.SelectedValue.ToString());
+
+            if (lvi.CheckState == Telerik.WinControls.Enumerations.ToggleState.Off)
+            {
+                if (!oPlaylist.OmissionsExist(entryID))
+                {
+                    oPlaylist.CreateOmission(entryID);
+                    CreatePlaylistDetailsOmitted(entryID, playlistID);
+                }
+                else
+                {
+                    if (oPlaylist.playlistdetailsOmitted.Where(pldow => pldow.PlaylistDetailsID == entryID).Count() == 0)
+                    {
+                        //po = new PlaylistObject();
+
+                        //po.ID = playlistID;
+                        //po.playlistdetailsOmitted = new List<spTICK_Playlist_Details_Get_Result>();
+
+                        CreatePlaylistDetailsOmitted(entryID, playlistID);
+                        //playlistsOmitted.Add(po);
+                        //po.Load(pld.ID);
+                    }
+                    //else
+                    //{
+                    //    //po = playlistsOmitted.Where(pldow => pldow.ID == playlistID).First();
+
+                    //    if (po.playlistdetailsOmitted.Where(pldw => pldw.EntryID == entryID).Count() == 0)
+                    //    {
+                    //        List<spTICK_Playlist_Details_Get_Result> pld = db.spTICK_Playlist_Details_Get(playlistID).Where(pldw => pldw.PlaylistDetailsID == entryID).ToList();
+                    //        if (pld.Count() > 0)
+                    //            po.playlistdetailsOmitted.Add(pld.First());
+                    //    }
+                    //}
+                    //}
+                    //}
+                }
+            }
+            else //user re-checking box
+            {
+                //po = oPlaylist.playlistdetailsOmitted.Where(pldow => pldow.PlaylistDetailsID == entryID).First();
+
+                //if (po.playlistdetailsOmitted.Where(pldw => pldw.EntryID == entryID).Count() > 0)
+                //{
+                spTICK_Playlist_Details_Get_Result pld = oPlaylist.playlistdetailsOmitted.Where(pldow => pldow.PlaylistDetailsID == entryID).First();
+                oPlaylist.playlistdetailsOmitted.Remove(pld);
+                //}
+
+            }
+
+
+            //NoteObject no;
+            // switch (lvi.Tag.GetType().BaseType.Name)
+            //        {
+            //     case "Group":
+            //                 int groupID = ((Group)lvi.Tag).ID;
+            //                int clientID = int.Parse(lstClient.SelectedValue.ToString());
+            //                if (notesOmitted.Where(now => now.groupID == groupID && now.clientID == clientID).Count() == 0)
+            //                {
+            //                    no = new NoteObject();
+            //                    no.LoadGroup(groupID,clientID);
+            //                }
+            //                else
+            //                    no = notesOmitted.Where(now => now.groupID == groupID && now.clientID == clientID).First();
+
+            //         if (no.groupNotes.Where(gnw => gnw.
+            //         no.groupNotes.a
+            //         break;
+            //}
+        }
+
+        private void CreatePlaylistDetailsOmitted(int entryID, int playlistID)
+        {
+            spTICK_Playlist_Details_Get_Result pld = db.spTICK_Playlist_Details_Get(playlistID).Where(pldw => pldw.PlaylistDetailsID == entryID).First();
+            oPlaylist.playlistdetailsOmitted.Add(pld);
+        }
+
+        bool bTimetoPlayNextObject = false;
+        private void tmrPlayNextObject_Tick(object sender, EventArgs e)
+        {
+            if (bTimetoPlayNextObject)
+                PlayNextObject();
+        }
+
+        private void PlayNextObject()
+        {
+            //tmrPlayNextObject.Enabled = true;
+            if (bTimetoPlayNextObject)
+                bTimetoPlayNextObject = false;
+
+            // Every time the timer ticks (~ 4 seconds) we need to advance and play the next avaible "object" (game or note.)
+            object listobject;
+            listobject = oPlaylist.GetNext();
+            string note = "";// new object();
+            //if (thisPlaylist.Type == PlaylistObject.PlaylistType.Group)
+            //{
+            //    listobject = thisPlaylist.GetNext();
+            //}
+
+            if (listobject != null)
+            {
+                //switch (listobject.GetType().Name)
+                //{
+                //    case "spTICK_Notes_GetByGroup_Result":
+                //        note = ((spTICK_Notes_GetByGroup_Result)(listobject)).Note;
+                //        break;
+                //    case "spTICK_GameNotes_GetByGameID_Result":
+                //        note = ((spTICK_GameNotes_GetByGameID_Result)(listobject)).Note;
+                //        break;
+                //}
+
+                if (TickerScene.CurrentTab != oPlaylist.OnAirName)
+                {
+                    TickerScene.Ticker_Tab_Update(oPlaylist.OnAirName);
+                }
+
+                switch (listobject.GetType().Name)
+                {
+                    case "spTICK_Notes_GetByGroup_Result":
+                        TickerScene.Ticker_Note_Insert(listobject);
+                        break;
+                    case "spTICK_GameNotes_GetByGameID_Result":
+                        TickerScene.Ticker_Note_Insert(listobject);
+                        break;
+                    case "spTICK_Games_GetByEntryID_Result":
+                        spTICK_Games_GetByEntryID_Result game = (spTICK_Games_GetByEntryID_Result)listobject;
+                        if (game.Status == "Pre-Game")
+                            TickerScene.Ticker_Schedule_Insert(game);
+                        else
+                            TickerScene.Ticker_InProgress_Insert(game);
+                        break;
+                }
+
+                //TickerScene.Ticker_Insert("C:\\Fox Ticker\\Clients\\FSN\\Ventuz\\Movies\\Intro\\NFL.COM.avi", "C:\\Fox Ticker\\Clients\\FSN\\Elements\\Sponsors\\TF-MLBonFOX.tga", listobject, oPlaylist.Name);
+            }
+            else
+            {
+                oPlaylist.Reset();
+                PlayNextObject();
+            }
+
+            //else
+            //    oPlaylist.Load(int.Parse(lstPlaylist.SelectedValue.ToString()));
+
+
+            // For non-scrolling objects start timer --- if scrolling we need to wait for an event.
+            System.Threading.Thread.Sleep(500);
+            if (TickerScene.Ticker_Note_IsScrolling() == false)
+            {
+                bTimetoPlayNextObject = true;
+            }
+
+        }
+
+        private void lvPlayListDetail_SelectedItemChanged(object sender, EventArgs e)
+        {
+            lvGames.Items.Clear();
+            lvNotes.Items.Clear();
+            int counter = 0;
+            int ID = 0;
+            if (lvPlayListDetail.SelectedItem != null)
+            //switch (lvPlayListDetail.SelectedItem.Tag.GetType().BaseType.Name)
+            {
+                //    case "Group":
+                int entryID = (int)lvPlayListDetail.SelectedItem.Tag;
+                int playlistID = (int)lstPlaylist.SelectedItem.Value;
+                spTICK_Playlist_Details_Get_Result pld = db.spTICK_Playlist_Details_Get(playlistID).ToList().Where(pldw => pldw.PlaylistDetailsID == entryID).First();
+
+                switch (pld.EntryTypeID)
+                {
+                    case 1://A group.  The GroupID is defined in the EntryID field.
+                        int groupID = db.Groups.Where(gw => gw.ID == pld.EntryID).First().ID; //((Group)lvPlayListDetail.SelectedItem.Tag).ID;
+                        int clientID = int.Parse(lstClient.SelectedValue.ToString());
+                        NoteObject oNote = new NoteObject();
+                        oNote.db = db;
+                        oNote.LoadGroup(groupID, clientID);
+                        List<spTICK_Notes_GetByGroup_Result> lngbg = oNote.groupNotes; //db.spTICK_Notes_GetByGroup(groupID, clientID).ToList();
+
+                        foreach (spTICK_Notes_GetByGroup_Result ngbg in lngbg)
+                        {
+                            var itemName = String.Format("listItem{0}", counter++);
+                            var values = new string[] { ngbg.Note, ngbg.Header };
+                            var nlvi = new Telerik.WinControls.UI.ListViewDataItem(itemName, values) { BackColor = Color.FromName(ngbg.NoteColor), Tag = ngbg };
+                            //nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+                            if (oPlaylist.OmissionsExist(entryID))
+                            {
+                                if (oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().notesOmitted.Where(now => now.groupID == ngbg.GroupID).Count() > 0)
+                                {
+                                    if (oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().notesOmitted.Where(now => now.groupID == ngbg.GroupID).First().groupNotesOmitted.Where(gnw => gnw.ID == ngbg.ID).Count() == 0)
+                                        nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+                                }
+                                else
+                                    nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+                            }
+                            else
+                                nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+
+                            lvNotes.Items.Add(nlvi);
+                        }
+
+                        break;
+                    //                    spTICK_Playlist_Details_Get_Result pld = (spTICK_Playlist_Details_Get_Result)lvPlayListDetail.SelectedItem.Tag;
+                    //                  switch (pld.EntryTypeID)
+                    //{
+                    case 3: //All games for a given sport for today.  The sport is defined in the EntryID field.
+
+                        if (db.spTICK_Games_GetByEntryID(int.Parse(lstClient.SelectedValue.ToString()), pld.EntryID, pld.EntryTypeID, false, false).Count() > 0)
+                        {
+                            curGames.AddRange(db.spTICK_Games_GetByEntryID(int.Parse(lstClient.SelectedValue.ToString()), pld.EntryID, pld.EntryTypeID, false, false).ToList());
+                            foreach (spTICK_Games_GetByEntryID_Result game in curGames)
+                            {
+                                Telerik.WinControls.Enumerations.ToggleState chk = Telerik.WinControls.Enumerations.ToggleState.On;
+
+                                ID = int.Parse(lstPlaylist.SelectedValue.ToString());
+                                if (oPlaylist.OmissionsExist(entryID))
+                                {
+                                    List<GameObject> loGame = oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().gamesOmitted.Where(gow => gow.ID == ID).ToList();
+                                    if (loGame.Count() > 0)
+                                    {
+                                        if (loGame.First().GamesOmitted.Where(lgow => lgow.ID == game.ID).Count() > 0)
+                                            chk = Telerik.WinControls.Enumerations.ToggleState.Off;
+                                        else
+                                            chk = Telerik.WinControls.Enumerations.ToggleState.On;
+                                    }
+                                    else
+                                        chk = Telerik.WinControls.Enumerations.ToggleState.On;
+                                }
+                                else
+                                    chk = Telerik.WinControls.Enumerations.ToggleState.On;
+
+
+                                var itemName = String.Format("listItem{0}", counter++);
+                                var values = new string[] { game.Matchup, game.VisitorsScore.ToString(), game.HomeScore.ToString(), game.Status, game.Clock };
+                                var nlvi = new Telerik.WinControls.UI.ListViewDataItem(itemName, values) { Tag = game, CheckState = chk, Value = entryID };
+                                lvGames.Items.Add(nlvi);
+                            }
+                        }
+                        break;
+                    case 4: //All games for a given sport prior to today.  The sport is defined in the EntryID field.
+                        counter = 0;
+
+                        if (db.spTICK_Games_GetByEntryID(int.Parse(lstClient.SelectedValue.ToString()), pld.EntryID, pld.EntryTypeID, false, false).Count() > 0)
+                        {
+                            curGames.AddRange(db.spTICK_Games_GetByEntryID(int.Parse(lstClient.SelectedValue.ToString()), pld.EntryID, pld.EntryTypeID, false, false).ToList());
+                            foreach (spTICK_Games_GetByEntryID_Result game in curGames)
+                            {
+                                Telerik.WinControls.Enumerations.ToggleState chk = Telerik.WinControls.Enumerations.ToggleState.On;
+
+                                //nlvi = new ListViewDataItem();
+                                ID = int.Parse(lstPlaylist.SelectedValue.ToString());
+                                if (!oPlaylist.OmissionsExist(entryID))
+                                {
+                                    oPlaylist.CreateOmission(entryID);
+                                    List<GameObject> loGame = oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().gamesOmitted.Where(gow => gow.ID == ID).ToList();
+                                    if (loGame.Count() > 0)
+                                        if (loGame.First().GamesOmitted.Where(lgow => lgow.ID == game.ID).Count() > 0)
+                                            chk = Telerik.WinControls.Enumerations.ToggleState.Off;
+                                }
+
+                                var itemName = String.Format("listItem{0}", counter++);
+                                var values = new string[] { game.Matchup, game.VisitorsScore.ToString(), game.HomeScore.ToString(), game.Status, game.Clock };
+                                var nlvi = new Telerik.WinControls.UI.ListViewDataItem(itemName, values) { Tag = game, CheckState = chk, Value = entryID };
+                                lvGames.Items.Add(nlvi);
+                            }
+                        }
+                        break;
+
+
+                }
+
+                //        break;
+                //    case "Game":
+                //        MessageBox.Show("y");
+                //        break;
+            }
+        }
+
+        private void lvGames_ItemCheckedChanged(object sender, ListViewItemEventArgs e)
+        {
+            ListViewDataItem lvi = (ListViewDataItem)e.Item;
+            GameObject go;
+            int clientID = int.Parse(lstClient.SelectedValue.ToString());
+
+            int ID = ((spTICK_Games_GetByEntryID_Result)lvi.Tag).ID;
+            int playlistID = int.Parse(lstPlaylist.SelectedValue.ToString());
+            int entryID = (int)lvPlayListDetail.SelectedItem.Tag;
+            if (!oPlaylist.OmissionsExist(entryID))
+            {
+                oPlaylist.CreateOmission(entryID);
+                go = CreateGamesOmitted(ID, playlistID, entryID);
+            }
+            else
+            {
+                if (oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().gamesOmitted.Where(gow => gow.ID == playlistID).Count() == 0)
+                {
+                    go = CreateGamesOmitted(ID, playlistID, entryID);
+                }
+                else
+                {
+                    go = oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().gamesOmitted.Where(gow => gow.ID == playlistID).First();
+
+                    if (go.GamesOmitted.Where(pldw => pldw.ID == ID).Count() == 0)
+                    {
+                        spTICK_Games_GetByEntryID_Result g = curGames.Where(cgw => cgw.ID == ID).First();
+                        go.GamesOmitted.Add(g);
+                    }
+                }
+            }
+
+        }
+
+        private GameObject CreateGamesOmitted(int ID, int playlistID, int entryID)
+        {
+            GameObject go;
+            go = new GameObject();
+            go.db = db;
+            go.ID = playlistID;
+            go.GamesOmitted = new List<spTICK_Games_GetByEntryID_Result>();
+
+            spTICK_Games_GetByEntryID_Result g = curGames.Where(cgw => cgw.ID == ID).First();
+            go.GamesOmitted.Add(g);
+            oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().gamesOmitted.Add(go);
+            return go;
+        }
+
+        private void lvNotes_ItemCheckedChanged(object sender, ListViewItemEventArgs e)
+        {
+            ListViewDataItem lvi = (ListViewDataItem)e.Item;
+            NoteObject no;
+            int clientID = int.Parse(lstClient.SelectedValue.ToString());
+            int ID;
+            //int playlistID = int.Parse(lvPlayListDetail.SelectedItem.ToString());
+            object pld = lvPlayListDetail.SelectedItem.Tag;
+            int entryID = (int)lvPlayListDetail.SelectedItem.Tag;
+            switch (lvi.Tag.GetType().Name)
+            {
+                case "spTICK_Notes_GetByGroup_Result":
+                    ID = ((spTICK_Notes_GetByGroup_Result)lvi.Tag).ID;
+
+                    Group group = (Group)pld;
+                    if (!oPlaylist.OmissionsExist(entryID))
+                    {
+                        oPlaylist.CreateOmission(entryID);
+                        no = CreateGroupNotesOmission(lvi, entryID, group);
+                    }
+                    else
+                    {
+                        if (oPlaylist.playlistdetailsOmissions.Where(plow => plow.ID == entryID).First().notesOmitted.Where(now => now.groupID == group.ID).Count() == 0)
+                            no = CreateGroupNotesOmission(lvi, entryID, group);
+                        else
+                        {
+                            no = oPlaylist.playlistdetailsOmissions.Where(plow => plow.ID == entryID).First().notesOmitted.Where(now => now.groupID == group.ID).First();
+
+                            if (no.groupNotesOmitted.Where(gnw => gnw.ID == ID).Count() == 0)
+                            {
+                                spTICK_Notes_GetByGroup_Result n = (spTICK_Notes_GetByGroup_Result)lvi.Tag;
+                                no.groupNotesOmitted.Add(n);
+                            }
+                        }
+                    }
+                    break;
+                case "spTICK_GameNotes_GetByGameID_Result":
+                    ID = ((spTICK_GameNotes_GetByGameID_Result)lvi.Tag).ID;
+
+                    spTICK_Games_GetByEntryID_Result game = (spTICK_Games_GetByEntryID_Result)lvGames.SelectedItem.Tag;
+                    if (!oPlaylist.OmissionsExist(entryID))
+                    {
+                        oPlaylist.CreateOmission(entryID);
+                        no = CreateGameNotesOmission(lvi, entryID, game);
+                    }
+                    else
+                    {
+                        if (oPlaylist.playlistdetailsOmissions.Where(plow => plow.ID == entryID).First().notesOmitted.Where(now => now.gameID == game.ID).Count() == 0)
+                            no = CreateGameNotesOmission(lvi, entryID, game);
+                        else
+                        {
+                            no = oPlaylist.playlistdetailsOmissions.Where(plow => plow.ID == entryID).First().notesOmitted.Where(now => now.gameID == game.ID).First();
+
+                            if (no.groupNotesOmitted.Where(gnw => gnw.ID == ID).Count() == 0)
+                            {
+                                spTICK_GameNotes_GetByGameID_Result n = (spTICK_GameNotes_GetByGameID_Result)lvi.Tag;
+                                no.gameNotesOmitted.Add(n);
+                            }
+                        }
+                    }
+
+                    break;
+            }
+
+
+        }
+
+        private NoteObject CreateGameNotesOmission(ListViewDataItem lvi, int entryID, spTICK_Games_GetByEntryID_Result game)
+        {
+            NoteObject no;
+            no = new NoteObject();
+            no.gameID = game.ID;
+            no.gameNotesOmitted = new List<spTICK_GameNotes_GetByGameID_Result>();
+
+            spTICK_GameNotes_GetByGameID_Result n = (spTICK_GameNotes_GetByGameID_Result)lvi.Tag;
+            no.gameNotesOmitted.Add(n);
+            oPlaylist.playlistdetailsOmissions.Where(plow => plow.ID == entryID).First().notesOmitted.Add(no);
+            return no;
+        }
+
+        private NoteObject CreateGroupNotesOmission(ListViewDataItem lvi, int entryID, Group group)
+        {
+            NoteObject no;
+            no = new NoteObject();
+            no.groupID = group.ID;
+            no.groupNotesOmitted = new List<spTICK_Notes_GetByGroup_Result>();
+
+            spTICK_Notes_GetByGroup_Result n = (spTICK_Notes_GetByGroup_Result)lvi.Tag;
+            no.groupNotesOmitted.Add(n);
+            oPlaylist.playlistdetailsOmissions.Where(plow => plow.ID == entryID).First().notesOmitted.Add(no);
+            return no;
+        }
+
+        private void lvGames_SelectedItemChanged(object sender, EventArgs e)
+        {
+            lvNotes.Items.Clear();
+            int counter = 0;
+            if (lvGames.SelectedItem != null)
+            {
+                int entryID = (int)lvPlayListDetail.SelectedItem.Tag;
+                int gameID = 0;
+                switch (lvGames.SelectedItem.Tag.GetType().Name)
+                {
+                    case "spTICK_Games_GetByEntryID_Result":
+                        gameID = ((spTICK_Games_GetByEntryID_Result)lvGames.SelectedItem.Tag).ID;
+                        break;
+                    case "Game":
+                        gameID = ((Game)lvGames.SelectedItem.Tag).ID;
+                        break;
+                }
+
+                int clientID = int.Parse(lstClient.SelectedValue.ToString());
+                NoteObject oNote = new NoteObject();
+                oNote.db = db;
+                oNote.LoadGame(gameID, clientID);
+                List<spTICK_GameNotes_GetByGameID_Result> lngbg = oNote.gameNotes; //db.spTICK_Notes_GetByGroup(groupID, clientID).ToList();
+
+                foreach (spTICK_GameNotes_GetByGameID_Result ngbg in lngbg)
+                {
+                    var itemName = String.Format("listItem{0}", counter++);
+                    var values = new string[] { ngbg.Note, ngbg.Header };
+                    var nlvi = new Telerik.WinControls.UI.ListViewDataItem(itemName, values) { Tag = ngbg };
+                    if (ngbg.NoteColor != null)
+                        if (ngbg.NoteColor != "")
+                            BackColor = Color.FromName(ngbg.NoteColor);
+                    if (oPlaylist.OmissionsExist(entryID))
+                    {
+                        if (oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().notesOmitted.Where(now => now.gameID == ngbg.GameID).Count() > 0)
+                        {
+                            if (oPlaylist.playlistdetailsOmissions.Where(pldow => pldow.ID == entryID).First().notesOmitted.Where(now => now.gameID == ngbg.GameID).First().gameNotesOmitted.Where(gnw => gnw.ID == ngbg.ID).Count() == 0)
+                                nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+                        }
+                        else
+                            nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+                    }
+                    else
+                        nlvi.CheckState = Telerik.WinControls.Enumerations.ToggleState.On;
+
+                    lvNotes.Items.Add(nlvi);
+                }
+            }
+        }
+
+        private void tmrDebug_Tick(object sender, EventArgs e)
+        {
+            lblDebug.Text = DateTime.Now + " " + "Timer Enabled: " + tmrPlayNextObject.Enabled + "(interval: " + tmrPlayNextObject.Interval + ")";
+        }
+
+    }
+}
