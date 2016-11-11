@@ -199,6 +199,7 @@
     <Compile Include="Controllers\AlertTypesController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\ClientShareController.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\DesktopController.cs" />
     <Compile Include="Controllers\GameStatusController.cs" />
     <Compile Include="Controllers\GetLeaguesSettingsController.cs" />

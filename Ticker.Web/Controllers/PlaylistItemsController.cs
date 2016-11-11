@@ -708,6 +708,12 @@ namespace Ticker.Controllers
         //        hasChildren = db.spTICK_GameNotes_GetByGameID(gameID: g.ID, clientID: id).Any()
         //    });
         //}
+
+       [HttpGet]
+        public IHttpActionResult get(string id)
+        {
+            return Json("success");
+        }
     }
 }
 
