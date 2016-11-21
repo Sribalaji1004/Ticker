@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Ticker.Data;
 
 namespace Ticker.Controllers
 {
@@ -16,9 +17,11 @@ namespace Ticker.Controllers
         }
 
         // GET: api/Default/5
-        public string Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            return "value";
+            FoxTickerEntities db = new FoxTickerEntities();
+            var i = db.PlaylistDetails.Where(a => a.ID == id).ToList();
+            return Json(i);
         }
 
         // POST: api/Default
