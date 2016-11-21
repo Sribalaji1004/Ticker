@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Ticker.Data;
 
 namespace Ticker.Controllers
 {
     public class SportsController : ApiController
     {
+
+        private FoxTickerEntities db = new FoxTickerEntities();
         // GET: api/Sports
-        public IEnumerable<string> Get()
+        public IEnumerable<dynamic> Get()
         {
-            return new string[] { "NFL", "Soccer" };
+            var ret = new List<dynamic>();
+            dynamic expando = new ExpandoObject();
+            expando = new { ID = 0, LongDisplay = "NONE" };
+            ret.Add(expando);
+
+            return ret.Concat(db.Sports.OrderBy(sob => sob.LongDisplay).Select(s => new { s.ID, s.LongDisplay }));
         }
 
         // GET: api/Sports/5

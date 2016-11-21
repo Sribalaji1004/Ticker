@@ -109,7 +109,7 @@ namespace Ticker.Controllers
                 db.SaveChanges();
 
                 HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, sport);
-                response.Headers.Location = new Uri(Url.Link("DefaultApi", new { id = sport.ID }));
+                response.Headers.Location = new Uri(Url.Link("Default1Api", new { id = sport.ID }));
                 return response;
             }
             else
