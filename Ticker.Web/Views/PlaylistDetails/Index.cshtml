@@ -157,7 +157,7 @@
         .Events(e => e.Change("onSportsChange"))
         .DataValueField("ID")
         .DataSource(dataSource => dataSource
-        .Read(read => read.Url("/api/Sport").Type(HttpVerbs.Get))
+        .Read(read => read.Url("/api/Sports").Type(HttpVerbs.Get))
         )
 )
     <button class="k-button" id="onDHGamesRefresh" onclick="onDHGamesRefresh();">Refresh</button>

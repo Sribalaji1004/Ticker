@@ -213,6 +213,7 @@
     <Compile Include="Controllers\PlayerStatsBuilderController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\SettingsOptionsController.cs" />
+    <Compile Include="Controllers\SportsController.cs" />
     <Compile Include="Controllers\SportsDataController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\test1Controller.cs" />
