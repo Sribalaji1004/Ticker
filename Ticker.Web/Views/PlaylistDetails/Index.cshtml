@@ -130,7 +130,7 @@
 
     </text>);
               tabstrip.Add().Text("Games")
-                  .Visible(!bool.Parse(ViewData["DataHiveEnabled"].ToString()))
+                  .Visible(bool.Parse(ViewData["DataHiveEnabled"].ToString()))
                   .Content(@<text>
     @(Html.Kendo().DropDownList()
         .HtmlAttributes(new {style = "width:200px" })
@@ -140,7 +140,7 @@
             //.DataValueField("string")
         .DataSource(dataSource => dataSource
         .Events(ds => ds.RequestEnd("onDHLeaguesRequestEnd"))
-        .Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["DataHiveUrl"] + "base/leagues").Type(HttpVerbs.Get))
+        .Read(read => read.Url("/api/Test").Type(HttpVerbs.Get))
         )
 )
     <button class="k-button" id="onDHGamesRefresh" onclick="onDHGamesRefresh();">Refresh</button>
@@ -149,7 +149,7 @@
     <div id="tvDHGames" style="color: #82CAFF"></div>
     </text>);
               tabstrip.Add().Text("Games")
-                  .Visible(bool.Parse(ViewData["DataHiveEnabled"].ToString()))
+                  .Visible(false)
                   .Content(@<text>
     @(Html.Kendo().DropDownList()
         .Name("ddlSports")
@@ -157,7 +157,7 @@
         .Events(e => e.Change("onSportsChange"))
         .DataValueField("ID")
         .DataSource(dataSource => dataSource
-        .Read(read => read.Url("/api/Sports").Type(HttpVerbs.Get))
+        .Read(read => read.Url("/api/Test").Type(HttpVerbs.Get))
         )
 )
     <button class="k-button" id="onDHGamesRefresh" onclick="onDHGamesRefresh();">Refresh</button>
@@ -1106,7 +1106,7 @@
     var DHLeague;
     var DHLeagueChange;
     function onDHLeaguesChange(e) {
-
+        debugger;
         var ddl = $("#ddlDHLeagues").data("kendoDropDownList");
         DHLeague = ddl.value();
         DHLeagueChange = true;
@@ -1186,7 +1186,8 @@
         var newds= new kendo.data.HierarchicalDataSource({
             transport: {
                 read: {
-                    url: url
+                    // url: url
+                    url:  "../api/Test",
                 }
             },
             requestEnd: onnewRequestEnd,
@@ -1198,7 +1199,7 @@
                     children: {
                         transport: {
                             read: {
-                                url:  url,
+                                url:  "../api/Test",
                                 dataType: "json",
                                 //data: {ClientID: '@ViewData["ClientID"]' }
                             }
@@ -1212,7 +1213,8 @@
                                 children: {
                                     transport: {
                                         read: {
-                                            url:  url,
+                                            //  url:  url,
+                                            url: "../api/Test",
                                             dataType: "json",
                                             //data: {ClientID: '@ViewData["ClientID"]' }
                                         }
@@ -1235,13 +1237,185 @@
                 }
             }
         });
+        var entities=[{
+            "PlayReview": false,
+            "PlayClock": "15",
+            "Quarter": 2,
+            "HomeTeamHasPossession": true,
+            "Down": 2,
+            "YardsToGo": 10,
+            "SideOfField": "Home",
+            "YardLine": 35,
+            "ClockSource": "Stadium",
+            "VisitingTeamTimeouts": 3,
+            "HomeTeamTimeouts": 3,
+            "YardsFromGoal": 65,
+            "Clock": "12:34",
+            "ActiveState": true,
+            "GameType": null,
+            "GamePhase": null,
+            "NetworkType": null,
+            "VisitorTeamCity": "Washington",
+            "VisitorTeamAlias": "WAS",
+            "VisitorTeamName": "Redskins",
+            "VisitorScore": 0,
+            "VisitorLineScore": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "VisitorWins": 0,
+            "VisitorLosses": 0,
+            "VisitorTies": 0,
+            "HomeTeamCity": "Detroit",
+            "HomeTeamAlias": "DET",
+            "HomeTeamName": "Lions",
+            "HomeScore": 0,
+            "HomeLineScore": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "HomeWins": 0,
+            "HomeLosses": 0,
+            "HomeTies": 0,
+            "Location": null,
+            "Venue": "Ford Field",
+            "Status": "InProgress",
+            "DateTimeUtc": "11/16/2016 11:23:00 PM",
+            "League": "NFL",
+            "Season": "2016",
+            "CorrelationId": "582cebc4ff60f402ec02dcd3",
+            "SourceType": "StatsInc",
+            "LastUpdatedUtc": "11/16/2016 11:29:08 PM"
+        },
+  {
+      "PlayReview": false,
+      "PlayClock": null,
+      "Quarter": 4,
+      "HomeTeamHasPossession": false,
+      "Down": 0,
+      "YardsToGo": 0,
+      "SideOfField": "Unknown",
+      "YardLine": 0,
+      "ClockSource": "Unknown",
+      "VisitingTeamTimeouts": 0,
+      "HomeTeamTimeouts": 1,
+      "YardsFromGoal": 0,
+      "Clock": "00:00",
+      "ActiveState": false,
+      "GameType": "RegularSeason",
+      "GamePhase": null,
+      "NetworkType": null,
+      "VisitorTeamCity": "New Orleans",
+      "VisitorTeamAlias": "NO",
+      "VisitorTeamName": "Saints",
+      "VisitorScore": 20,
+      "VisitorLineScore": [
+        3,
+        0,
+        0,
+        17
+      ],
+      "VisitorWins": 4,
+      "VisitorLosses": 6,
+      "VisitorTies": 0,
+      "HomeTeamCity": "Carolina",
+      "HomeTeamAlias": "Car",
+      "HomeTeamName": "Panthers",
+      "HomeScore": 23,
+      "HomeLineScore": [
+        3,
+        17,
+        3,
+        0
+      ],
+      "HomeWins": 4,
+      "HomeLosses": 6,
+      "HomeTies": 0,
+      "Location": {
+          "Alias": "",
+          "City": "Charlotte",
+          "CountryOrState": "North Carolina"
+      },
+      "Venue": "Bank of America Stadium",
+      "Status": "Final",
+      "DateTimeUtc": "11/18/2016 01:25:00 AM",
+      "League": "NFL",
+      "Season": "2016",
+      "CorrelationId": "582b1660ff60f402ec02dae0",
+      "SourceType": "StatsInc",
+      "LastUpdatedUtc": "11/22/2016 05:18:09 AM"
+  },
+  {
+      "PlayReview": false,
+      "PlayClock": null,
+      "Quarter": 4,
+      "HomeTeamHasPossession": false,
+      "Down": 0,
+      "YardsToGo": 0,
+      "SideOfField": "Unknown",
+      "YardLine": 0,
+      "ClockSource": "Unknown",
+      "VisitingTeamTimeouts": 2,
+      "HomeTeamTimeouts": 0,
+      "YardsFromGoal": 0,
+      "Clock": "00:00",
+      "ActiveState": false,
+      "GameType": "RegularSeason",
+      "GamePhase": null,
+      "NetworkType": null,
+      "VisitorTeamCity": "Pittsburgh",
+      "VisitorTeamAlias": "Pit",
+      "VisitorTeamName": "Steelers",
+      "VisitorScore": 24,
+      "VisitorLineScore": [
+        3,
+        11,
+        3,
+        7
+      ],
+      "VisitorWins": 5,
+      "VisitorLosses": 5,
+      "VisitorTies": 0,
+      "HomeTeamCity": "Cleveland",
+      "HomeTeamAlias": "Cle",
+      "HomeTeamName": "Browns",
+      "HomeScore": 9,
+      "HomeLineScore": [
+        0,
+        0,
+        3,
+        6
+      ],
+      "HomeWins": 0,
+      "HomeLosses": 11,
+      "HomeTies": 0,
+      "Location": {
+          "Alias": "",
+          "City": "Cleveland",
+          "CountryOrState": "Ohio"
+      },
+      "Venue": "FirstEnergy Stadium",
+      "Status": "Final",
+      "DateTimeUtc": "11/20/2016 06:00:00 PM",
+      "League": "NFL",
+      "Season": "2016",
+      "CorrelationId": "582b1660ff60f402ec02dae1",
+      "SourceType": "StatsInc",
+      "LastUpdatedUtc": "11/22/2016 05:18:09 AM"
+  }     ];
 
-        homogeneous = new kendo.data.HierarchicalDataSource({
-            transport: {
-                read: {
-                    url: url
-                }
-            },
+        var homogeneous = new kendo.data.HierarchicalDataSource({
+            //transport: {
+            //    read: {
+            //        //url: url
+            //    //    url: "../api/Test",
+            //    }
+            //},
+            data: entities,
             requestEnd: onDHGamesRequestEnd,
             schema: {
                 model: {
@@ -1265,6 +1439,8 @@
                     }
                 }
             }
+
+           
         });
 
         if ($("#tvDHGames").data("kendoTreeView")!=undefined)
@@ -1277,7 +1453,7 @@
                 treeview.setDataSource(new kendo.data.HierarchicalDataSource({
                     transport: {
                         read: {
-                            url: url
+                          //  url: url
                         }
                     },
                     requestEnd: onnewRequestEnd,
@@ -1290,7 +1466,7 @@
                             children: {
                                 transport: {
                                     read: {
-                                        url:  url,
+                                       // url:  url,
                                         dataType: "json",
                                         //data: {ClientID: '@ViewData["ClientID"]' }
                                     }
@@ -1334,7 +1510,7 @@
                 treeview.setDataSource(new kendo.data.HierarchicalDataSource({
                     transport: {
                         read: {
-                            url: url, //serviceRoot + DHLeague + Today,
+                           // url: url, //serviceRoot + DHLeague + Today,
                         }
                     },
                     requestEnd: onDHGamesRequestEnd,
@@ -1829,44 +2005,47 @@ function onnewRequestEnd(e) {
     var fullresponse=e.response;
     var dateArray=[];
 
-    for(var i=0;i<e.response.length;i++)
-    {
-        e.response[i].DateTimeUtc=new Date(e.response[i].DateTimeUtc.replace(/-/g,"/"));
-        Date.prototype.yyyymmdd = function () {
-            var yyyy = this.getFullYear().toString();
-            var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
-            var dd = this.getDate().toString();
-            return (mm[1] ? mm : "0" + mm[0]) + "/" + (dd[1] ? dd : "0" + dd[0]) + "/" + yyyy;
-        };
+    //for(var i=0;i<e.response.length;i++)
+    //{
+    //    e.response[i].DateTimeUtc=new Date(e.response[i].DateTimeUtc.replace(/-/g,"/"));
+    //    Date.prototype.yyyymmdd = function () {
+    //        var yyyy = this.getFullYear().toString();
+    //        var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
+    //        var dd = this.getDate().toString();
+    //        return (mm[1] ? mm : "0" + mm[0]) + "/" + (dd[1] ? dd : "0" + dd[0]) + "/" + yyyy;
+    //    };
 
-        e.response[i].DateTimeUtc= new Date(e.response[i].DateTimeUtc).yyyymmdd();
-        dateArray.push(e.response[i].DateTimeUtc);
-    }
-    var uniqueArray=GetUnique(dateArray);
-    debugger;
-    var UniqueNames= $.unique(fullresponse.map(function (d) {return d.DateTimeUtc;}));
+    //    e.response[i].DateTimeUtc= new Date(e.response[i].DateTimeUtc).yyyymmdd();
+    //    dateArray.push(e.response[i].DateTimeUtc);
+    //}
+    //var uniqueArray=GetUnique(dateArray);
+    //debugger;
+    //var UniqueNames= $.unique(fullresponse.map(function (d) {return d.DateTimeUtc;}));
 
-    e.response.length=0;
-    for (var r=0; r < UniqueNames.length; r++)
-    {
-        e.response.push({key: r, fauxGame: true, Name: UniqueNames[r]});
+    //e.response.length=0;
+    //for (var r=0; r < UniqueNames.length; r++)
+    //{
+    //    e.response.push({key: r, fauxGame: true, Name: UniqueNames[r]});
 
-    }
-    e.response.unshift({key: "3", fauxGame: true, Name: "Previous - Quick Rip"});
-    e.response.unshift({key: "2", fauxGame: true, Name: "Previous"});
-    e.response.unshift({key: "1", fauxGame: true, Name: "Today - Quick Rip"});
-    e.response.unshift({key: "0", fauxGame: true, Name: "Today"});
+    //}
+    //e.response.unshift({key: "3", fauxGame: true, Name: "Previous - Quick Rip"});
+    //e.response.unshift({key: "2", fauxGame: true, Name: "Previous"});
+    //e.response.unshift({key: "1", fauxGame: true, Name: "Today - Quick Rip"});
+    //e.response.unshift({key: "0", fauxGame: true, Name: "Today"});
 }
 function onDHGamesRequestEnd(e) {
-
+    debugger;
     if (!DHLeagueChange || e.response == undefined)
     {
         e.response=[];
     }//return;
     // alert(JSON.stringify(e.response));
-   // alert(e.response.length);
-     if((DHLeague.indexOf("CFB")!=-1 || DHLeague.indexOf("CBK")!=-1) && e.response.length > 0)
-         SortGamesByRankingSpecial(e.response,DHLeague);
+    // alert(e.response.length);
+   
+    if((DHLeague.indexOf("CFB")!=-1 || DHLeague.indexOf("CBK")!=-1) && e.response.length > 0)
+    {
+    }
+        // SortGamesByRankingSpecial(e.response,DHLeague);
     // alert(e.response.length);
     for (var r=0; r < e.response.length; r++)
     {

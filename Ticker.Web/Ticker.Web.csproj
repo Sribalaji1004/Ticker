@@ -217,6 +217,7 @@
     <Compile Include="Controllers\SportsDataController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\test1Controller.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserAdminController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\ClientPlaylistsController.cs" />
