@@ -20,8 +20,7 @@ namespace Ticker.Controllers
             dynamic expando = new ExpandoObject();
             expando = new { ID = 0, LongDisplay = "NONE" };
             ret.Add(expando);
-
-            return ret.Concat(db.Sports.OrderBy(sob => sob.LongDisplay).Select(s => new { s.ID, s.LongDisplay }));
+            return ret.Concat(db.Sports.Where(s => s.LongDisplay == "NFL").Select(s => new { s.ID, s.LongDisplay }));
         }
 
         // GET: api/Sports/5
