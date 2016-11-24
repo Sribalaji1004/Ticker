@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="FoxTickModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="FoxTickModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="auth_admin_log">
           <Key>
             <PropertyRef Name="id" />
@@ -329,6 +329,17 @@
           <Property Name="Description" Type="nvarchar" MaxLength="40" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'FoxTickNew.dbo.suppressgames' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="suppressgames">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LeagueCode" Type="nvarchar(max)" />
+          <Property Name="ClientID" Type="int" />
+          <Property Name="CorrelationID" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'FoxTickNew.dbo.Teams' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Teams">
           <Key>
@@ -570,6 +581,14 @@ warning 6002: The table/view 'FoxTickNew.dbo.Teams' does not have a primary key 
           <EntitySet Name="Sports" EntityType="Self.Sports" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Statuses" EntityType="Self.Statuses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="suppressgames" EntityType="Self.suppressgames" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[suppressgames].[id] AS [id], 
+[suppressgames].[LeagueCode] AS [LeagueCode], 
+[suppressgames].[ClientID] AS [ClientID], 
+[suppressgames].[CorrelationID] AS [CorrelationID]
+FROM [dbo].[suppressgames] AS [suppressgames]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="Teams" EntityType="Self.Teams" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [Teams].[ID] AS [ID], 
@@ -796,6 +815,7 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
           <EntitySet Name="LeaguesSettings" EntityType="Fox.Tick.LeaguesSetting" />
           <EntitySet Name="Settings" EntityType="Fox.Tick.Setting" />
           <EntitySet Name="SettingsOptions" EntityType="Fox.Tick.SettingsOption" />
+          <EntitySet Name="suppressgames" EntityType="Fox.Tick.suppressgame" />
           </EntityContainer>
         <EntityType Name="Group">
           <Key>
@@ -1656,6 +1676,15 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
           <Property Name="SettingsID" Type="Int32" />
           <Property Name="SettingsOptionValueID" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="suppressgame">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LeagueCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ClientID" Type="Int32" />
+          <Property Name="CorrelationID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2352,6 +2381,16 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="suppressgames">
+            <EntityTypeMapping TypeName="Fox.Tick.suppressgame">
+              <MappingFragment StoreEntitySet="suppressgames">
+                <ScalarProperty Name="CorrelationID" ColumnName="CorrelationID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="LeagueCode" ColumnName="LeagueCode" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -2374,7 +2413,7 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
     </Options>
     <!-- Diagram content (shape and connector positions) -->
     <Diagrams>
-      <Diagram DiagramId="8b3e4c1f620e444fbd2a3c80ababdc35" Name="Diagram1" ZoomLevel="48">
+      <Diagram DiagramId="8b3e4c1f620e444fbd2a3c80ababdc35" Name="Diagram1" ZoomLevel="72">
         <EntityTypeShape EntityType="Fox.Tick.Group" Width="1.5" PointX="1.25" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="Fox.Tick.Note" Width="1.5" PointX="3.125" PointY="2.625" IsExpanded="true" />
         <EntityTypeShape EntityType="Fox.Tick.Client" Width="1.5" PointX="11.375" PointY="0.75" />
@@ -2419,6 +2458,7 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
         <EntityTypeShape EntityType="Fox.Tick.LeaguesSetting" Width="1.5" PointX="0.75" PointY="11.75" />
         <EntityTypeShape EntityType="Fox.Tick.Setting" Width="1.5" PointX="6.75" PointY="11.75" />
         <EntityTypeShape EntityType="Fox.Tick.SettingsOption" Width="1.5" PointX="8.75" PointY="11.75" />
+        <EntityTypeShape EntityType="Fox.Tick.suppressgame" Width="1.5" PointX="11.375" PointY="11.75" />
         </Diagram>
     </Diagrams>
   </Designer>

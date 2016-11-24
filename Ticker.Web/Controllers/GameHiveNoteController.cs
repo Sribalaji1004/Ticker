@@ -48,6 +48,7 @@ namespace Ticker.Controllers
             //return db.GameHiveNotes.AsEnumerable();
             //return LazyReload(db.GameHiveNotes.AsEnumerable()).ToDataSourceResult(request, n => new
             //return db.GameHiveNotes.Include("Group").AsEnumerable().ToDataSourceResult(request, n => new
+            
             return db.GameHiveNotes
                 .Select(on => new { on.SportID, on.Header, on.NoteColor, on.TeamID, on.ID, on.Note, on.UserID, on.LastUpdated, on.HiveID, on.SortOrder, on.ClientID }) //first trip is pure ef and can't convert dt to string (See also http://stackoverflow.com/questions/5370402/entity-framework-4-linq-how-to-convert-from-datetime-to-string-in-a-query)
                 .AsEnumerable()

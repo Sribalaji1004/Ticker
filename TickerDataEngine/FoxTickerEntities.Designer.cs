@@ -503,6 +503,22 @@ namespace Ticker.Data
             }
         }
         private ObjectSet<SettingsOption> _SettingsOptions;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<suppressgame> suppressgames
+        {
+            get
+            {
+                if ((_suppressgames == null))
+                {
+                    _suppressgames = base.CreateObjectSet<suppressgame>("suppressgames");
+                }
+                return _suppressgames;
+            }
+        }
+        private ObjectSet<suppressgame> _suppressgames;
 
         #endregion
 
@@ -714,6 +730,14 @@ namespace Ticker.Data
         public void AddToSettingsOptions(SettingsOption settingsOption)
         {
             base.AddObject("SettingsOptions", settingsOption);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the suppressgames EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddTosuppressgames(suppressgame suppressgame)
+        {
+            base.AddObject("suppressgames", suppressgame);
         }
 
         #endregion
@@ -7855,6 +7879,134 @@ namespace Ticker.Data
                 }
             }
         }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="Fox.Tick", Name="suppressgame")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class suppressgame : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new suppressgame object.
+        /// </summary>
+        /// <param name="id">Initial value of the id property.</param>
+        public static suppressgame Createsuppressgame(global::System.Int32 id)
+        {
+            suppressgame suppressgame = new suppressgame();
+            suppressgame.id = id;
+            return suppressgame;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                if (_id != value)
+                {
+                    OnidChanging(value);
+                    ReportPropertyChanging("id");
+                    _id = StructuralObject.SetValidValue(value, "id");
+                    ReportPropertyChanged("id");
+                    OnidChanged();
+                }
+            }
+        }
+        private global::System.Int32 _id;
+        partial void OnidChanging(global::System.Int32 value);
+        partial void OnidChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String LeagueCode
+        {
+            get
+            {
+                return _LeagueCode;
+            }
+            set
+            {
+                OnLeagueCodeChanging(value);
+                ReportPropertyChanging("LeagueCode");
+                _LeagueCode = StructuralObject.SetValidValue(value, true, "LeagueCode");
+                ReportPropertyChanged("LeagueCode");
+                OnLeagueCodeChanged();
+            }
+        }
+        private global::System.String _LeagueCode;
+        partial void OnLeagueCodeChanging(global::System.String value);
+        partial void OnLeagueCodeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> ClientID
+        {
+            get
+            {
+                return _ClientID;
+            }
+            set
+            {
+                OnClientIDChanging(value);
+                ReportPropertyChanging("ClientID");
+                _ClientID = StructuralObject.SetValidValue(value, "ClientID");
+                ReportPropertyChanged("ClientID");
+                OnClientIDChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _ClientID;
+        partial void OnClientIDChanging(Nullable<global::System.Int32> value);
+        partial void OnClientIDChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String CorrelationID
+        {
+            get
+            {
+                return _CorrelationID;
+            }
+            set
+            {
+                OnCorrelationIDChanging(value);
+                ReportPropertyChanging("CorrelationID");
+                _CorrelationID = StructuralObject.SetValidValue(value, true, "CorrelationID");
+                ReportPropertyChanged("CorrelationID");
+                OnCorrelationIDChanged();
+            }
+        }
+        private global::System.String _CorrelationID;
+        partial void OnCorrelationIDChanging(global::System.String value);
+        partial void OnCorrelationIDChanged();
 
         #endregion
 
