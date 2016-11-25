@@ -2,6 +2,11 @@
     ViewBag.Title = "Playlist Detail";
 
 }
+@*<style>
+    .Hover {
+    }
+
+</style>*@
 @(Html.Kendo().Window()
     .Name("winEditor")
     .Draggable(true)
@@ -40,6 +45,11 @@
                          editor.paste("<span style='color:" + e.sender.value() + ";'>" + editor.getSelection() + "</span>");
                      }
                  });
+
+
+                 $('.Hover').mouseover(function(){
+                     alert('dfdsf')
+                 })
              });
 
          </script>
@@ -1440,7 +1450,7 @@
                 }
             }
 
-           
+
         });
 
         if ($("#tvDHGames").data("kendoTreeView")!=undefined)
@@ -1561,6 +1571,26 @@
                     dataSource: homogeneous,
                     dragAndDrop: true,
                     drop: onDropAppend,
+                    //template:'# if(item.fauxGame){ # <div class="onet"><span> #= item.Name # </span> </div># } else { if(item.isSuppressedGame) {#<div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="Suppress" > #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" id=#= item.CorrelationId# style="display:none;"/></div>  #} else {# <div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="unsuppress"> #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" id=#= item.CorrelationId# style="display:none;"/></div> #}}#',
+                    template:'# if(item.level() == 0 && item.isSuppressedGame ){ # <div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="Suppress" > #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" id=#= item.CorrelationId# style="display:none;"/></div>  #} else {# <div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="unsuppress"> #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" id=#= item.CorrelationId# style="display:none;"/></div> #}#',
+                    //'# if(item.fauxGame)
+                    //{
+                    //# <div class="onet"><span> #= item.Name #  </span> </div>  #
+                    //}
+                    //else
+                    //{
+                    // # if(item.isSuppressedGame)
+                    //{
+                    //#<div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="sonet" id="#= item.CorrelationId#">#= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" id=#= item.CorrelationId# style="display:none;"/></div>  #
+                    //}
+                    //else
+                    //{
+                    // #<div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="suppressed" id="#= item.CorrelationId#">#= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" id=#= item.CorrelationId# style="display:none;"/></div>  #
+                    //}
+                    //
+                    //} #',
+
+
                     dataBound    : ExpandNode,
                     dataTextField: ["Name","Game" ,"Note"]
                 });
@@ -1772,12 +1802,12 @@
     function a(id)
     {
 
-        
+
               // execute AJAX request here
         $.ajax({
              type: "GET",
              url: "http://localhost:57881/api/Default/"+id,
-             contentType: "application/json;charset=utf-8",            
+             contentType: "application/json;charset=utf-8",
              dataType: 'json',
              async:false,
              success: function(data) {
@@ -1981,12 +2011,43 @@ function onGameRequestEnd(e)
     for(var j=0;j<lstgamenames.length;j++)
     {
 
-        e.response.push({key: j, fauxGame: true, Game: lstgamenames[j].GameName,Name: lstgamenames[j].GameName,CorrelationId:lstgamenames[j].CorrelationId,hasChildren:lstgamenames[j].hasChildren });
+        e.response.push({key: j, fauxGame: true, Game: lstgamenames[j].GameName,Name: lstgamenames[j].GameName,CorrelationId:lstgamenames[j].CorrelationId,hasChildren:lstgamenames[j].hasChildren ,isSuppressedGame:checkSuppressedGame(lstgamenames[j].CorrelationId,DHLeague,'@ViewData["ClientID"]')});
 
     }
 
 
 }
+    function checkSuppressedGame(corid,leaguecode,clietid)
+    {
+        debugger;
+        var retvalue=false;
+
+        $.ajax
+              ({
+                  "type": "GET",
+                  async: false,
+                  'url': '/api/Suppress?corid='+corid+'&leaguecode='+leaguecode+'&clietid='+clietid,
+                  "contentType": "application/json;charset=utf-8",
+                  'success': function (data, status, jxhr) {
+                      try {
+                          if(data ==true)
+                              retvalue=true;
+                          else retvalue=false;
+
+                      } catch (err) { }
+                  }, 'error': function (jxhr, status, thrown) {
+                      try {
+
+                      } catch (err) { }
+                  }, 'complete': function (data, status) {
+                  },
+                  'statusCode': {
+                      404: function () {
+                      }
+                  }
+              });
+        return retvalue;
+    }
 
     function GetUnique(inputArray)
     {
@@ -2041,7 +2102,7 @@ function onDHGamesRequestEnd(e) {
     }//return;
     // alert(JSON.stringify(e.response));
     // alert(e.response.length);
-   
+
     if((DHLeague.indexOf("CFB")!=-1 || DHLeague.indexOf("CBK")!=-1) && e.response.length > 0)
     {
     }
@@ -2071,11 +2132,18 @@ function onDHGamesRequestEnd(e) {
             else if (e.response[r].VisitorTeamAlias==null || e.response[r].HomeTeamAlias==null)
                 e.response[r].Name= e.response[r].VisitorTeamName.toUpperCase() + " @@ " + e.response[r].HomeTeamName.toUpperCase();
             else
+            {
                 e.response[r].Name= e.response[r].VisitorTeamAlias.toUpperCase() + " @@ " + e.response[r].HomeTeamAlias.toUpperCase();
+                e.response[r].isSuppressedGame=checkSuppressedGame(e.response[r].CorrelationId,DHLeague,'@ViewData["ClientID"]');
+            }
 
         //e.response[r].children=notes;//e.response[r];
 
-        //e.response[r].hasChildren=true;
+            //e.response[r].hasChildren=true;
+
+
+
+
 
 
         //e.response[r].hasChildren=true;
@@ -2114,6 +2182,20 @@ function onDHGamesRequestEnd(e) {
         }
     }
 
+    //********* Start **************//
+    @*var lstgamenames=[];
+     lstgamenames=e.response;
+    e.response=[];
+    for(var j=0;j< lstgamenames.length;j++)
+    {
+
+        e.response.push({key: "0", fauxGame: true, Name: lstgamenames[j].Name});//Game: lstgamenames[j].Name,,CorrelationId:lstgamenames[j].CorrelationId,hasChildren:lstgamenames[j].hasChildren ,isSuppressedGame:checkSuppressedGame(lstgamenames[j].CorrelationId,DHLeague,'@ViewData["ClientID"]')});
+
+    }
+    lstgamenames=[];
+    debugger;*@
+    //********** End *************//
+
     //if (DHLeague.indexOf("NASCAR")!=-1)
     //    e.response.unshift({key: "3", fauxGame: true, Name: "Today's Leader List"});
 
@@ -2139,7 +2221,7 @@ function onDHGamesRequestEnd(e) {
     }
 
     if (DHLeague.indexOf("NFL")!=-1){
-        e.response.unshift({key: "7", fauxGame: true, Name: "Weekly Leaders - Receiving"});
+        e.response.unshift({key: "7", fauxGame: true,Game:"wserer", Name: "Weekly Leaders - Receiving",CorrelationId:"123",hasChildren:false,isSuppressedGame:true});
         e.response.unshift({key: "6", fauxGame: true, Name: "Weekly Leaders - Rushing"});
         e.response.unshift({key: "5", fauxGame: true, Name: "Weekly Leaders - Passing"});
         e.response.unshift({key: "4", fauxGame: true, Name: "Current Week"});
@@ -3355,6 +3437,75 @@ function onDropAppend(e){
             expandedNodes.expanded=true;
         }
     }
+
+    function mouseOver(CorrelationId)
+    {
+
+
+        //alert('in');
+        //var correlationid=$(CorrelationId).attr('id');
+        //debugger;
+        //$.ajax
+        //       ({
+        //           "type": "GET",
+        //           async: false,
+        //           'url': 'http://localhost:57881/api/Suppress?correlationid='+correlationid,
+        //           "contentType": "application/json;charset=utf-8",
+        //           'success': function (data, status, jxhr) {
+        //               try {
+        //                   UpdateRankingCallBack(data,Origdata);
+        //               } catch (err) { }
+        //           }, 'error': function (jxhr, status, thrown) {
+        //               try {
+
+        //               } catch (err) { }
+        //           }, 'complete': function (data, status) {
+        //           },
+        //           'statusCode': {
+        //               404: function () {
+        //               }
+        //           }
+        //       });
+    }
+
+    function mouseOut(CorrelationId)
+    {
+
+       // alert('out');
+        //var correlationid=$(CorrelationId).attr('id');
+        //debugger;
+        //$.ajax
+        //       ({
+        //           "type": "POST",
+        //           async: false,
+        //           'url': 'http://localhost:57881/api/Suppress?correlationid='+correlationid,
+        //           "contentType": "application/json;charset=utf-8",
+        //           'success': function (data, status, jxhr) {
+        //               try {
+        //                   UpdateRankingCallBack(data,Origdata);
+        //               } catch (err) { }
+        //           }, 'error': function (jxhr, status, thrown) {
+        //               try {
+
+        //               } catch (err) { }
+        //           }, 'complete': function (data, status) {
+        //           },
+        //           'statusCode': {
+        //               404: function () {
+        //               }
+        //           }
+        //       });
+    }
+
+    //function c(CorrelationId)
+    //{
+    //    alert('ok');
+    //}
+
+    //function b(CorrelationId)
+    //{
+    //    alert('ko');
+    //}
 
 
 </script>

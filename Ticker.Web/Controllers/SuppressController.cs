@@ -11,21 +11,61 @@ namespace Ticker.Controllers
     public class SuppressController : ApiController
     {
         // GET: api/Suppress
-        public IEnumerable<string> Get()
+        public IHttpActionResult Get(string corid,string leaguecode, int clietid)
         {
-            return new string[] { "value1", "value2" };
+            FoxTickerEntities db = new FoxTickerEntities();
+            bool status = false;
+            if (db.suppressgames.Where(a => a.CorrelationID == corid && a.ClientID == clietid && a.LeagueCode == leaguecode).Any())
+            {
+                status = true;
+
+            }
+            return Json(status);
+
         }
+
+
+        //public DataSourceResult Get(string id, [ModelBinder(typeof(Ticker.ModelBinders.DataSourceRequestModelBinder))] DataSourceRequest request)
+        //{
+        //    var suppress = db.suppressgames.Where(gw => gw.CorrelationID == id);
+        //    if (suppress == null)
+        //    {
+        //        throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+        //    }
+
+        //    return suppress.AsEnumerable().ToDataSourceResult(request, g => new
+        //    {
+        //        g.id,
+        //        g.LeagueCode,
+        //        g.ClientID,
+        //        g.CorrelationID
+        //    }); ;
+        //}
 
         // GET: api/Suppress/5
-        public string Get(int id)
-        {
-             
-            return "value";
-        }
+        //public IHttpActionResult Get(string correlationid)
+        //{
+        //    FoxTickerEntities db = new FoxTickerEntities();
+        //    bool status = false;
+        //    if(db.suppressgames.Where(a=>a.CorrelationID== correlationid).Any())
+        //    {
+        //        status = true;
+                    
+        //    }
+        //    return Json(status);
+        //}
 
         // POST: api/Suppress
-        public void Post([FromBody]string value)
+        public IHttpActionResult Post(string correlationid)
         {
+            FoxTickerEntities db = new FoxTickerEntities();
+            bool status = false;
+            if (db.suppressgames.Where(a => a.CorrelationID == correlationid).Any())
+            {
+                status = true;
+
+            }
+            return Json(status);
         }
 
         // PUT: api/Suppress/5
