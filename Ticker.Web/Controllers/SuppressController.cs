@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Mvc;
 using Ticker.Data;
 
 namespace Ticker.Controllers
 {
+       public class suppressgames
+    {
+        public int id { get; set; }
+        public string LeagueCode { get; set; }
+        public int ClientID { get; set; }
+        public int CorrelationID { get; set; }
+    }
     public class SuppressController : ApiController
     {
         // GET: api/Suppress
@@ -56,16 +65,30 @@ namespace Ticker.Controllers
         //}
 
         // POST: api/Suppress
-        public IHttpActionResult Post(string correlationid)
+        public HttpResponseMessage Post(string id, string league, int client)
         {
             FoxTickerEntities db = new FoxTickerEntities();
-            bool status = false;
-            if (db.suppressgames.Where(a => a.CorrelationID == correlationid).Any())
-            {
-                status = true;
 
+            // suppressgame Suppress = db.suppressgames.Where(a => a.CorrelationID == id && a.ClientID == client && a.LeagueCode == league).FirstOrDefault();
+
+            suppressgame suppress = new suppressgame();
+            suppress.ClientID = client;
+            suppress.CorrelationID = id;
+            suppress.LeagueCode = league;
+
+
+            db.suppressgames.AddObject(suppress);
+
+            try
+            {
+                db.SaveChanges();
             }
-            return Json(status);
+            catch (DbUpdateConcurrencyException)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, suppress);
         }
 
         // PUT: api/Suppress/5
@@ -74,8 +97,28 @@ namespace Ticker.Controllers
         }
 
         // DELETE: api/Suppress/5
-        public void Delete(int id)
+        public HttpResponseMessage Delete(string id, string league, int client)
         {
+            FoxTickerEntities db = new FoxTickerEntities();
+            
+            suppressgame Suppress = db.suppressgames.Where(a => a.CorrelationID == id && a.ClientID == client && a.LeagueCode == league).FirstOrDefault();
+            if (Suppress == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+
+            db.suppressgames.DeleteObject(Suppress);
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, Suppress);
         }
     }
 }

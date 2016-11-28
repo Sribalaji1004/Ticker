@@ -328,8 +328,6 @@
           <Property Name="SportID" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="40" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'FoxTickNew.dbo.suppressgames' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="suppressgames">
           <Key>
             <PropertyRef Name="id" />
@@ -580,15 +578,8 @@ warning 6002: The table/view 'FoxTickNew.dbo.Teams' does not have a primary key 
           <EntitySet Name="SettingsOptions" EntityType="Self.SettingsOptions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sports" EntityType="Self.Sports" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Statuses" EntityType="Self.Statuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="suppressgames" EntityType="Self.suppressgames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="suppressgames" EntityType="Self.suppressgames" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-[suppressgames].[id] AS [id], 
-[suppressgames].[LeagueCode] AS [LeagueCode], 
-[suppressgames].[ClientID] AS [ClientID], 
-[suppressgames].[CorrelationID] AS [CorrelationID]
-FROM [dbo].[suppressgames] AS [suppressgames]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="Teams" EntityType="Self.Teams" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [Teams].[ID] AS [ID], 
