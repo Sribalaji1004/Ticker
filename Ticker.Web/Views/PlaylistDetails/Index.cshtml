@@ -2,11 +2,7 @@
     ViewBag.Title = "Playlist Detail";
 
 }
-@*<style>
-    .Hover {
-    }
 
-</style>*@
 @(Html.Kendo().Window()
     .Name("winEditor")
     .Draggable(true)
@@ -45,12 +41,7 @@
                          editor.paste("<span style='color:" + e.sender.value() + ";'>" + editor.getSelection() + "</span>");
                      }
                  });
-
-
-                 $('.Hover').mouseover(function(){
-                     alert('dfdsf')
-                 })
-             });
+                  });
 
          </script>
      </div>
@@ -70,6 +61,9 @@
 </div>
 <div style="clear: both" />
 <input type="hidden" id="hdnStatsBuilderAPIUrl" value=@System.Configuration.ConfigurationManager.AppSettings["StatsBuilderAPIUrl"] />
+
+
+
 <div class="treeview-left">
     @(Html.Kendo().TreeView()
     .Name("tvPlaylistDetails")
@@ -1572,12 +1566,17 @@
                     dragAndDrop: true,
                     drop: onDropAppend,
                     //template:'# if(item.fauxGame){ # <div class="onet"><span> #= item.Name # </span> </div># } else { if(item.isSuppressedGame) {#<div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="Suppress" > #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" id=#= item.CorrelationId# style="display:none;"/></div>  #} else {# <div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="unsuppress"> #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" id=#= item.CorrelationId# style="display:none;"/></div> #}}#',
-                    template:'# if(item.level() == 0 && item.isSuppressedGame ){ # <div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="Suppress" > #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" onchange="ChekeorUncheck(this)"  checked id=#= item.CorrelationId# Client=#=@ViewData["ClientID"]# League=#=item.League# style="display:none;"/></div>  #} else {# <div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="unsuppress"> #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" onchange="ChekeorUncheck(this)" id=#= item.CorrelationId# Client=#=@ViewData["ClientID"]# League=#=item.League# style="display:none;"/></div> #}#',
+                    template:'# if(item.level() == 0 && item.isSuppressedGame ){ # <div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="Suppress"  style="color:red;" > #= item.Name # &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" onchange="ChekeorUncheck(this)"  checked id=#= item.CorrelationId# Client=#=@ViewData["ClientID"]# League=#=item.League# style="display:none;"/></div>  #} else {# <div onmouseover= "mouseOver(this)" onmouseout="mouseOut(this)" class="unsuppress"> #= item.Name# &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" onchange="ChekeorUncheck(this)" id=#= item.CorrelationId# Client=#=@ViewData["ClientID"]# League=#=item.League# style="display:none;"/></div> #}#',
                     dataBound    : ExpandNode,
                     dataTextField: ["Name","Game" ,"Note"]
                 });
             }
         }
+
+        
+
+
+
         @* else
     {
         alert(1);
@@ -3490,129 +3489,42 @@ function onDropAppend(e){
 
 
     function mouseOver(thi)
-    {
-
-        
-        $("#"+thi.childNodes[1].id).toggle();
-
-        //$(function(){
-        //    debugger;
-        //    $('input[type="checkbox"]').change(function(){
-        //        debugger;
-               
-
-        //        if ($(this).prop('checked')){
-        //            $.ajax
-        //                   ({
-        //                       "type": "POST",
-        //                       async: false,
-        //                       'url': '/api/Suppress?id='+id+'&league='+league+'&client='+client,
-        //                       "contentType": "application/json;charset=utf-8",
-        //                       'success': function (data, status, jxhr) {
-        //                           try {
-        //                               alert(status);
-        //                             // return(status);
-        //                           } catch (err) { }
-        //                       }, 'error': function (jxhr, status, thrown) {
-        //                           try {
-
-        //                           } catch (err) { }
-        //                       }, 'complete': function (data, status) {
-        //                       },
-        //                       'statusCode': {
-        //                           404: function () {
-        //                           }
-        //                       }
-        //                   });
-
-        //        }
-        //        else{
-
-        //        }
-
-        //    });
-
-        //});
-
-
-
-        //var correlationid=$(CorrelationId).attr('id');
-
-        //document.getElementById("CorrelationId").style.color = "red";
-        //debugger;
-        //$.ajax
-        //       ({
-        //           "type": "GET",
-        //           async: false,
-        //           'url': 'http://localhost:57881/api/Suppress?correlationid='+correlationid,
-        //           "contentType": "application/json;charset=utf-8",
-        //           'success': function (data, status, jxhr) {
-        //               try {
-        //                   UpdateRankingCallBack(data,Origdata);
-        //               } catch (err) { }
-        //           }, 'error': function (jxhr, status, thrown) {
-        //               try {
-
-        //               } catch (err) { }
-        //           }, 'complete': function (data, status) {
-        //           },
-        //           'statusCode': {
-        //               404: function () {
-        //               }
-        //           }
-        //       });
+    {       
+        $("#"+thi.childNodes[1].id).toggle();        
     }
 
     function mouseOut(thi)
-    {
-
-
+    {        
         $("#"+thi.childNodes[1].id).toggle();
-
-       // alert('out');
-        //var correlationid=$(CorrelationId).attr('id');
-        //debugger;
-        //$.ajax
-        //       ({
-        //           "type": "POST",
-        //           async: false,
-        //           'url': 'http://localhost:57881/api/Suppress?correlationid='+correlationid,
-        //           "contentType": "application/json;charset=utf-8",
-        //           'success': function (data, status, jxhr) {
-        //               try {
-        //                   UpdateRankingCallBack(data,Origdata);
-        //               } catch (err) { }
-        //           }, 'error': function (jxhr, status, thrown) {
-        //               try {
-
-        //               } catch (err) { }
-        //           }, 'complete': function (data, status) {
-        //           },
-        //           'statusCode': {
-        //               404: function () {
-        //               }
-        //           }
-        //       });
     }
 
-    //function c(CorrelationId)
-    //{
-    //    alert('ok');
-    //}
-
-    //function b(CorrelationId)
-    //{
-    //    alert('ko');
-    //}
-
+   
 
 </script>
+
+@*<style type="text/css">
+    .suppress {
+        font-family: Courier;
+        color: red;
+     
+    }
+</style>*@
 
 <style scoped>
     .playlist-section {
         width: 200px;
     }
 </style>
+
+<style>
+    div.suppress{
+        background-color: black;
+        color: white;
+        margin: 20px 0 20px 0;
+        padding: 20px;
+    }
+</style>
+
 <style scoped="scoped">
     .treeview-left {
         background-color: #0e0e0e;
@@ -3628,6 +3540,7 @@ function onDropAppend(e){
         border-radius: 8px;
         display:block;
     }
+    
     .treeview-right {
         background-color: #0e0e0e;
         float: left;
