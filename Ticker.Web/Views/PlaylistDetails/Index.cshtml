@@ -3435,7 +3435,7 @@ function onDropAppend(e){
     function ChekeorUncheck(thi)
     {
         debugger;
-        
+       
         var id=$(thi).attr('id');
         var client=$(thi).attr('client');
         var league=$(thi).attr('league');
@@ -3453,7 +3453,6 @@ function onDropAppend(e){
                                   } catch (err) { }
                               }, 'error': function (jxhr, status, thrown) {
                                   try {
-
                                   } catch (err) { }
                               }, 'complete': function (data, status) {
                               },
@@ -3461,9 +3460,34 @@ function onDropAppend(e){
                                   404: function () {
                                   }
                               }
-                          });            
-
+                          });
+        else {
+            $.ajax
+                         ({
+                             "type": "DELETE",
+                             async: false,
+                             'url': '/api/Suppress?id='+id+'&league='+league+'&client='+client,
+                             "contentType": "application/json;charset=utf-8",
+                             'success': function (data, status, jxhr) {
+                                 try {
+                                     alert(status);
+                                     // return(status);
+                                 } catch (err) { }
+                             }, 'error': function (jxhr, status, thrown) {
+                                 try {
+                                 } catch (err) { }
+                             }, 'complete': function (data, status) {
+                             },
+                             'statusCode': {
+                                 404: function () {
+                                 }
+                             }
+                         });
+           
+        }
+                         
     }
+
 
     function mouseOver(thi)
     {
