@@ -109,7 +109,6 @@
     //.TagName("div")
     //.ClientTemplateId("Playlist")
     //.Pageable()
-    //.CheckboxTemplate
     .Checkboxes(true)
     .Events(e => e.DataBound("onDataBound"))
     //.Checkboxes(e => e.CheckChildren(true))
@@ -189,40 +188,7 @@
 )
     </text>);
 
-         @*   tabstrip.Add().Text("New Test")
-      .Content(@<text>
-    <h2>Test Name</h2>
-
-    <table border="0">
-        <tr>
-            <td>
-                Name
-            </td>
-            <td>
-                <input type="text" id="txtNewGroup" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                OnAirName
-            </td>
-            <td>
-                <input type="text" id="txtNewGroupOnAirName" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
-            </td>
-        </tr>
-        <tr id="NewGroupOfGames">
-            <td>
-                Games Group
-            </td>
-            <td>
-                <script type="text/javascript">var GroupOfGames = false; var GamesPrevious = false;</script>
-                <input type="checkbox" class="k-checkbox" name="GroupOfGames" id="GroupOfGames" onclick="GroupOfGames=!GroupOfGames">
-            </td>
-        </tr>
-    </table>
-    <button class="k-button" id="onNewGroup">Save</button>
-    </text>);
-        *@
+        
 
     tabstrip.Add().Text("New Group")
         .Content(@<text>
@@ -260,7 +226,6 @@
         
 
     tabstrip.Add().Text("New Game")
-        .Visible(false)
         .Content(@<text>
     <h2>Game Name</h2>
     <table>
