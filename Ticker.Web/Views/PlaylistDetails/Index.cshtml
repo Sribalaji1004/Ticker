@@ -331,35 +331,70 @@
     </table>
     </text>);
 
+        tabstrip.Add().Text("My Task")
+        .Content(@<text>
+                <h2>MY TASK</h2>
+
+                <table border="0">
+                    <tr>
+                        <td>
+                            Name
+                        </td>
+                        <td>
+                            <input type="text" id="" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            OnAirName
+                        </td>
+                        <td>
+                            <input type="text" id="" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                        </td>
+                    </tr>
+                    <tr id="NewGroupOfGames">
+                        <td>
+                            Games Group
+                        </td>
+                        <td>
+                            <script type="text/javascript">var GroupOfGames = false; var GamesPrevious = false;</script>
+                            <input type="checkbox" class="k-checkbox" name="GroupOfGames" id="GroupOfGames" onclick="GroupOfGames=!GroupOfGames">
+                        </td>
+                    </tr>
+                </table>
+                <button class="k-button" id="onNewGroup">Save</button>
+        </text>);
+
              @* tabstrip.Add().Text("Stats List")
-                        
-                        .Content(@<text> <div id="StatsListDetails" style="color: #82CAFF"></div>
-@(Html.Kendo().TreeView()
-        .Name("StatsListDetails")
-        //.Template("Playlist")
-        //.TagName("div")
-        //.ClientTemplateId("Playlist")
-        //.Pageable()
-        //.Checkboxes(true)
-   // .Events(e => e.Expand("onGroupExpand"))
-    .DragAndDrop(true)
-    .Events(e => e.Drop("onDroptoPlayList"))
-    .DataSource(dataSource =>
-    {
-        dataSource.Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["StatsBuilderAPIUrl"]+"api/GameStats")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414); //3533 - LITE NOTES
-        //dataSource.ServerFiltering(true);
-        //dataSource.PageSize(12);
-    })
-    .DataTextField("StatsListName")
-        //.DataImageUrlField("StatsListId")
-        //    .DataUrlField("gameid")
-    
-        //.HtmlAttributes(new { title = "some text" })
-    .HtmlAttributes(new { style = "color: #82CAFF" })
-        //.Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
-)
- </text>);*@
-        
+
+                               .Content(@<text> <div id="StatsListDetails" style="color: #82CAFF"></div>
+       @(Html.Kendo().TreeView()
+               .Name("StatsListDetails")
+               //.Template("Playlist")
+               //.TagName("div")
+               //.ClientTemplateId("Playlist")
+               //.Pageable()
+               //.Checkboxes(true)
+          // .Events(e => e.Expand("onGroupExpand"))
+           .DragAndDrop(true)
+           .Events(e => e.Drop("onDroptoPlayList"))
+           .DataSource(dataSource =>
+           {
+               dataSource.Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["StatsBuilderAPIUrl"]+"api/GameStats")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414); //3533 - LITE NOTES
+               //dataSource.ServerFiltering(true);
+               //dataSource.PageSize(12);
+           })
+           .DataTextField("StatsListName")
+               //.DataImageUrlField("StatsListId")
+               //    .DataUrlField("gameid")
+
+               //.HtmlAttributes(new { title = "some text" })
+           .HtmlAttributes(new { style = "color: #82CAFF" })
+               //.Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
+
+      )
+    </text>); *@
+
           })
     )
 </div>
@@ -3492,7 +3527,7 @@ function onDropAppend(e){
 
 <style scoped="scoped">
     .treeview-left {
-        background-color: #0e0e0e;
+        background-color:cadetblue ;
         float: left;
         width: 53%;
         margin: 20px;
@@ -3507,7 +3542,7 @@ function onDropAppend(e){
     }
     
     .treeview-right {
-        background-color: #0e0e0e;
+        background-color: cadetblue;
         float: left;
         width: 33%;
         margin: 20px;
