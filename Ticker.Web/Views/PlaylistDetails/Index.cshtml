@@ -338,65 +338,68 @@
                 <table border="0">
                     <tr>
                         <td>
-                            Name
+                            Name:
                         </td>
                         <td>
-                            <input type="text" id="" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                            <input type="text" id="txtNewTask" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            OnAirName
+                            Password:
                         </td>
                         <td>
-                            <input type="text" id="" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                            <input type="text" id="txtNewPass" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
                         </td>
                     </tr>
-                    <tr id="NewGroupOfGames">
-                        <td>
-                            Games Group
-                        </td>
-                        <td>
-                            <script type="text/javascript">var GroupOfGames = false; var GamesPrevious = false;</script>
-                            <input type="checkbox" class="k-checkbox" name="GroupOfGames" id="GroupOfGames" onclick="GroupOfGames=!GroupOfGames">
-                        </td>
-                    </tr>
-                </table>
-                <button class="k-button" id="onNewGroup">Save</button>
+                 </table>
+                <button class="k-button" id="onNewLogin">Login</button>
+        
+        <button class="k-button" id="onNewUser" >Register</button>
+           
+
+
+
         </text>);
 
-             @* tabstrip.Add().Text("Stats List")
+            @* tabstrip.Add().Text("Stats List")
 
-                               .Content(@<text> <div id="StatsListDetails" style="color: #82CAFF"></div>
-       @(Html.Kendo().TreeView()
-               .Name("StatsListDetails")
-               //.Template("Playlist")
-               //.TagName("div")
-               //.ClientTemplateId("Playlist")
-               //.Pageable()
-               //.Checkboxes(true)
-          // .Events(e => e.Expand("onGroupExpand"))
-           .DragAndDrop(true)
-           .Events(e => e.Drop("onDroptoPlayList"))
-           .DataSource(dataSource =>
-           {
-               dataSource.Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["StatsBuilderAPIUrl"]+"api/GameStats")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414); //3533 - LITE NOTES
-               //dataSource.ServerFiltering(true);
-               //dataSource.PageSize(12);
-           })
-           .DataTextField("StatsListName")
-               //.DataImageUrlField("StatsListId")
-               //    .DataUrlField("gameid")
+                                           .Content(@<text> <div id="StatsListDetails" style="color: #82CAFF"></div>
+                   @(Html.Kendo().TreeView()
+                           .Name("StatsListDetails")
+                           //.Template("Playlist")
+                           //.TagName("div")
+                           //.ClientTemplateId("Playlist")
+                           //.Pageable()
+                           //.Checkboxes(true)
+                      // .Events(e => e.Expand("onGroupExpand"))
+                       .DragAndDrop(true)
+                       .Events(e => e.Drop("onDroptoPlayList"))
+                       .DataSource(dataSource =>
+                       {
+                           dataSource.Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["StatsBuilderAPIUrl"]+"api/GameStats")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414); //3533 - LITE NOTES
+                           //dataSource.ServerFiltering(true);
+                           //dataSource.PageSize(12);
+                       })
+                       .DataTextField("StatsListName")
+                           //.DataImageUrlField("StatsListId")
+                           //    .DataUrlField("gameid")
 
-               //.HtmlAttributes(new { title = "some text" })
-           .HtmlAttributes(new { style = "color: #82CAFF" })
-               //.Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
+                           //.HtmlAttributes(new { title = "some text" })
+                       .HtmlAttributes(new { style = "color: #82CAFF" })
+                           //.Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
 
-      )
-    </text>); *@
+                  )
+                </text>); *@
 
           })
-    )
+)
+    <div id="tabstrip">
+        <ul>
+            <li class="k-state-active">Sign Up</li>
+        </ul>
+    </div>
+
 </div>
 
 <script type="text/javascript">
@@ -980,6 +983,22 @@
     {
         DHLeagueChange=true;
         $("#tvGroups").data("kendoTreeView").dataSource.read();
+    });
+
+    $("#onNewLogin").click(function () {
+        if ($("#txtNewTask").val()=="" || $("#txtNewPass").val()=="")
+        {
+            alert("Group name and on air name cannot be empty.");
+            return;
+        }
+    });
+
+    $("#onNewUser").click(function AddTab(targetUrl, title)
+    {
+        var tabstrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+        tabStrip.append({ text: title, contentUrl: targetUrl, content: "Your content" });
+        tabStrip.select((tabStrip.tabGroup.children("li").length - 1));
+        
     });
 
     $("#onNewGroup").click(function () {
@@ -3534,7 +3553,7 @@ function onDropAppend(e){
         padding: 20px;
         -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
         -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
-        box-shadow: 0 1px 2px rgba(0,0,0,0.45), inner 0 0 30px rgba(0,0,0,0.07);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         border-radius: 8px;
