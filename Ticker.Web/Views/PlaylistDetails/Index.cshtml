@@ -356,6 +356,7 @@
                 <button class="k-button" id="onNewLogin">Login</button>
         
         <button class="k-button" id="onNewUser" >Register</button>
+       
            
 
 
@@ -394,11 +395,7 @@
 
           })
 )
-    <div id="tabstrip">
-        <ul>
-            <li class="k-state-active">Sign Up</li>
-        </ul>
-    </div>
+    
 
 </div>
 
@@ -991,15 +988,75 @@
             alert("Group name and on air name cannot be empty.");
             return;
         }
+
+        $.ajax
+          ({
+              "type": "POST",
+              async: false,
+              'url': "/api/Task",
+              'accepts': "application/json",
+              'contentType': "application/json",
+              'dataType': 'json',
+              'global': false,
+              'data': jsonData,
+              'success': function (data, status, jxhr) {
+
+                  alert ("data added");
+                  //try {
+                  //    win = $("#winEditor").data("kendoWindow");
+                  //    win.title("Group Editor");
+                  //    if (!GroupOfGames)
+                  //    {
+                  //        win.refresh({
+                  //            url: "/GroupEditor/Edit/" + data.ID
+                  //        });
+                  //        win.center();
+                  //        win.open();
+                  //    }
+
+                  //} catch (err) { }
+              }, 'error': function (jxhr, status, thrown) {
+                  try {
+                      
+                  } catch (err) { }
+              }, 'complete': function (data, status) {
+                  
+              }, 'statusCode': {
+                  404: function () {
+                      //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                  }
+              }
+          });
+
+
+
     });
 
-    $("#onNewUser").click(function AddTab(targetUrl, title)
-    {
-        var tabstrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
-        tabStrip.append({ text: title, contentUrl: targetUrl, content: "Your content" });
-        tabStrip.select((tabStrip.tabGroup.children("li").length - 1));
+    //$("#onNewUser").click(function addTab()
+    //var tabStrip = $(".treeview-right").kendoTabStrip().data("kendoTabStrip");
+
+    //  //tabStrip.select("li:first");  // Select by jQuery selector
+    //$(".treeview-right").on("click", "#onNewUser", function() {
+    //    tabStrip.select(1);   // Select by index
+    //})
+
+
+    //});
+
+   
+  //var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+
+  //tabStrip.select("li:first");  // Select by jQuery selector
+    $("#onNewUser").click(function() {
+        alert('kkk');
+        //var tabStrip = $(".treeview-right").kendoTabStrip().data("kendoTabStrip");
+        // tabStrip.select("li:first");
+        //tabStrip.select(2);   // Select by index
+  })
+
         
-    });
+
+    
 
     $("#onNewGroup").click(function () {
         if ($("#txtNewGroup").val()=="" || $("#txtNewGroupOnAirName").val()=="")
@@ -1590,9 +1647,7 @@
                     dataTextField: ["Name","Game" ,"Note"]
                 });
             }
-        }
-
-        
+        }   
 
 
 
@@ -1773,7 +1828,8 @@
         // data = finalList
         //alert(finalList.length);
         data.length = 0;
-        data.push.apply(data, finalList); //finalList;//.slice(0);
+        data.push.apply(data, finalList); 
+        //finalList;//.slice(0);
         // return finalList.slice(0);;
     }
 

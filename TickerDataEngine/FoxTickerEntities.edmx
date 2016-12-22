@@ -236,6 +236,14 @@
           <Property Name="SettingsID" Type="int" />
           <Property Name="OptionsID" Type="int" />
         </EntityType>
+        <EntityType Name="Mytask">
+          <Key>
+            <PropertyRef Name="P_Id" />
+          </Key>
+          <Property Name="P_Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Password" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Notes">
           <Key>
             <PropertyRef Name="ID" />
@@ -268,6 +276,7 @@
           <Property Name="Specifics1" Type="nvarchar" MaxLength="20" />
           <Property Name="SDMLeagueCode" Type="nvarchar(max)" />
           <Property Name="DataSource" Type="int" />
+          <Property Name="HiddenGamesID" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Playlists">
           <Key>
@@ -570,6 +579,7 @@ warning 6002: The table/view 'FoxTickNew.dbo.Teams' does not have a primary key 
           <EntitySet Name="GroupGames" EntityType="Self.GroupGames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Groups" EntityType="Self.Groups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LeaguesSettings" EntityType="Self.LeaguesSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mytask" EntityType="Self.Mytask" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notes" EntityType="Self.Notes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlaylistDetails" EntityType="Self.PlaylistDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Playlists" EntityType="Self.Playlists" Schema="dbo" store:Type="Tables" />
@@ -807,6 +817,7 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
           <EntitySet Name="Settings" EntityType="Fox.Tick.Setting" />
           <EntitySet Name="SettingsOptions" EntityType="Fox.Tick.SettingsOption" />
           <EntitySet Name="suppressgames" EntityType="Fox.Tick.suppressgame" />
+          <EntitySet Name="Mytasks" EntityType="Fox.Tick.Mytask" />
           </EntityContainer>
         <EntityType Name="Group">
           <Key>
@@ -898,6 +909,7 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
           <Property Type="String" Name="SDMLeagueCode" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Specifics1" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="DataSource" Type="Int32" />
+          <Property Name="HiddenGamesID" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Playlist">
           <Key>
@@ -1676,6 +1688,14 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
           <Property Name="ClientID" Type="Int32" />
           <Property Name="CorrelationID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Mytask">
+          <Key>
+            <PropertyRef Name="P_Id" />
+          </Key>
+          <Property Name="P_Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1750,6 +1770,7 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
           <EntitySetMapping Name="PlaylistDetails">
             <EntityTypeMapping TypeName="Fox.Tick.PlaylistDetail">
               <MappingFragment StoreEntitySet="PlaylistDetails">
+                <ScalarProperty Name="HiddenGamesID" ColumnName="HiddenGamesID" />
                 <ScalarProperty Name="DataSource" ColumnName="DataSource" />
                 <ScalarProperty Name="Specifics1" ColumnName="Specifics1" />
                 <ScalarProperty Name="SDMLeagueCode" ColumnName="SDMLeagueCode" />
@@ -2382,6 +2403,15 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Mytasks">
+            <EntityTypeMapping TypeName="Fox.Tick.Mytask">
+              <MappingFragment StoreEntitySet="Mytask">
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="P_Id" ColumnName="P_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -2450,6 +2480,7 @@ FROM [dbo].[Teams] AS [Teams]</DefiningQuery>
         <EntityTypeShape EntityType="Fox.Tick.Setting" Width="1.5" PointX="6.75" PointY="11.75" />
         <EntityTypeShape EntityType="Fox.Tick.SettingsOption" Width="1.5" PointX="8.75" PointY="11.75" />
         <EntityTypeShape EntityType="Fox.Tick.suppressgame" Width="1.5" PointX="11.375" PointY="11.75" />
+        <EntityTypeShape EntityType="Fox.Tick.Mytask" Width="1.5" PointX="3.375" PointY="12.75" />
         </Diagram>
     </Diagrams>
   </Designer>

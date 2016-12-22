@@ -218,6 +218,7 @@
     <Compile Include="Controllers\SportsDataController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\SuppressController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\test1Controller.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserAdminController.cs" />
@@ -681,6 +682,7 @@
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Views\Home\xrds.aspx" />
+    <Content Include="Views\PlaylistDetails\test.html" />
     <Content Include="Views\User\Index.aspx" />
     <Content Include="Views\User\Login.aspx" />
     <Content Include="Web.config">

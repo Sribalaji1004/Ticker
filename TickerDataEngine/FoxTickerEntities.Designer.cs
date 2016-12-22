@@ -519,6 +519,22 @@ namespace Ticker.Data
             }
         }
         private ObjectSet<suppressgame> _suppressgames;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Mytask> Mytasks
+        {
+            get
+            {
+                if ((_Mytasks == null))
+                {
+                    _Mytasks = base.CreateObjectSet<Mytask>("Mytasks");
+                }
+                return _Mytasks;
+            }
+        }
+        private ObjectSet<Mytask> _Mytasks;
 
         #endregion
 
@@ -738,6 +754,14 @@ namespace Ticker.Data
         public void AddTosuppressgames(suppressgame suppressgame)
         {
             base.AddObject("suppressgames", suppressgame);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Mytasks EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToMytasks(Mytask mytask)
+        {
+            base.AddObject("Mytasks", mytask);
         }
 
         #endregion
@@ -6073,6 +6097,112 @@ namespace Ticker.Data
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="Fox.Tick", Name="Mytask")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Mytask : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Mytask object.
+        /// </summary>
+        /// <param name="p_Id">Initial value of the P_Id property.</param>
+        /// <param name="name">Initial value of the Name property.</param>
+        public static Mytask CreateMytask(global::System.Int32 p_Id, global::System.String name)
+        {
+            Mytask mytask = new Mytask();
+            mytask.P_Id = p_Id;
+            mytask.Name = name;
+            return mytask;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 P_Id
+        {
+            get
+            {
+                return _P_Id;
+            }
+            set
+            {
+                if (_P_Id != value)
+                {
+                    OnP_IdChanging(value);
+                    ReportPropertyChanging("P_Id");
+                    _P_Id = StructuralObject.SetValidValue(value, "P_Id");
+                    ReportPropertyChanged("P_Id");
+                    OnP_IdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _P_Id;
+        partial void OnP_IdChanging(global::System.Int32 value);
+        partial void OnP_IdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
+                ReportPropertyChanged("Name");
+                OnNameChanged();
+            }
+        }
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Password
+        {
+            get
+            {
+                return _Password;
+            }
+            set
+            {
+                OnPasswordChanging(value);
+                ReportPropertyChanging("Password");
+                _Password = StructuralObject.SetValidValue(value, true, "Password");
+                ReportPropertyChanged("Password");
+                OnPasswordChanged();
+            }
+        }
+        private global::System.String _Password;
+        partial void OnPasswordChanging(global::System.String value);
+        partial void OnPasswordChanged();
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
     [EdmEntityTypeAttribute(NamespaceName="Fox.Tick", Name="Note")]
     [Serializable()]
     [DataContractAttribute(IsReference=true)]
@@ -6989,6 +7119,30 @@ namespace Ticker.Data
         private Nullable<global::System.Int32> _DataSource;
         partial void OnDataSourceChanging(Nullable<global::System.Int32> value);
         partial void OnDataSourceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String HiddenGamesID
+        {
+            get
+            {
+                return _HiddenGamesID;
+            }
+            set
+            {
+                OnHiddenGamesIDChanging(value);
+                ReportPropertyChanging("HiddenGamesID");
+                _HiddenGamesID = StructuralObject.SetValidValue(value, true, "HiddenGamesID");
+                ReportPropertyChanged("HiddenGamesID");
+                OnHiddenGamesIDChanged();
+            }
+        }
+        private global::System.String _HiddenGamesID;
+        partial void OnHiddenGamesIDChanging(global::System.String value);
+        partial void OnHiddenGamesIDChanged();
 
         #endregion
 
