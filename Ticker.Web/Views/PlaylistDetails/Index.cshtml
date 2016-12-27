@@ -338,65 +338,67 @@
                 <table border="0">
                     <tr>
                         <td>
-                            Name
+                            Name:
                         </td>
                         <td>
-                            <input type="text" id="" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                            <input type="text" id="txtNewTask" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            OnAirName
+                            Password:
                         </td>
                         <td>
-                            <input type="text" id="" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                            <input type="text" id="txtNewPass" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                            <input type="checkbox" id="showHide"> Hide Password
                         </td>
                     </tr>
-                    <tr id="NewGroupOfGames">
-                        <td>
-                            Games Group
-                        </td>
-                        <td>
-                            <script type="text/javascript">var GroupOfGames = false; var GamesPrevious = false;</script>
-                            <input type="checkbox" class="k-checkbox" name="GroupOfGames" id="GroupOfGames" onclick="GroupOfGames=!GroupOfGames">
-                        </td>
-                    </tr>
-                </table>
-                <button class="k-button" id="onNewGroup">Save</button>
+                 </table>
+                <button class="k-button" id="onNewLogin">Login</button>
+        
+        <button class="k-button" id="onNewUser" >Register</button>
+       
+           
+
+
+
         </text>);
 
-             @* tabstrip.Add().Text("Stats List")
+            @* tabstrip.Add().Text("Stats List")
 
-                               .Content(@<text> <div id="StatsListDetails" style="color: #82CAFF"></div>
-       @(Html.Kendo().TreeView()
-               .Name("StatsListDetails")
-               //.Template("Playlist")
-               //.TagName("div")
-               //.ClientTemplateId("Playlist")
-               //.Pageable()
-               //.Checkboxes(true)
-          // .Events(e => e.Expand("onGroupExpand"))
-           .DragAndDrop(true)
-           .Events(e => e.Drop("onDroptoPlayList"))
-           .DataSource(dataSource =>
-           {
-               dataSource.Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["StatsBuilderAPIUrl"]+"api/GameStats")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414); //3533 - LITE NOTES
-               //dataSource.ServerFiltering(true);
-               //dataSource.PageSize(12);
-           })
-           .DataTextField("StatsListName")
-               //.DataImageUrlField("StatsListId")
-               //    .DataUrlField("gameid")
+                                           .Content(@<text> <div id="StatsListDetails" style="color: #82CAFF"></div>
+                   @(Html.Kendo().TreeView()
+                           .Name("StatsListDetails")
+                           //.Template("Playlist")
+                           //.TagName("div")
+                           //.ClientTemplateId("Playlist")
+                           //.Pageable()
+                           //.Checkboxes(true)
+                      // .Events(e => e.Expand("onGroupExpand"))
+                       .DragAndDrop(true)
+                       .Events(e => e.Drop("onDroptoPlayList"))
+                       .DataSource(dataSource =>
+                       {
+                           dataSource.Read(read => read.Url(@System.Configuration.ConfigurationManager.AppSettings["StatsBuilderAPIUrl"]+"api/GameStats")); //+ (ViewData["PlaylistID"])).Type(HttpVerbs.Get));//.Data("PlaylistID")); //3907 //1154 - twitter // //3414); //3533 - LITE NOTES
+                           //dataSource.ServerFiltering(true);
+                           //dataSource.PageSize(12);
+                       })
+                       .DataTextField("StatsListName")
+                           //.DataImageUrlField("StatsListId")
+                           //    .DataUrlField("gameid")
 
-               //.HtmlAttributes(new { title = "some text" })
-           .HtmlAttributes(new { style = "color: #82CAFF" })
-               //.Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
+                           //.HtmlAttributes(new { title = "some text" })
+                       .HtmlAttributes(new { style = "color: #82CAFF" })
+                           //.Selectable(selectable => selectable.Mode(ListViewSelectionMode.Single))
 
-      )
-    </text>); *@
+                  )
+                </text>); *@
 
           })
-    )
+          .SelectedIndex(0)
+)
+    
+
 </div>
 
 <script type="text/javascript">
@@ -976,11 +978,129 @@
 
         }
     });
+
+    $(document).ready(function () {
+        $("#showHide").click(function () {
+            if ($("#txtNewPass").attr("type")=="password") {
+                $("#txtNewPass").attr("type", "text");
+            }
+            else{
+                $("#txtNewPass").attr("type", "password");
+            }
+
+        });
+    });
+
     $("#onGroupRefresh").click(function ()
     {
         DHLeagueChange=true;
         $("#tvGroups").data("kendoTreeView").dataSource.read();
     });
+
+    function validateEmail(sEmail) {
+
+        var filter = /^([\w-\.]+)@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+
+        if (filter.test(sEmail)) {
+
+            return true;
+
+        }
+
+        else {
+
+            return false;
+
+        }
+    }
+
+    //!validateEmail($("#txtNewTask").val())
+
+
+    $("#onNewLogin").click(function () {
+        if ($("#txtNewTask").val()=="")
+        {
+            alert("Cannot be empty");
+        }
+
+        else if(!validateEmail($("#txtNewTask").val()))
+        {
+            alert("Not valid");
+        }
+            
+        else if($("#txtNewPass").val()=="")
+        {
+            alert("Password cannot be empty.");
+        }
+
+        var jsonData;
+
+        jsonData = '{ "Name": "' + $("#txtNewTask").val() + '", "Password": "' + $("#txtNewPass").val() + '"}';
+        //  jsonData = '{ "Name": "' + $("#txtNewGroup").val() + '", "OnAirName": "' + $("#txtNewGroupOnAirName").val() + '", "Editable": 1, "ClientID": "@(ViewData["ClientID"])", "CreatedName ": "' + $("#txtNewGroup").val() + '", "Type": "Game Group", "GroupAnimationTypeID": "0", "LastUpdated": "@(DateTime.Now.ToString())" }';
+        $.ajax
+          ({
+              "type": "POST",
+              async: false,
+              'data': jsonData,
+              'url': "../api/Task"+"Password"+txtNewPass+"Name"+txtNewTask,
+              'accepts': "application/json",
+              'contentType': "application/json",
+              'dataType': 'json',
+              'global': false,              
+              'success': function (data, status, jxhr) {
+
+                  alert ("data added");
+                  //try {
+                  //    win = $("#winEditor").data("kendoWindow");
+                  //    win.title("Group Editor");
+                  //    if (!GroupOfGames)
+                  //    {
+                  //        win.refresh({
+                  //            url: "/GroupEditor/Edit/" + data.ID
+                  //        });
+                  //        win.center();
+                  //        win.open();
+                  //    }
+
+                  //} catch (err) { }
+              }, 'error': function (jxhr, status, thrown) {
+                  try {
+
+                  } catch (err) { }
+              }, 'complete': function (data, status) {
+
+              }, 'statusCode': {
+                  404: function () {
+                      //     if (!isIE || isDebugMode) console.log("ProgressHandler: 404 received from " + postURL + "!");
+                  }
+              }
+          });
+
+    });
+
+
+    $("#onNewUser").click(
+
+        function() {
+
+            var tabStrip = $("#tabstrip").data("kendoTabStrip");
+
+            var getItem = function (target) {
+                var itemIndex = target[0].value;
+
+                return tabStrip.tabGroup.children("li").eq(itemIndex);
+            }
+
+            tabStrip.select(getItem($("#tabIndex")));
+        alert('kkk');
+        //var tabStrip = $(".treeview-right").kendoTabStrip().data("kendoTabStrip");
+        // tabStrip.select("li:first");
+        //tabStrip.select(2);   // Select by index
+  })
+
+
+
+
 
     $("#onNewGroup").click(function () {
         if ($("#txtNewGroup").val()=="" || $("#txtNewGroupOnAirName").val()=="")
@@ -1573,8 +1693,6 @@
             }
         }
 
-        
-
 
 
         @* else
@@ -1754,7 +1872,8 @@
         // data = finalList
         //alert(finalList.length);
         data.length = 0;
-        data.push.apply(data, finalList); //finalList;//.slice(0);
+        data.push.apply(data, finalList);
+        //finalList;//.slice(0);
         // return finalList.slice(0);;
     }
 
@@ -3434,7 +3553,7 @@ function onDropAppend(e){
     function ChekeorUncheck(thi)
     {
         debugger;
-       
+
         var id=$(thi).attr('id');
         var client=$(thi).attr('client');
         var league=$(thi).attr('league');
@@ -3482,23 +3601,25 @@ function onDropAppend(e){
                                  }
                              }
                          });
-           
+
         }
-                         
+
     }
 
 
     function mouseOver(thi)
-    {       
-        $("#"+thi.childNodes[1].id).toggle();        
-    }
-
-    function mouseOut(thi)
-    {        
+    {
         $("#"+thi.childNodes[1].id).toggle();
     }
 
-   
+    function mouseOut(thi)
+    {
+        $("#"+thi.childNodes[1].id).toggle();
+    }
+
+
+
+
 
 </script>
 
@@ -3534,7 +3655,7 @@ function onDropAppend(e){
         padding: 20px;
         -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
         -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
-        box-shadow: 0 1px 2px rgba(0,0,0,0.45), inner 0 0 30px rgba(0,0,0,0.07);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         border-radius: 8px;
@@ -3558,3 +3679,6 @@ function onDropAppend(e){
 
 </style>
 <div style="clear: both" />
+
+
+
