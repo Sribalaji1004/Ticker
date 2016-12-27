@@ -1014,15 +1014,20 @@
         }
     }
 
-
+    //!validateEmail($("#txtNewTask").val())
 
 
     $("#onNewLogin").click(function () {
-        if (!validateEmail($("#txtNewTask").val()))
+        if ($("#txtNewTask").val()=="")
         {
-            alert("User name cannot be empty.");
+            alert("Cannot be empty");
         }
 
+        else if(!validateEmail($("#txtNewTask").val()))
+        {
+            alert("Not valid");
+        }
+            
         else if($("#txtNewPass").val()=="")
         {
             alert("Password cannot be empty.");
@@ -1036,12 +1041,12 @@
           ({
               "type": "POST",
               async: false,
-              'url': "/api/Task",
+              'data': jsonData,
+              'url': "../api/Task"+"Password"+txtNewPass+"Name"+txtNewTask,
               'accepts': "application/json",
               'contentType': "application/json",
               'dataType': 'json',
-              'global': false,
-              'data': jsonData,
+              'global': false,              
               'success': function (data, status, jxhr) {
 
                   alert ("data added");
