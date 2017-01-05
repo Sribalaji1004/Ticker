@@ -364,6 +364,73 @@
 
         </text>);
 
+              tabstrip.Add().Text("Register")
+        .Content(@<text>
+                <h2>Register</h2>
+                <table border="0">
+                    <tr>
+                        <td>
+                            First Name:*
+                        </td>
+                        <td>
+                            <input type="text" id="txtNewFirstName" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Last Name:*
+                        </td>
+                        <td>
+                            <input type="text" id="txtNewLastName" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Create Password:*
+                         </td>
+                        <td>
+                            <input type="password" id="txtNewCreatePass" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Confirm Password:*
+                        </td>
+                        <td>
+                            <input type="password" id="txtNewConfirmPass" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                        </td>
+                    </tr>
+                    @*<tr>
+                        <td>
+                            Age:
+                        </td>
+                        <td>
+                            <input type="text" id="txtNewAge" class="k-textbox" maxlength="50" style="margin: -3px 0 3px;" />
+                         </td>
+                    </tr>*@
+                    <tr>
+                        <td>
+                            Date of Birth :*
+                        </td>
+                        <td>
+                            @(Html.Kendo().DatePicker()
+                            .Name("dtpAgePicker")
+                            .Value("")
+                            //.Start(CalendarView.Year)
+                            //.Depth(CalendarView.Year)
+                            //.Format("DDDD MMMM yyyy")
+                             )
+                        </td>
+                </tr>
+
+                </table>
+                
+                <button class="k-button" id="onNewReg">Register</button>
+
+
+
+        </text>);
+
             @* tabstrip.Add().Text("Stats List")
 
                                            .Content(@<text> <div id="StatsListDetails" style="color: #82CAFF"></div>
@@ -1018,6 +1085,7 @@
 
 
     $("#onNewLogin").click(function () {
+        debugger;
         if ($("#txtNewTask").val()=="")
         {
             alert("Cannot be empty");
@@ -1077,6 +1145,44 @@
           });
 
     });
+    for (var i = 0; i < length; i++) {
+    
+    }
+    if (true) {
+    
+    }
+
+    $("#onNewReg").click(function()
+    {     debugger;
+            if ($("#txtNewFirstName").val()=="")
+            {
+                alert("Please Enter your First Name");
+            }
+            else if($("#txtNewLastName").val()=="")
+            {
+                alert("Please Enter your Last Name");
+            }
+            else if($("#txtNewCreatePass").val()=="")
+            {
+                alert("Please Create a Password ");
+            }
+            else if($("#txtNewConfirmPass").val()=="")
+            {
+                alert("Please Confirm Your Password ");
+            }
+            else if($("#dtpAgePicker").val()=="")
+            {
+                alert("Select your DOB ");
+            }
+            else if($("#txtNewCreatePass").val()!=$("#txtNewConfirmPass").val())
+            {
+             alert("Password Doesn't Match");   
+            } 
+            var register;
+
+            register = '{ "FirstName": "' + $("#txtNewFirstName").val() + '", "LastName": "' + $("#txtNewLastName").val() + '", "Password": "'+$("#txtNewConfirmPass").val()+'","DOB": "'+$("#dtpAgePicker").val()+'"}';
+            
+        })
 
 
     $("#onNewUser").click(
@@ -3650,9 +3756,9 @@ function onDropAppend(e){
     .treeview-left {
         background-color:cadetblue ;
         float: left;
-        width: 53%;
-        margin: 20px;
-        padding: 20px;
+        width: 50%;
+        margin: 15px;
+        padding: 15px;
         -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
         -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
         box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
@@ -3665,9 +3771,9 @@ function onDropAppend(e){
     .treeview-right {
         background-color: cadetblue;
         float: left;
-        width: 33%;
-        margin: 20px;
-        padding: 20px;
+        width: 37%;
+        margin: 15px;
+        padding: 15px;
         -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
         -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.45), inset 0 0 30px rgba(0,0,0,0.07);
         box-shadow: 0 1px 2px rgba(0,0,0,0.45), inner 0 0 30px rgba(0,0,0,0.07);

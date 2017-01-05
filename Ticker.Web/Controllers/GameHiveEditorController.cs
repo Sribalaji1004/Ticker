@@ -96,32 +96,40 @@ namespace Ticker.Controllers
           //  teams.AddRange(Topic(hiveprefix));
 
             TeamObject Team = new TeamObject();
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["SDMUrl"]);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //using (var client = new HttpClient())
+            //{
+            //    client.BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["SDMUrl"]);
+            //    client.DefaultRequestHeaders.Accept.Clear();
+            //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                //HttpResponseMessage response = await client.GetAsync("api/TeamsAPI/SelectTeams?Abbr=" + Abbr + "&Code="+Code);
-                HttpResponseMessage response = client.GetAsync("/api/team").Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    List<TeamObject> listTeams = response.Content.ReadAsAsync<List<TeamObject>>().Result;
+            //    //HttpResponseMessage response = await client.GetAsync("api/TeamsAPI/SelectTeams?Abbr=" + Abbr + "&Code="+Code);
+            //    HttpResponseMessage response = client.GetAsync("/api/team").Result;
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        List<TeamObject> listTeams = response.Content.ReadAsAsync<List<TeamObject>>().Result;
 
-                    TeamObject newTobj = new TeamObject();
-                    newTobj.ID = -1;
-                    newTobj.DisplayName = "NONE";
+            //        TeamObject newTobj = new TeamObject();
+            //        newTobj.ID = -1;
+            //        newTobj.DisplayName = "NONE";
 
-                    listTeams.Add(newTobj);
+            //        listTeams.Add(newTobj);
 
-                    ViewData["Teams"] = listTeams;
-                }
-            }
+            //        ViewData["Teams"] = listTeams;
+            //    }
+            //}
 
-           // ViewData["Teams"] = Team;
+            // ViewData["Teams"] = Team;
             //if (Game.TeamID != null)
             //    if (Game.TeamID != -1 && Game.TeamID != 0)
             //        ViewData["SportID"] = db.Teams.Single(s => s.ID == Game.TeamID).SportID;
+            List<TeamObject> listTeams = new List<TeamObject>();
+            TeamObject newTobj = new TeamObject();
+            newTobj.ID = -1;
+            newTobj.DisplayName = "NONE";
+
+            listTeams.Add(newTobj);
+
+            ViewData["Teams"] = listTeams;
             return View();
         }
 
