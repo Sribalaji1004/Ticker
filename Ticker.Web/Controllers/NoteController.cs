@@ -319,7 +319,23 @@ namespace Ticker.Controllers
 
                 List<Note> lnotes = db.Notes.Where(n => n.GroupID == note.GroupID).OrderBy(o => o.SortOrder).ToList();
                 for (int i = 0; i < lnotes.Count; i++)
-                    lnotes[i].SortOrder = i + 1;
+                {
+                    if (lnotes[i].SortOrder >= note.SortOrder)
+                    {
+                        lnotes[i].SortOrder = lnotes[i].SortOrder + 1;
+                    }
+                    db.SaveChanges();
+
+                        //for (int j = 0; j < lnotes.Count;j++)
+                        //{
+                        //    if (lnotes[j].SortOrder > note.SortOrder)
+                        //    {
+                        //        lnotes[j].SortOrder = lnotes[j].SortOrder+1;
+                        //    }
+                        //}
+                            
+                    }
+                    
 
                 lnotes.ForEach(ln => ln.LastUpdated = DateTime.Now);
 
@@ -362,6 +378,10 @@ namespace Ticker.Controllers
                     note.TeamID,
                     note.UserID
                 };
+
+                if (note.SortOrder == note.SortOrder) {
+                    note.SortOrder = note.SortOrder + 1;
+                }
                 if (note.TeamID == null)
                     note.TeamID = -1;
                 string groupName = db.Groups.Single(g => g.ID == note.GroupID).Name;

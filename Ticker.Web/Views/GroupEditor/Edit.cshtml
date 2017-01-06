@@ -258,6 +258,7 @@
         }
 
         function onSave(e) {
+            debugger;
 
             //get the currently selected value from the DDL
             //var currentlySelectedValue = $(e.container.find('[data-role=dropdownlist]')[0]).data().kendoDropDownList.value();
@@ -272,9 +273,16 @@
             //If current value is null
             if (e.model.SortOrder==null) {
                 //set the value to the model
+                //e.model.get("SortOrder", $("#Notes").data("kendoGrid").dataSource.data().length);
                 e.model.set("SortOrder", $("#Notes").data("kendoGrid").dataSource.data().length);
             }
+           
 
+
+            //else if(e.model.SortOrder==ob.SortOrder)
+            //{
+            //    alert("sss");
+            //}
             //e.model.TeamID = 0;
             //e.model.set("GroupID", '@Html.Raw(Model.ID)');
             e.model.set('TeamID', currentlySelectedValue);
