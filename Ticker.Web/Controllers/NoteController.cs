@@ -50,20 +50,20 @@ namespace Ticker.Controllers
                 .AsEnumerable()
                 .OrderBy(s => s.SortOrder)
                 .ToDataSourceResult(request, n => new
-            {
-                // Skip the EntityState and EntityKey properties inherited from EF. It would break model binding.
-                //n.Group,
-                n.GroupID,
-                n.Header,
-                n.ID,
-                n.Imported,
-                n.LastUpdated,
-                //LastUpdatedBy = (n.UserID != null && n.UserID != 0 && db.Users.Where(u => u.UserID == n.UserID).Count() != 0 ? " last updated by " + db.Users.Where(u => u.UserID == n.UserID).FirstOrDefault().FirstName + " " + db.Users.Where(u => u.UserID == n.UserID).FirstOrDefault().LastName + ", " + n.LastUpdated.ToString() : n.Note1),
-                n.NoteColor,
-                n.SortOrder,
-                n.TeamID,
-                n.UserID
-            });
+                {
+                    // Skip the EntityState and EntityKey properties inherited from EF. It would break model binding.
+                    //n.Group,
+                    n.GroupID,
+                    n.Header,
+                    n.ID,
+                    n.Imported,
+                    n.LastUpdated,
+                    //LastUpdatedBy = (n.UserID != null && n.UserID != 0 && db.Users.Where(u => u.UserID == n.UserID).Count() != 0 ? " last updated by " + db.Users.Where(u => u.UserID == n.UserID).FirstOrDefault().FirstName + " " + db.Users.Where(u => u.UserID == n.UserID).FirstOrDefault().LastName + ", " + n.LastUpdated.ToString() : n.Note1),
+                    n.NoteColor,
+                    n.SortOrder,
+                    n.TeamID,
+                    n.UserID
+                });
 
         }
 
@@ -84,20 +84,20 @@ namespace Ticker.Controllers
                 .AsEnumerable()
                 .OrderBy(s => s.SortOrder)
                 .ToDataSourceResult(request, n => new
-            {
-                // Skip the EntityState and EntityKey properties inherited from EF. It would break model binding.
-                //n.Group,
-                n.GroupID,
-                n.Header,
-                n.ID,
-                n.Imported,
-                n.LastUpdated,
-                //LastUpdatedBy = (n.UserID != null && n.UserID != 0 && db.Users.Where(u => u.UserID == n.UserID).Count() != 0 ? " last updated by " + db.Users.Where(u => u.UserID == n.UserID).FirstOrDefault().FirstName + " " + db.Users.Where(u => u.UserID == n.UserID).FirstOrDefault().LastName + ", " + n.LastUpdated.ToString() : n.Note1),
-                NoteColor = Utilities.ConvertToHTML(n.NoteColor),
-                n.SortOrder,
-                n.TeamID,
-                n.UserID
-            });
+                {
+                    // Skip the EntityState and EntityKey properties inherited from EF. It would break model binding.
+                    //n.Group,
+                    n.GroupID,
+                    n.Header,
+                    n.ID,
+                    n.Imported,
+                    n.LastUpdated,
+                    //LastUpdatedBy = (n.UserID != null && n.UserID != 0 && db.Users.Where(u => u.UserID == n.UserID).Count() != 0 ? " last updated by " + db.Users.Where(u => u.UserID == n.UserID).FirstOrDefault().FirstName + " " + db.Users.Where(u => u.UserID == n.UserID).FirstOrDefault().LastName + ", " + n.LastUpdated.ToString() : n.Note1),
+                    NoteColor = Utilities.ConvertToHTML(n.NoteColor),
+                    n.SortOrder,
+                    n.TeamID,
+                    n.UserID
+                });
         }
 
         // PUT api/Note/5
@@ -136,8 +136,8 @@ namespace Ticker.Controllers
                 note.Note1 = WebUtility.HtmlDecode(note.NoteColor);
                 note.NoteColor = Utilities.ConvertFromHTML(note.NoteColor);
 
-               // note.Note1 = Utilities.RemoveHTML(System.Web.HttpUtility.HtmlDecode(note.NoteColor));
-               // note.NoteColor = Utilities.ConvertFromHTML(System.Web.HttpUtility.HtmlDecode(note.NoteColor));
+                // note.Note1 = Utilities.RemoveHTML(System.Web.HttpUtility.HtmlDecode(note.NoteColor));
+                // note.NoteColor = Utilities.ConvertFromHTML(System.Web.HttpUtility.HtmlDecode(note.NoteColor));
 
                 //clean
                 note.Note1 = Regex.Replace(note.Note1, @"[^\u0000-\u02FF]", string.Empty);
@@ -152,7 +152,7 @@ namespace Ticker.Controllers
                 //note.Note1 = Regex.Replace(note.Note1, @"\&[A-Za-z]*?;", string.Empty);
                 //note.NoteColor = Regex.Replace(note.NoteColor, @"\&[A-Za-z]*?;", string.Empty);
 
-                note.NoteColor = note.NoteColor.Replace("@@","<");
+                note.NoteColor = note.NoteColor.Replace("@@", "<");
                 note.NoteColor = note.NoteColor.Replace("##", ">");
 
                 existingNote.Header = note.Header;
@@ -161,6 +161,7 @@ namespace Ticker.Controllers
                 existingNote.Note1 = note.Note1;
                 existingNote.TeamID = note.TeamID;
                 existingNote.LastUpdated = DateTime.Now;
+                //  existingNote.SortOrder = note.SortOrder;
 
                 bool reOrder = false;
                 bool first = false;
@@ -169,14 +170,23 @@ namespace Ticker.Controllers
                     if (note.SortOrder == 0 || note.SortOrder == 1)
                         first = true;
                     existingNote.SortOrder = note.SortOrder;
+
                     reOrder = true;
                 }
 
+                //List<Note> lnotes = db.Notes.Where(n => n.GroupID == note.GroupID).OrderBy(o => o.SortOrder).ToList();
+                //for (int i = 0; i < lnotes.Count; i++)
+                //{
+                //    if (existingNote.SortOrder>=note.SortOrder)
+                //    {
+                //        lnotes[i].SortOrder = lnotes[i].SortOrder + 1;
+                //    }
+                //}
                 //db.ApplyCurrentValues("Notes",note);
 
                 //db.ObjectStateManager.ChangeObjectState(note, EntityState.Modified);
 
-                 try
+                try
                 {
                     db.SaveChanges();
                     Utilities.Write_Admin_Log(db, Utilities.App_Label.FoxTick, typeof(Note), Utilities.Action_Flag.CHANGE, note.ID.ToString(), note.Note1, msg, true);
@@ -187,15 +197,14 @@ namespace Ticker.Controllers
                         if (first)
                         {
                             lgameNotes.Add(existingNote);
-                            lgameNotes.AddRange(db.Notes.Where(le => le.GroupID == existingNote.GroupID && le.ID!=existingNote.ID).OrderBy(ob => ob.SortOrder).ToList());
+                            lgameNotes.AddRange(db.Notes.Where(le => le.GroupID == existingNote.GroupID && le.ID != existingNote.ID).OrderBy(ob => ob.SortOrder).ToList());
                         }
                         else
-                        lgameNotes.AddRange(db.Notes.Where(le => le.GroupID == existingNote.GroupID).OrderBy(ob => ob.SortOrder).ToList());
-                        for (int i = 0; i < lgameNotes.Count; i++)
-                            lgameNotes[i].SortOrder = i + 1;
+                        {
+                            lgameNotes.AddRange(db.Notes.Where(le => le.GroupID == existingNote.GroupID).OrderBy(ob => ob.SortOrder).ToList());
 
-                        lgameNotes.ForEach(ln => ln.LastUpdated = DateTime.Now);
-                        db.SaveChanges();
+                            lgameNotes.ForEach(ln => ln.LastUpdated = DateTime.Now);
+                        }
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -210,6 +219,7 @@ namespace Ticker.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
         }
+    
 
         public HttpResponseMessage PutNote(int id, int ParentID, string ObjectType, int SortOrder) //new sort order
         {
@@ -324,16 +334,7 @@ namespace Ticker.Controllers
                     {
                         lnotes[i].SortOrder = lnotes[i].SortOrder + 1;
                     }
-                    db.SaveChanges();
-
-                        //for (int j = 0; j < lnotes.Count;j++)
-                        //{
-                        //    if (lnotes[j].SortOrder > note.SortOrder)
-                        //    {
-                        //        lnotes[j].SortOrder = lnotes[j].SortOrder+1;
-                        //    }
-                        //}
-                            
+                    db.SaveChanges();                                                   
                     }
                     
 
@@ -409,6 +410,16 @@ namespace Ticker.Controllers
         public HttpResponseMessage DeleteNote(int id)
         {
             Note note = db.Notes.Where(nw => nw.ID == id).FirstOrDefault();
+
+            List<Note> lnotes = db.Notes.Where(n => n.GroupID == note.GroupID).OrderBy(o => o.SortOrder).ToList();
+
+            for (int i = 0; i < lnotes.Count; i++)
+            {
+                if (lnotes[i].SortOrder >=note.SortOrder )
+                {
+                    lnotes[i].SortOrder = lnotes[i].SortOrder - 1;
+                }
+            }
             if (note == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
@@ -424,6 +435,7 @@ namespace Ticker.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
+
 
             string groupName = db.Groups.Single(g => g.ID == note.GroupID).Name;
 
